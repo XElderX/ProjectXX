@@ -12,15 +12,29 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const ROLE_DEVELOPER = 'developer';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_MODERATOR = 'moderator';
+    public const ROLE_USER = 'user';
+
+    public const ROLES = [
+        self::ROLE_ADMIN, self::ROLE_MODERATOR, self::ROLE_USER, self::ROLE_DEVELOPER
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
+        'first_name',
+        'last_name',
+        'uuid',
+        'role',
+        'disabled',
     ];
 
     /**
@@ -41,4 +55,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function userClub()
+    {
+        return $this->hasOne(Club::class);
+    }
 }
