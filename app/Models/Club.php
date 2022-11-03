@@ -35,15 +35,20 @@ class Club extends Model
         'supporters_mood',
         'budget',
         
-        'town',
-        'country',
-        'user',
+        'town_id',
+        'country_id',
+        'user_id',
     ];
 
     public function town(){
         return $this->belongsTo(Town::class);
     }
+
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function player(){
+        return $this->hasMany(Player::class);
     }
 }

@@ -19,7 +19,7 @@ class CountryFactory extends Factory
         return [
                 'country'    => $this->faker->country(),
                 'population' => rand(20000, 10000000),
-                'flag'       => "<span class=\"fi fi-gr\"></span> <span class=\"fi fi-gr fis\"></span>"
+                'flag'       => "<span class=\"fi fi-gr fis\"></span>"
         ];
     }
 }

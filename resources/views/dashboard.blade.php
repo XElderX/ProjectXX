@@ -11,6 +11,41 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     You're logged in!
                 </div>
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <div style="display:flex; justify-content: space-between;">
+                        <div>Welcome back, {{ Auth::user()->username }} </div>
+                        <div style="float:right">Your account role is {{ Auth::user()->role }} </div>
+                        <br>
+                    </div>
+                    <div>
+                        {{-- @foreach (Auth::user()->logins as $key => $val)
+
+                        {{$key}} . {{$val}}
+                            
+                        @endforeach --}}
+                        {{-- {{array_key_first(Auth::user()->logins)}} --}}
+                        {{-- {{array_shift((Auth::user()->logins))}} --}}
+                        <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[0]) }}
+                        </div>
+
+                    </div>
+                    @if (Auth::user()->role === 'admin')
+                    <div class = 'adminPanel'>
+                        <h5>Admin panel </h5>
+                        <button class="button">
+                            <a href="{{ route('users') }}">View Users </a>
+                        </button>
+                        <button class="button">
+                            <a href="{{ route('national') }}">View Countries</a>
+                        </button>
+                    </div>
+
+
+                        <button> <a href="{{ route('login') }}"
+                                class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a></button>
+                    @endif
+
+                </div>
             </div>
         </div>
     </div>
