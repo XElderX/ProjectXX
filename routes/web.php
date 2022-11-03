@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\TownController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Webpatser\Uuid\Uuid;
@@ -36,7 +37,17 @@ Route::controller(CountryController::class)->group(function () {
     Route::get('countries/add', 'create')->middleware('auth')->name('countries.add');
     Route::post('countries', 'store')->middleware('auth')->name('countries.store');
     Route::get('countries/{id}', 'destroy')->middleware('auth')->name('countries.delete');
-    Route::post('countries/edit/{id}', 'update')->middleware('auth')->name('countries.update');;
+    Route::post('countries/edit/{id}', 'update')->middleware('auth')->name('countries.update');
+    // Route::get('users/{uuid}', 'show')->middleware('auth')->name('users.show');
+    // Route::get('users/ban/{uuid}', 'disable')->middleware('auth')->name('users.ban');
+});
+
+Route::controller(TownController::class)->group(function () {
+    Route::get('towns', 'index')->middleware('auth')->name('towns');
+    // Route::get('countries/add', 'create')->middleware('auth')->name('countries.add');
+    Route::post('towns', 'store')->middleware('auth')->name('towns.store');
+    Route::get('towns/{id}', 'destroy')->middleware('auth')->name('town.delete');
+    Route::post('towns/edit/{id}', 'update')->middleware('auth')->name('towns.update');
     // Route::get('users/{uuid}', 'show')->middleware('auth')->name('users.show');
     // Route::get('users/ban/{uuid}', 'disable')->middleware('auth')->name('users.ban');
 });

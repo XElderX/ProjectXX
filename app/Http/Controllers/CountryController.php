@@ -40,15 +40,8 @@ class CountryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CountryStoreRequest $request)
     {
-       
-        $request->validate([
-            'country'    => ['required', 'string', 'max:255', 'unique:countries'],
-            'population' => ['nullable', 'min:1', 'max:255'],
-            'flag'       => ['nullable'],
-        ]);
-  
         $country = Country::create([
             'country'    => $request->country,
             'population' => (integer) $request->population,
@@ -88,8 +81,7 @@ class CountryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(CountryStoreRequest $request, $id)
-    {
-        
+    {   
         $country = Country::findOrFail($id);
         $country->fill($request->all());
         $country->save();

@@ -35,7 +35,7 @@ class Town extends Model
         'town_name',
         'population',
         'weather',
-        'country'
+        'country_id'
     ];
 
     public function country(){
