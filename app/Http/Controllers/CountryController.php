@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CountryStoreRequest;
 use App\Models\Country;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
@@ -15,7 +16,12 @@ class CountryController extends Controller
      */
     public function index()
     {
-        //
+        return view(
+            'countries.index',
+            [
+                'countries' => Country::orderBy('id')->paginate(10),
+            ]
+        );
     }
 
     /**
@@ -25,7 +31,7 @@ class CountryController extends Controller
      */
     public function create()
     {
-        //
+        return view('countries.create');
     }
 
     /**
@@ -36,19 +42,20 @@ class CountryController extends Controller
      */
     public function store(Request $request)
     {
+       
         $request->validate([
             'country'    => ['required', 'string', 'max:255', 'unique:countries'],
-            'population' => ['nullable', 'integer', 'min:1', 'max:255'],
+            'population' => ['nullable', 'min:1', 'max:255'],
             'flag'       => ['nullable'],
         ]);
-    
+  
         $country = Country::create([
-            'country'    => $request->username,
-            'population' => $request->email,
+            'country'    => $request->country,
+            'population' => (integer) $request->population,
             'flag'       => $request->flag,
         ]);
-
-        return redirect(RouteServiceProvider::HOME);
+        
+        return redirect()->route('national')->with('status_success', 'country ' . $country->country . ' was added.');;
     }
 
     /**
@@ -80,9 +87,14 @@ class CountryController extends Controller
      * @param  \App\Models\Country  $country
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Country $country)
+    public function update(CountryStoreRequest $request, $id)
     {
-        //
+        
+        $country = Country::findOrFail($id);
+        $country->fill($request->all());
+        $country->save();
+
+        return redirect()->route('national')->with('status_success', 'Country ' . $country->country . ' was updated successfully.');;
     }
 
     /**
@@ -91,8 +103,11 @@ class CountryController extends Controller
      * @param  \App\Models\Country  $country
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Country $country)
+    public function destroy($id)
     {
-        //
+        $country = Country::findOrFail($id);
+        
+        $country->delete();
+        return redirect()->route('national')->with('status_success', 'Country ' . $country->country . ' was deleted.');;
     }
 }

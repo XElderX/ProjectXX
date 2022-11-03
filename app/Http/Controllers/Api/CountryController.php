@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\RegisterRequest;
+use App\Models\Country;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Webpatser\Uuid\Uuid;
 
-class UserController extends Controller
+class CountriesController extends Controller
 {
     public function __construct()
     {
@@ -22,7 +23,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $paginate = (int) $request->input('limit', 5);
-        return response()->json(User::autoWhere()->autoWith()->latest()->paginate($paginate));
+        return response()->json(Country::autoWhere()->autoWith()->latest()->paginate($paginate));
     }
 
     /**

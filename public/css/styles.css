@@ -1,0 +1,85 @@
+/* dashboard */
+
+.adminPanel {
+
+    display: block;
+    background-color: rgb(203, 65, 84);
+    padding: 0.5rem;
+    border: 3px solid rgb(145, 163, 176);
+}
+
+.adminPanel h5 {
+    text-align: center;
+}
+
+/* show */
+
+.card-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.user-block {
+    background-color: grey;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+.element {
+    margin: 1rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.element .text {
+    font-size: 1.2rem;
+    color: gold;
+}
+
+.BackBtn {
+    background-color: red;
+}
+.button {
+    display: inline-block;
+    text-align: center;
+    border-radius: 2px;
+    line-height: 19px;
+    cursor: pointer;
+    margin-left: -1px;
+    padding: 4px 15px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    background-image: -webkit-linear-gradient(top,#f8f8f8,#f1f1f1);
+    border: 1px solid #c6c6c6;
+    color: #000;
+    text-decoration: none;
+    font-family: sans-serif;
+}
+.button:active {
+    background-color: #f6f6f6;
+    background-image: -webkit-linear-gradient(top,#f6f6f6,#f1f1f1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.is-pressed {
+  background: -webkit-linear-gradient(top,#eee,#e0e0e0);
+  border: 1px solid #d7d7d7;
+  box-shadow: inset 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+/* table */
+.tableHead {
+    background-color:  rgb(53,56,57,0.7);
+    border: 4px solid rgb(112,66,65);
+
+}
+.tableBody {
+    background-color: rgb(139,133,137, 0.5);
+    border: 3px inset rgb(102,102,153);
+}
+#flags {
+background-size: contain;
+background-position: 50%;
+background-repeat: no-repeat;
+}

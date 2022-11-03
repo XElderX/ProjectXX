@@ -23,6 +23,9 @@ class Country extends Model
     {
         return $this->hasManyThrough(Town::class, Club::class);
     }
+    public function playerClub(){
+        return $this->hasManyThrough(Player::class, Club::class);
+    }
 
       /**
      * @return string

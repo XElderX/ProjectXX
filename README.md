@@ -23,6 +23,24 @@ This is project XX
 * Club model created
 * Club controller created
 
+#### 2022.10.29
+
+* JWT implementation
+* Updated blade templates for dashboard 
+* added column into user table with column name disabled, it stores true or false 
+
+#### 2022.11.01
+
+* added new column 'logins' into users table it stores last 20 logins information
+* implement method to extract user ip address and store it into databased table
+* updating login logic as it now checks if user is disabled or nor 
+
+#### 2022.11.02
+
+* added modal boxes on .blade.php templates to have create, view or update page to pop up in index view.
+
+
+
 
 
 
