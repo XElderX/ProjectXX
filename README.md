@@ -11,6 +11,8 @@ This is project XX
 
 ## ChangeLog
 
+# First batch (pushed 03.11.2022)
+
 #### 2022.09.29
 
 * settin up the project;
@@ -27,6 +29,7 @@ This is project XX
 
 * JWT implementation
 * Updated blade templates for dashboard 
+* Added User model blades
 * added column into user table with column name disabled, it stores true or false 
 
 #### 2022.11.01
@@ -37,7 +40,15 @@ This is project XX
 
 #### 2022.11.02
 
+* added blades for Country model
 * added modal boxes on .blade.php templates to have create, view or update page to pop up in index view.
+
+# Second batch (...)
+
+#### 2022.11.03
+
+* added blade template for Town model
+* implemented it add, delete, update methods, request validation
 
 
 

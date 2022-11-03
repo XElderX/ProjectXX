@@ -30,21 +30,22 @@
 
                     </div>
                     @if (Auth::user()->role === 'admin')
-                    <div class = 'adminPanel'>
-                        <h5>Admin panel </h5>
-                        <button class="button">
-                            <a href="{{ route('users') }}">View Users </a>
+                        <div class='adminPanel'>
+                            <h5>Admin panel </h5>
+                            <button class="button">
+                                <a href="{{ route('users') }}">Users</a>
+                            </button>
+                            <button class="button">
+                                <a href="{{ route('national') }}">Countries</a>
+                            </button>
+                            <button>
+                                <a href="{{ route('towns') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Towns</a>
+                            </button>
+                        </div>
+                        <button>
+                            <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
                         </button>
-                        <button class="button">
-                            <a href="{{ route('national') }}">View Countries</a>
-                        </button>
-                    </div>
-
-
-                        <button> <a href="{{ route('login') }}"
-                                class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a></button>
                     @endif
-
                 </div>
             </div>
         </div>
