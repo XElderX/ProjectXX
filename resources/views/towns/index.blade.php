@@ -121,7 +121,7 @@
                                                                     class="w-96 form-control" id="population"
                                                                     value="{{ $town->population }}">
                                                             </div>
-                                                            <label for="flag"
+                                                            <label for="weather"
                                                                 class="w-96 block text-gray-700 text-sm font-bold mb-2">Weather</label>
                                                             <div class="col-sm-10">
                                                                 <select name="weather" id="" class="form-control">

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClubStoreRequest;
 use App\Models\Club;
+use App\Models\Country;
+use App\Models\Town;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClubController extends Controller
 {
@@ -15,7 +19,20 @@ class ClubController extends Controller
      */
     public function index()
     {
-        //
+        // $aaaa = Country::with('town')->get();
+        // $bbbb = $this->getTowns(21);
+        // dd($bbbb);
+        // dd($aaaa[0]->town[0]->town_name);
+        return view(
+            'clubs.index',
+            [
+                'clubs'     => Club::orderBy('id')->paginate(10),
+                'moods'     => Club::SUPPORTERS_MOOD,
+                'countries' => Country::with('town')->get(),
+                
+                // 'towns'     => Town::all(),
+            ]
+        );
     }
 
     /**
@@ -34,19 +51,8 @@ class ClubController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClubStoreRequest $request)
     {
-        $request->validate([
-            'club_name'          => ['required', 'string', 'min:3', 'max:30', 'unique:clubs'],
-            'club_rating_points' => ['nullable', 'integer', 'min:1', 'max:5'],
-            'supporters'         => ['nullable', 'integer', 'min:1', 'max:5'],
-            'supporters_mood'    => ['nullable', 'string'],
-            'budget'             => ['nullable', 'integer', 'min:1', 'max:10'],
-            'country_id'         => ['nullable', 'integer'],
-            'town_id'            => ['nullable', 'integer'],
-            'user_id'            => ['nullable', 'integer'],
-        ]);
-    
         $club = Club::create([
             'club_name'          => $request->club_name,
             'club_rating_points' => $request->club_rating_points,
@@ -57,8 +63,8 @@ class ClubController extends Controller
             'town_id'            => $request->town_id,
             'user_id'            => $request->user_id,
         ]);
-
-        return redirect(RouteServiceProvider::HOME);
+        
+        return redirect()->route('clubs')->with('status_success', 'Club ' . $club->club_name. ' was added.');
     }
 
     /**
@@ -90,9 +96,13 @@ class ClubController extends Controller
      * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Club $club)
-    {
-        //
+    public function update(ClubStoreRequest $request, $id)
+    {   
+        $club = Club::findOrFail($id);
+        $club->fill($request->all());
+        $club->save();
+
+        return redirect()->route('clubs')->with('status_success', 'Club ' . $club->club_name . ' was updated successfully.');
     }
 
     /**
@@ -101,8 +111,34 @@ class ClubController extends Controller
      * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Club $club)
+    public function destroy($id)
     {
-        //
+        $club = Club::findOrFail($id);
+        
+        $club->delete();
+        return redirect()->route('clubs')->with('status_success', 'Club ' . $club->club_name . ' was deleted.');
+    }
+
+    public static function getTowns($countryID)
+    {
+        $townz = Town::where('country_id', $countryID)->get();
+        return $townz;
+    }
+    
+    public function fetch(Request $request)
+    {
+       
+        $select = $request->get('select');
+        $value = $request->get('value');
+        $dependent = $request->get('dependent');
+        $data = DB::table('towns')
+        ->where($select, $value)
+        ->get();
+        $output = '<option value="">Select '.ucfirst($dependent). '</option>';
+        foreach($data as $row)
+        {
+            $output .= '<option value="'.$row->id. '">'.$row->$dependent. '</option>';
+        }
+        echo $output;
     }
 }

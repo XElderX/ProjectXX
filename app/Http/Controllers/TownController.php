@@ -20,9 +20,9 @@ class TownController extends Controller
         return view(
             'towns.index',
             [
-                'towns'     => Town::with('country')->paginate(10),
-                'countries' => Country::all(),
-                'allweather'   => Town::WEATHER,
+                'towns'      => Town::with('country')->paginate(10),
+                'countries'  => Country::all(),
+                'allweather' => Town::WEATHER,
             ]
         );
     }
@@ -52,7 +52,7 @@ class TownController extends Controller
             'weather'    => $request->weather,
         ]);
         
-        return redirect()->route('towns')->with('status_success', 'Town ' . $town->town_name. ' was added.');;
+        return redirect()->route('towns')->with('status_success', 'Town ' . $town->town_name. ' was added.');
     }
 
 
@@ -105,6 +105,6 @@ class TownController extends Controller
         $town = Town::findOrFail($id);
         
         $town->delete();
-        return redirect()->route('towns')->with('status_success', 'Town ' . $town->town_name . ' was deleted.');;
+        return redirect()->route('towns')->with('status_success', 'Town ' . $town->town_name . ' was deleted.');
     }
 }

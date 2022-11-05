@@ -9,7 +9,6 @@ class Club extends Model
 {
     use HasFactory;
 
-
     public const MOOD_FURIOUS = 'furious';
     public const MOOD_HOPELESS = 'hopeless';
     public const MOOD_DISAPPOINTED = 'disappointed';
@@ -18,7 +17,6 @@ class Club extends Model
     public const MOOD_VERY_HAPPY = 'very_happy';
     public const MOOD_DREAMIOUS = 'dream';
     
-
     public const SUPPORTERS_MOOD = [
         self::MOOD_FURIOUS, self::MOOD_HOPELESS,
         self::MOOD_DISAPPOINTED, self::MOOD_CALM, 
@@ -42,6 +40,9 @@ class Club extends Model
 
     public function town(){
         return $this->belongsTo(Town::class);
+    }
+    public function country(){
+        return $this->belongsTo(Country::class);
     }
 
     public function user(){
