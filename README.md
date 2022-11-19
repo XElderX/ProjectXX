@@ -50,6 +50,13 @@ This is project XX
 * added blade template for Town model
 * implemented it add, delete, update methods, request validation
 
+#### 2022.11.04
+
+* added blade template for Club model
+* implemented it add, delete, update methods, request validation
+* updated club migration changing foreignt keys constrains now user_id and town_id can be nullable
+* Using JS implemented dynamic dependenced dropdown for country->town selection 
+
 
 
 

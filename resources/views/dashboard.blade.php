@@ -38,8 +38,11 @@
                             <button class="button">
                                 <a href="{{ route('national') }}">Countries</a>
                             </button>
-                            <button>
+                            <button class="button">
                                 <a href="{{ route('towns') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Towns</a>
+                            </button>
+                            <button class="button">
+                                <a href="{{ route('clubs') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Clubs</a>
                             </button>
                         </div>
                         <button>
