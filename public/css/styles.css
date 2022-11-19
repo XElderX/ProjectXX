@@ -83,3 +83,52 @@ background-size: contain;
 background-position: 50%;
 background-repeat: no-repeat;
 }
+/* players */
+
+.container {  display: grid;
+    grid-template-columns: 1fr 0.5fr 0.5fr 1fr;
+    grid-template-rows: 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "fn ln ln pot"
+      "age height height weight"
+      "club country country Position"
+      "value salary salary bookings"
+      "injury fatigue fatigue form"
+      "gk def def pm"
+      "pace technique technique pass"
+      "Head str str stamina"
+      "exp exp lead lead"
+      "created created upd upd";
+  }
+  
+  .age { grid-area: age; }
+  .height { grid-area: height; }
+  .weight { grid-area: weight; }
+  .club { grid-area: club; }
+  .country { grid-area: country; }
+  .Position { grid-area: Position; }
+  .value { grid-area: value; }
+  .salary { grid-area: salary; }
+  .bookings { grid-area: bookings; }
+  .injury { grid-area: injury; }
+  .fatigue { grid-area: fatigue; }
+  .form { grid-area: form; }
+  .gk { grid-area: gk; }
+  .def { grid-area: def; }
+  .pm { grid-area: pm; }
+  .pace { grid-area: pace; }
+  .technique { grid-area: technique; }
+  .pass { grid-area: pass; }
+  .Head { grid-area: Head; }
+  .str { grid-area: str; }
+  .stamina { grid-area: stamina; }
+  .upd { grid-area: upd; }
+  .exp { grid-area: exp; }
+  .leadership { grid-area: lead; }
+  .created { grid-area: created; }
+  .fn { grid-area: fn; }
+  .ln { grid-area: ln; }
+  .pot { grid-area: pot; }
+  
