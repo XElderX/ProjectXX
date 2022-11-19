@@ -73,7 +73,7 @@
                         </div>
                         <label for="Town" class="w-96 block text-gray-700 text-sm font-bold mb-2">Town</label>
                         <div class="col-sm-10">
-                            <select name="town_id" id="{{ $club->id . 'a'}}" class="form-control">
+                            <select name="town_id" id="{{ $club->id . 'a' }}" class="form-control">
                                 <option value="{{ $club->town_id }}">
                                     {{ $club->town->town_name ?? '-' }} </option>
 

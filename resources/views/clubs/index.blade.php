@@ -2,7 +2,7 @@
 @section('content')
     <div class="card-body">
         <div class='container-block'>
-            <h2>Towns List </h2>
+            <h2>CLubs List </h2>
             <div>
                 <table style="undefined;table-layout: fixed; width: 220px">
                     <colgroup>
@@ -47,8 +47,8 @@
                                 <td>{{ $club->supporters }}</td>
                                 <td>{{ $club->supporters_mood }}</td>
                                 <td>{{ $club->budget }}</td>
-                                <td><span id='flags'
-                                        class='fi fi-{{ $club->country->flag }}'> </span> {{ $club->country->country }} </td>
+                                <td><span id='flags' class='fi fi-{{ $club->country->flag }}'> </span>
+                                    {{ $club->country->country }} </td>
                                 <td>{{ $club->town->town_name ?? '-' }} </td>
                                 <td>{{ $club->user->username ?? '-' }} </td>
                                 <td>{{ $club->created_at }} </td>
@@ -63,15 +63,14 @@
                                         data-bs-target="#edit{{ $club->id }}">Edit
                                     </button>
                                     @include('clubs.editModal')
-
-            </div>
-        </div>
-        </td>
-        </tr>
-        @endforeach
-        </tbody>
-        </table>
-        {{ $clubs->links() }}
+                                </div>
+                            </div>
+                            </td>
+                            </tr>
+                                @endforeach
+                            </tbody>
+                            </table>
+                                {{ $clubs->links() }}
         <!-- Button trigger modal -->
         <button type="button" class="button" data-bs-toggle="modal" data-bs-target="#addClub">Add club</button>
         @if ($errors->any())
