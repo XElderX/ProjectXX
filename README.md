@@ -68,12 +68,3 @@ This is project XX
 
 #### 2023.02.03
 * Corrected add player form css
-
-
-
-
-
-
-
-
-
