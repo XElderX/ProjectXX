@@ -47,22 +47,22 @@
                         @foreach ($players as $player)
                             <tr>
 
-                             <td>{{$player->id}}</td>
-                                <td>{{$player->first_name}}</td>
-                                <td>{{$player->last_name}}</td>
-                                <td>{{$player->value}}</td>
-                                <td>{{$player->salary}}</td>
-                                <td>{{$player->height}}</td>
-                                <td>{{$player->weight}}</td>
-                                <td>{{$player->age}}</td>
-                                <td>{{$player->injury_days}}</td>
-                                <td>{{$player->fatique}}</td>
-                                <td>{{$player->position}}</td>
-                                <td>{{$player->club_id}}</td>
-                                <td>{{$player->country_id}}</td>
-                                <td>{{$player->created_at}}</td>
-                                <td>{{$player->updated_at}}</td>
-                           
+                                <td>{{ $player->id }}</td>
+                                <td>{{ $player->first_name }}</td>
+                                <td>{{ $player->last_name }}</td>
+                                <td>{{ $player->value }}</td>
+                                <td>{{ $player->salary }}</td>
+                                <td>{{ $player->height }}</td>
+                                <td>{{ $player->weight }}</td>
+                                <td>{{ $player->age }}</td>
+                                <td>{{ $player->injury_days }}</td>
+                                <td>{{ $player->fatique }}</td>
+                                <td>{{ $player->position }}</td>
+                                <td>{{ $player->club_id }}</td>
+                                <td>{{ $player->country_id }}</td>
+                                <td>{{ $player->created_at }}</td>
+                                <td>{{ $player->updated_at }}</td>
+
 
                                 {{-- <td>{{ $player->id }}</td>
                                 <td>{{ $player->first_name }}</td>
@@ -90,8 +90,7 @@
                                     <button type="button" class="button" data-bs-toggle="modal"
                                         data-bs-target="#edit{{ $player->id }}">Edit
                                     </button>
-                                    @include('players.editModalPlayer')
-            </div>
+                                    @include('players.editModalPlayer')</div>
         </div>
         </td>
         </tr>
@@ -101,6 +100,9 @@
         {{ $players->links() }}
         <!-- Button trigger modal -->
         <button type="button" class="button" data-bs-toggle="modal" data-bs-target="#create">Add player</button>
+        <button>
+            <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Back to dashboard</a>
+        </button>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <p><strong>Opps Something went wrong</strong></p>

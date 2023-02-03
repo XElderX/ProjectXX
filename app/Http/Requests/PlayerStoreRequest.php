@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Club;
+use App\Models\Country;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -52,8 +54,8 @@ class PlayerStoreRequest extends FormRequest
             'exp'        => ['required', 'numeric', 'regex:/^\d+(\.\d{1,3})?$/', 'min:0', 'max:11'],
             'lead'       => ['required', 'numeric', 'regex:/^\d+(\.\d{1,3})?$/', 'min:0', 'max:10'],
             'form'       => ['required', 'numeric', 'regex:/^\d+(\.\d{1,3})?$/', 'min:0', 'max:10'],
-            'club_id'    => ['nullable', 'integer'],
-            'country_id' => ['required', 'integer'],
+            'club_id'    => ['nullable', 'integer', Rule::exists(Club::TABLE_NAME, 'id')],
+            'country_id' => ['required', 'integer', Rule::exists(Country::TABLE_NAME, 'id')],
 
         ];
     }

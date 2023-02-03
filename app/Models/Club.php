@@ -24,6 +24,8 @@ class Club extends Model
         self::MOOD_DREAMIOUS
     ];
 
+    public const TABLE_NAME = 'clubs';
+
     protected $fillable = [
         'club_name',
         'club_rating_points',

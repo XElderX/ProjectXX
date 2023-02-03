@@ -20,9 +20,6 @@
     align-items: center;
     justify-content: center;
 }
-
-
-
 .user-block {
     background-color: grey;
     margin: 0.5rem;
@@ -132,3 +129,14 @@ background-repeat: no-repeat;
   .ln { grid-area: ln; }
   .pot { grid-area: pot; }
   
+  .fieldDiv { 
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .playerAdd {
+    display: flex;
+    flex-direction: column;
+    width:100%;
+  }

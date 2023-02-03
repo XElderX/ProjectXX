@@ -135,6 +135,9 @@
         <button type="button" class="button" data-bs-toggle="modal" data-bs-target="#add">
             add
         </button>
+        <button>
+            <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Back to dashboard</a>
+        </button>
 
         @if ($errors->any())
             <div class="alert alert-danger">
