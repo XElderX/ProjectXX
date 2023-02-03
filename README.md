@@ -57,9 +57,14 @@ This is project XX
 * updated club migration changing foreignt keys constrains now user_id and town_id can be nullable
 * Using JS implemented dynamic dependenced dropdown for country->town selection 
 
+#### 2022.11.19
 
+* added blade templates for Player model
+* implemented it add, delete, update methods, request validation
 
+#### 2023.01.23
 
+* added back to dashboard button on each index blade to navigate back to dashboard page.
 
-
-
+#### 2023.02.03
+* Corrected add player form css

@@ -44,10 +44,15 @@
                             <button class="button">
                                 <a href="{{ route('clubs') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Clubs</a>
                             </button>
+                            <button class="button">
+                                <a href="{{ route('players') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Players</a>
+                            </button>
                         </div>
+                        @if (!Auth::user())
                         <button>
                             <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
                         </button>
+                        @endif
                     @endif
                 </div>
             </div>
