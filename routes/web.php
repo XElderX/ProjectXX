@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\NameSurnameController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\TownController;
 use App\Http\Controllers\UserController;
@@ -71,6 +72,19 @@ Route::controller(PlayerController::class)->group(function () {
     Route::post('players', 'store')->middleware('auth')->name('players.store');
     Route::get('players/{id}', 'destroy')->middleware('auth')->name('player.delete');
     Route::post('players/edit/{id}', 'update')->middleware('auth')->name('player.update');
+    // Route::post('clubs/dynamic', 'fetch')->middleware('auth')->name('club.fetch');
+    // Route::get('users/{uuid}', 'show')->middleware('auth')->name('users.show');
+    // Route::get('users/ban/{uuid}', 'disable')->middleware('auth')->name('users.ban');
+});
+
+Route::controller(NameSurnameController::class)->group(function () {
+    Route::get('name-surname', 'index')->middleware('auth')->name('nameSurname');
+    Route::post('store-name', 'storeName')->middleware('auth')->name('names.store');
+    Route::post('store-surname', 'storeSurname')->middleware('auth')->name('surnames.store');
+    Route::get('delete-name/{id}', 'destroyName')->middleware('auth')->name('name.delete');
+    Route::get('delete-surname/{id}', 'destroySurname')->middleware('auth')->name('surname.delete');
+    Route::post('name/edit/{id}', 'updateName')->middleware('auth')->name('name.update');
+    Route::post('surname/edit/{id}', 'updateSurname')->middleware('auth')->name('surname.update');
     // Route::post('clubs/dynamic', 'fetch')->middleware('auth')->name('club.fetch');
     // Route::get('users/{uuid}', 'show')->middleware('auth')->name('users.show');
     // Route::get('users/ban/{uuid}', 'disable')->middleware('auth')->name('users.ban');

@@ -68,3 +68,10 @@ This is project XX
 
 #### 2023.02.03
 * Corrected add player form css
+* Names and surnames tables created
+* Names and surnames controllers created
+* NamesSurnames blades created
+
+#### 2023.02.12
+* added validation for names and surnames form requests
+* implemented filter to filter results by country;

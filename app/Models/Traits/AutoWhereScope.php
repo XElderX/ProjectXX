@@ -2,8 +2,6 @@
 
 namespace App\Models\Traits;
 
-use DB;
-use App\Models\Merchant;
 
 trait AutoWhereScope
 {
@@ -55,10 +53,4 @@ trait AutoWhereScope
         return strpos($param, '_uuid') !== false;
     }
 
-    // private function whereHasmerchant($query, string $uuid)
-    // {
-    //     return $query->where("merchant_id", function ($query) use ($uuid) {
-    //         $query->select('id')->from(Merchant::TABLE_NAME)->where('uuid', $uuid);
-    //     });
-    // }
 }
