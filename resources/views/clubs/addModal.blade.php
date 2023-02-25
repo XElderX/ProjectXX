@@ -83,8 +83,7 @@
                                 <select name="town_id" id="newa"
                                     class="form-control">
                                     <option value="" disabled selected>
-                                        Select Town </option>
-                                       
+                                        Select Town </option>              
                                         @foreach (App\Http\Controllers\ClubController::getTowns($club->country->id) as $town)
                                         
                                         <option value="{{ $town->id }}"> 
@@ -93,7 +92,6 @@
                                             @if ( ($club->town->id ?? null) !==null )
                                             <option value=""> 
                                                 -</option>
-                                            
                                         @endif
                                         </select>
                                     </div>

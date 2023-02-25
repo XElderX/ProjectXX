@@ -18,18 +18,12 @@
                         <br>
                     </div>
                     <div>
-                        {{-- @foreach (Auth::user()->logins as $key => $val)
 
-                        {{$key}} . {{$val}}
-                            
-                        @endforeach --}}
-                        {{-- {{array_key_first(Auth::user()->logins)}} --}}
-                        {{-- {{array_shift((Auth::user()->logins))}} --}}
                         @if (Auth::user()->logins !== null)
                             <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[0]) }}
                             </div>
                         @else
-                        <div> first login </div>
+                            <div> first login </div>
                         @endif
                     </div>
                     @if (Auth::user()->role === 'admin')

@@ -79,4 +79,8 @@ This is project XX
 #### 2023.02.12
 
 * HOTfix fixed bug where checking user last   logins showing viewing user logins instead specific user that to be checked;
-* HOTfix  when new user register and logged for first time app crashes becouse of no last logins records;
+* HOTfix when new user register and logged for first time app crashes becouse of no last logins records;
+* Updated update modal for names and surname that now can select from dropdown list;
+* fixed bug in update surname modal;
+* General code sorting(removed commented lines);
+

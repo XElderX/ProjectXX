@@ -63,8 +63,6 @@
                 <button type="submit" class="button">Select</button>
               </form>
             </div>
-                  {{-- <button> <a href="{{ route('nameSurname') }}?country={{$country_id}}" class="text-sm text-gray-700 dark:text-gray-500 underline">Back to dashboard</a>
-                  </button>     --}}
                 </div>
             <div class="flex-item">surnames
                 <table>

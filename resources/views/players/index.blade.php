@@ -62,21 +62,6 @@
                                 <td>{{ $player->country_id }}</td>
                                 <td>{{ $player->created_at }}</td>
                                 <td>{{ $player->updated_at }}</td>
-
-
-                                {{-- <td>{{ $player->id }}</td>
-                                <td>{{ $player->first_name }}</td>
-                                <td>{{ $player->last_name }}</td>
-                                <td>{{ $player->value }}</td>
-                                <td>{{ $player->salary }}</td>
-                                <td>{{ $player->height }}</td>
-                                <td>{{ $player->budget }}</td>
-                                <td><span id='flags' class='fi fi-{{ $player->country->flag }}'> </span>
-                                    {{ $player->country->country }} </td>
-                                <td>{{ $player->town->town_name ?? '-' }} </td>
-                                <td>{{ $player->user->username ?? '-' }} </td>
-                                <td>{{ $player->created_at }} </td>
-                                <td>{{ $player->updated_at }} </td> --}}
                                 <!-- Button trigger deletion modal -->
                                 <td>
                                     <button type="button" class="button" data-bs-toggle="modal"
