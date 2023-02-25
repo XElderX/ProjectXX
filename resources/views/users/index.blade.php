@@ -87,11 +87,12 @@
                                                             </div>
                                                             <div class="user-block">
                                                                 <h3>Last 20 loggin </h3>
-
-                                                                @foreach (Auth::user()->logins as $key => $val)
+                                                                @if ($user->logins !== null)
+                                                                @foreach ($user->logins as $key => $val)
                                                                     <div class='text'>{{ $key + 1 }} .
                                                                         {{ str_replace('~', ' from ', $val) }}</div>
-                                                                @endforeach
+                                                                @endforeach            
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>

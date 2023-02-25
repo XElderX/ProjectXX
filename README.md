@@ -73,5 +73,10 @@ This is project XX
 * NamesSurnames blades created
 
 #### 2023.02.12
-* added validation for names and surnames form requests
+* added validation for names and surnames form requests;
 * implemented filter to filter results by country;
+
+#### 2023.02.12
+
+* HOTfix fixed bug where checking user last   logins showing viewing user logins instead specific user that to be checked;
+* HOTfix  when new user register and logged for first time app crashes becouse of no last logins records;
