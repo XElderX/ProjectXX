@@ -129,8 +129,6 @@
                     </tbody>
                 </table>
         {{ $countries->links() }}
-
-
         <!-- Button trigger modal -->
         <button type="button" class="button" data-bs-toggle="modal" data-bs-target="#add">
             add

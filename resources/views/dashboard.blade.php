@@ -18,16 +18,13 @@
                         <br>
                     </div>
                     <div>
-                        {{-- @foreach (Auth::user()->logins as $key => $val)
 
-                        {{$key}} . {{$val}}
-                            
-                        @endforeach --}}
-                        {{-- {{array_key_first(Auth::user()->logins)}} --}}
-                        {{-- {{array_shift((Auth::user()->logins))}} --}}
-                        <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[0]) }}
-                        </div>
-
+                        @if (Auth::user()->logins !== null)
+                            <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[0]) }}
+                            </div>
+                        @else
+                            <div> first login </div>
+                        @endif
                     </div>
                     @if (Auth::user()->role === 'admin')
                         <div class='adminPanel'>
@@ -39,19 +36,28 @@
                                 <a href="{{ route('national') }}">Countries</a>
                             </button>
                             <button class="button">
-                                <a href="{{ route('towns') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Towns</a>
+                                <a href="{{ route('towns') }}"
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Towns</a>
                             </button>
                             <button class="button">
-                                <a href="{{ route('clubs') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Clubs</a>
+                                <a href="{{ route('clubs') }}"
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Clubs</a>
                             </button>
                             <button class="button">
-                                <a href="{{ route('players') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Players</a>
+                                <a href="{{ route('players') }}"
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Players</a>
+                            </button>
+                            <button class="button">
+                                <a href="{{ route('nameSurname') }}"
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Names and Surnames
+                                    pools</a>
                             </button>
                         </div>
                         @if (!Auth::user())
-                        <button>
-                            <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
-                        </button>
+                            <button>
+                                <a href="{{ route('login') }}"
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+                            </button>
                         @endif
                     @endif
                 </div>

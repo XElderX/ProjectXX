@@ -76,7 +76,6 @@
                             <select name="town_id" id="{{ $club->id . 'a' }}" class="form-control">
                                 <option value="{{ $club->town_id }}">
                                     {{ $club->town->town_name ?? '-' }} </option>
-
                                 @foreach (App\Http\Controllers\ClubController::getTowns($club->country->id) as $town)
                                     @if ($town->id === ($club->town->id ?? null))
                                         @continue

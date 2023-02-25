@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TownStoreRequest;
 use App\Models\Country;
 use App\Models\Town;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
+
 
 class TownController extends Controller
 {
