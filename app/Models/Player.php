@@ -26,7 +26,6 @@ class Player extends Model
     ];
 
     protected $fillable = [
-        
         'first_name',
         'last_name',
         'value',
@@ -55,13 +54,15 @@ class Player extends Model
         'form',
         'club_id',
         'country_id',
-
     ];
 
-    public function club(){
+    public function club()
+    {
         return $this->belongsTo(Club::class);
     }
-    public function country(){
+
+    public function country()
+    {
         return $this->belongsTo(Country::class);
     }
 

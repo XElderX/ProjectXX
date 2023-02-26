@@ -31,7 +31,6 @@
                     </div>    
                     </div>
                     <div class="fieldDiv">
-
                         <label for="Popularity" class="w-96 block text-gray-700 text-sm font-bold mb-2">Popularity:</label>
                         <div class="">
                             <select class="form-control" name="popularity">

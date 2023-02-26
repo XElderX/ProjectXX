@@ -84,3 +84,8 @@ This is project XX
 * fixed bug in update surname modal;
 * General code sorting(removed commented lines);
 
+* added blade index file with form;
+* update players controller adding new method to generate player;
+* created a new Service file for processing request for generating new random player;
+* added methods in service file; 
+

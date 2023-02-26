@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GeneratePlayerRequest;
 use App\Http\Requests\PlayerStoreRequest;
-use App\Models\Club;
+use App\Models\Country;
 use App\Models\Player;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
+use App\Services\PlayerServices\GeneratePlayerService;
 
 class PlayerController extends Controller
 {
@@ -67,5 +67,23 @@ class PlayerController extends Controller
 
         $player->delete();
         return redirect()->route('players')->with('status_success', 'Player ID- ' . $player->id . ' was deleted.');
+    }
+
+    public function generateIndex()
+    {
+        return view(
+            'players.generator.index',
+            [
+                'positions' => Player::PLAYER_POSITIONS,
+                'countries' => Country::get()
+            ]
+        );
+    }
+
+    public function generatePlayer(GeneratePlayerRequest $request, GeneratePlayerService $generatePlayerService)
+    {
+        $generatePlayerService->processRequest($request);
+
+
     }
 }

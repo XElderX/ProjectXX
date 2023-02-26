@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 boxx">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     You're logged in!
@@ -17,8 +17,7 @@
                         <div style="float:right">Your account role is {{ Auth::user()->role }} </div>
                         <br>
                     </div>
-                    <div>
-
+                    <div class="loginBlock">
                         @if (Auth::user()->logins !== null)
                             <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[0]) }}
                             </div>
@@ -26,7 +25,15 @@
                             <div> first login </div>
                         @endif
                     </div>
-                    @if (Auth::user()->role === 'admin')
+                        @if (!Auth::user())
+                            <button>
+                                <a href="{{ route('login') }}"
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+                            </button>
+                        @endif             
+                </div>
+            </div>
+            @if (Auth::user()->role === 'admin')
                         <div class='adminPanel'>
                             <h5>Admin panel </h5>
                             <button class="button">
@@ -52,16 +59,12 @@
                                     class="text-sm text-gray-700 dark:text-gray-500 underline">Names and Surnames
                                     pools</a>
                             </button>
-                        </div>
-                        @if (!Auth::user())
-                            <button>
-                                <a href="{{ route('login') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+                            <button class="button">
+                                <a href="{{ route('generator') }}"
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Generate players</a>
                             </button>
-                        @endif
+                        </div>
                     @endif
-                </div>
-            </div>
         </div>
     </div>
 </x-app-layout>

@@ -56,7 +56,6 @@ class PlayerStoreRequest extends FormRequest
             'form'       => ['required', 'numeric', 'regex:/^\d+(\.\d{1,3})?$/', 'min:0', 'max:10'],
             'club_id'    => ['nullable', 'integer', Rule::exists(Club::TABLE_NAME, 'id')],
             'country_id' => ['required', 'integer', Rule::exists(Country::TABLE_NAME, 'id')],
-
         ];
     }
 }
