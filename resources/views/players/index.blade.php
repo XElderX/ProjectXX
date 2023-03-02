@@ -46,7 +46,6 @@
                     <tbody class='tableBody'>
                         @foreach ($players as $player)
                             <tr>
-
                                 <td>{{ $player->id }}</td>
                                 <td>{{ $player->first_name }}</td>
                                 <td>{{ $player->last_name }}</td>
@@ -76,33 +75,38 @@
                                         data-bs-target="#edit{{ $player->id }}">Edit
                                     </button>
                                     @include('players.editModalPlayer')</div>
-        </div>
-        </td>
-        </tr>
-        @endforeach
-        </tbody>
-        </table>
-        {{ $players->links() }}
-        <!-- Button trigger modal -->
-        <button type="button" class="button" data-bs-toggle="modal" data-bs-target="#create">Add player</button>
-        <button>
-            <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Back to dashboard</a>
-        </button>
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <p><strong>Opps Something went wrong</strong></p>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            @elseif(session()->has('status_success'))
-                <div class="alert alert-success">
-                    {{ session()->get('status_success') }}
+                                </div>
+                            </td>
+                        </tr>
+                            @endforeach
+                        </tbody>
+                        </table>
+                            {{ $players->links() }}
+                            <!-- Button trigger modal -->
+                            <button type="button" class="button" data-bs-toggle="modal" data-bs-target="#create">Add player</button>
+                            <button type="button" class="button">
+                                <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500">Back to dashboard</a>
+                            </button>
+                            <button type="button" class="button" data-bs-toggle="modal"
+                             data-bs-target="#clear" style="float:left; background-color:rgb(255,56,0);
+                              margin-right:50%; color:gold; border-radius:10px; border:2px solid rgb(49, 44, 13)">Delete ALL players
+                            </button>
+                            @include('players.clearAllPlayersModal')
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                        <p><strong>Opps Something went wrong</strong></p>
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                    </ul>
+                                    @elseif(session()->has('status_success'))
+                                        <div class="alert alert-success">
+                                            {{ session()->get('status_success') }}
+                                    </div>
+                            @endif
+                            @include('players.createModalPlayer')
                 </div>
-        @endif
-        @include('players.createModalPlayer')
-    </div>
-    </div>
+        </div>
     </div>
 @endsection

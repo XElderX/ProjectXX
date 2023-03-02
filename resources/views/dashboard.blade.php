@@ -19,7 +19,7 @@
                     </div>
                     <div class="loginBlock">
                         @if (Auth::user()->logins !== null)
-                            <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[0]) }}
+                            <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[1]) }}
                             </div>
                         @else
                             <div> first login </div>
@@ -61,7 +61,7 @@
                             </button>
                             <button class="button">
                                 <a href="{{ route('generator') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Generate players</a>
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Generate players/teams</a>
                             </button>
                         </div>
                     @endif

@@ -14,13 +14,13 @@ class GeneratePlayerService
     public function processRequest($request)
     {
         if ($request->type === '1') {
-            return $this->generatePlayerProcess->process($request);
+            return $this->generatePlayerProcess->process($request->type, $request);
         }
         if ($request->type === '2') {
-            return $this->generatePlayerProcess->process($request);
+            return $this->generatePlayerProcess->process($request->type, $request);
         }
         if ($request->type === '3') {
-            return $this->generatePlayerProcess->process($request);
+            return $this->generatePlayerProcess->process($request->type, $request);
         }
         throw new \Exception('Unable to generate player ');
     }

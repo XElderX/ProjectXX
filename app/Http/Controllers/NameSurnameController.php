@@ -18,12 +18,22 @@ class NameSurnameController extends Controller
      */
     public function index()
     {
-        // dd(request()->query());
+        // Check for search input
+        if (request('search')) {
+            $name = Name::where('name', 'like', '%' . request('search') . '%')->autoWhere()->with('country')->paginate(10);
+            $surname = Surname::where('surname', 'like', '%' . request('search') . '%')->autoWhere()->with('country')->paginate(10);
+            $search = true;
+        } else {
+            $name = Name::autoWhere()->with('country')->orderby('name')->paginate(10);
+            $surname = Surname::autoWhere()->with('country')->orderby('surname')->paginate(10);
+            $search = false;
+        }
         return view(
             'namesSurnames.index',
             [
-                'names'     => Name::autoWhere()->with('country')->orderby('country_id')->paginate(10),
-                'surnames'  => Surname::autoWhere()->with('country')->orderby('country_id')->paginate(10),
+                'search'    => $search,
+                'names'     => $name,
+                'surnames'  => $surname,
                 'countries' => Country::all(),
             ]
         );
@@ -38,7 +48,7 @@ class NameSurnameController extends Controller
     public function storeName(NameStoreRequest $request)
     {
         $name = Name::create([
-            'name'      => ucfirst($request->name),
+            'name'       => ucfirst(mb_strtolower($request->name, 'UTF-8')),
             'country_id' => $request->country_id,
             'popularity' => (int) $request->popularity,
         ]);
@@ -55,7 +65,7 @@ class NameSurnameController extends Controller
     public function storeSurname(SurnameStoreRequest $request)
     {
         $surname = Surname::create([
-            'surname'    => ucfirst($request->surname),
+            'surname'    => ucfirst(mb_strtolower($request->surname, 'UTF-8')),
             'country_id' => $request->country_id,
             'popularity' => (int) $request->popularity,
         ]);

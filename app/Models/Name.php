@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Traits\AutoLikeScope;
 use App\Models\Traits\AutoWhereScope;
 use App\Models\Traits\AutoWithScope;
+use App\Models\Traits\SearchScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +14,8 @@ class Name extends Model
     use HasFactory;
     use AutoWhereScope;
     use AutoWithScope;
+    use SearchScope;
+    use AutoLikeScope;
 
     public const TABLE_NAME = 'names';
 

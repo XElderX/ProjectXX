@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('content')
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
+
 <div class='main'> 
-    
     <div class='mainItem'>
         @if ($errors->any())
         <div class="alert alert-danger">
@@ -30,7 +31,7 @@
                     <label for="type"
                         class="w-96 block text-gray-700 text-sm font-bold mb-2">Type:</label>
                     <div class="">
-                        <select class="" name="type">
+                        <select class="" name="type" id="selectt">
                             
                             <option value="1">1 - Player</option>
                             <option value="2">2 - Youth player</option>
@@ -51,6 +52,15 @@
                                 </select>
                             </div>                   
                     </div>    
+                    <div class="fieldDiv">
+                        <div>
+                        <label for="quality"
+                            class="w-96 block text-gray-700 text-sm font-bold mb-2">Youth Quality</label>
+                        </div>
+                        <div class="inputItem">
+                                <input type="text" name="quality" class="" id="quality">
+                        </div>
+                    </div>
 
                     <div class="fieldDiv">
                         <div>
@@ -94,7 +104,7 @@
             
             
     <div class='mainItem'>
-        
+
          @if ($errors->any())
         <div class="alert alert-danger">
             <p><strong>Opps Something went wrong</strong></p>
@@ -112,4 +122,17 @@
     </div>
     
 </div>
+
+<script type="text/javascript">
+$('#selectt').on('change', function(e) {
+    // get the selected value
+    let val = $(this).val();
+    if (val != 2) {
+    $("#quality").attr("disabled", "disabled");
+  } else {
+    $("#quality").removeAttr("disabled");
+  }
+}).trigger("change");
+</script>
+
 @endsection

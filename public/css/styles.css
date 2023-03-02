@@ -1,9 +1,12 @@
-select, input{
+select, input {
     width:200px;
     box-sizing:border-box;
     border-radius:5px; 
   }
 
+  input:disabled {
+    background: #dddddd;
+  }
 /* dashboard */
 .boxx {
     display:flex;
@@ -69,6 +72,8 @@ select, input{
     color: #000;
     text-decoration: none;
     font-family: sans-serif;
+    max-width:200px;
+    margin: 0.2em;
 }
 
 .button:active {
@@ -263,10 +268,22 @@ select, input{
 
 }
 .inputItem input {
-   
     
 }
 .title {
     text-align: center;
     margin:0.5em;
+}
+.playershow {
+    background-color: rgb(140,158,94, 0.5);
+    padding:0.5em;
+    border:1px solid rgb(140,158,94, 0.9);
+    border-radius: 10px;
+    margin: 5em, auto;
+}
+.optionBlock {
+    margin:0.5em;
+}
+.formBlock {
+    padding:0.6em;
 }

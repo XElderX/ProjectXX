@@ -344,7 +344,9 @@ class BasePlayerProcessService
     {
         $favouritePosition = $this->favPosition($position);
 
-        if ($favouritePosition[$skill] <= 0.1) {
+        if ($favouritePosition[$skill] == 0) {
+            return mt_rand(1, 50000) / 10000;
+        } elseif ($favouritePosition[$skill] <= 0.1) {
             return mt_rand(20000, 100000) / 10000;
         } elseif ($favouritePosition[$skill] <= 0.2) {
             return mt_rand(30000, 130000) / 10000;
@@ -358,6 +360,8 @@ class BasePlayerProcessService
             return mt_rand(70000, 210000) / 10000;
         } elseif ($favouritePosition[$skill] <= 0.7) {
             return mt_rand(80000, 230000) / 10000;
+        } else {
+            return mt_rand(1, 50000) / 10000;
         }
     }
 
@@ -366,7 +370,8 @@ class BasePlayerProcessService
         $skillValue = [
             'gk' => 500, 'def' => 350, 'pm' => 300,
             'pace' => 200, 'tech' => 200, 'pass' => 200,
-            'heading' => 200, 'str' => 350, 'stamina' => 100
+            'heading' => 200, 'str' => 350, 'stamina' => 100,
+            'lead' => 150, 'exp' => 200
         ];
         $salary = 0;
 
@@ -379,6 +384,35 @@ class BasePlayerProcessService
             return round($salary * 0.6);
         } elseif ($player->age < 21) {
             return round($salary * 0.8);
+        } else return round($salary);
+    }
+
+    protected function valueResolver ($player): int 
+    {
+        $skillValue = [
+            'gk' => 37500, 'def' => 30000, 'pm' => 26250,
+            'pace' => 20500, 'tech' => 20500, 'pass' => 20500,
+            'heading' => 20500, 'str' => 30000, 'stamina' => 10000,
+            'lead' => 8000, 'exp' => 10000, 'form' => 8000
+        ];
+
+        $playerValue = 0;
+
+        foreach ($skillValue as $key => $value) {
+            $playerLvl = floor($player->$key * 100) / 100; 
+            for ($i=0; $i <= $playerLvl; $i++) { 
+                $playerValue += ( $value * $i);
+            }
         }
+
+        if ($player->age < 16) {
+            return round($playerValue * 1.5);
+        } elseif ($player->age < 18) {
+            return round($playerValue * 1.3);
+        } elseif ($player->age < 21) {
+            return round($playerValue * 1.15);
+        } elseif ($player->age > 30) {
+            return round($playerValue * 0.8);
+        } else return round($playerValue);
     }
 }
