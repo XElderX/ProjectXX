@@ -98,7 +98,5 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('users')->with('status_success', 'disabled');
-
-        // return view('users.show', ['user' => $user]);
     }
 }

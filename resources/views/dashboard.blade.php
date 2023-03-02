@@ -61,7 +61,7 @@
                             </button>
                             <button class="button">
                                 <a href="{{ route('generator') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Generate players/teams</a>
+                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Generate players</a>
                             </button>
                         </div>
                     @endif

@@ -3,9 +3,7 @@
 namespace App\Services\PlayerServices\GeneratePlayerTemplates;
 
 use App\Models\Country;
-use App\Models\Name;
 use App\Models\Player;
-use App\Models\Surname;
 use App\Services\PlayerServices\BasePlayerProcessService;
 use Exception;
 
@@ -115,6 +113,5 @@ class GeneratePlayerProcess extends BasePlayerProcessService
             $this->youthModifieder = $qualityBoost;
             $this->player->$value = round($this->resolveSkill($this->player->position, $this->player->age, $value), 3) * $qualityBoost;
         }
-
     }
 }

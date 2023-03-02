@@ -47,7 +47,4 @@
         </button>
     </div>
 </div>
-
-
-
 @endsection
