@@ -18,6 +18,10 @@ class Player extends Model
     public const POSITION_AM = 'att_midfield';// def 5%; pace 15% pass 30% tech 20% head 5% pm 20% stri 5%
     public const POSITION_STR = 'striker'; //def 0; pace 25%; pass 5%; tech 15%; head 20%; pm 0; stri 35% 
 
+    public const TYPE_PLAYER = 'player';
+    public const TYPE_YOUTH = 'youth';
+    public const TYPE_TRAINER = 'coach';
+
     public const PLAYER_POSITIONS = [
         self::POSITION_GK, self::POSITION_DEF,
         self::POSITION_DEF_WING, self::POSITION_MID_WING, 
@@ -25,8 +29,12 @@ class Player extends Model
         self::POSITION_AM, self::POSITION_STR, 
     ];
 
+    public const NPC_TYPES = [
+        self::TYPE_PLAYER, self::TYPE_YOUTH,
+        self::TYPE_TRAINER
+    ];
+
     protected $fillable = [
-        
         'first_name',
         'last_name',
         'value',
@@ -55,13 +63,15 @@ class Player extends Model
         'form',
         'club_id',
         'country_id',
-
     ];
 
-    public function club(){
+    public function club()
+    {
         return $this->belongsTo(Club::class);
     }
-    public function country(){
+
+    public function country()
+    {
         return $this->belongsTo(Country::class);
     }
 

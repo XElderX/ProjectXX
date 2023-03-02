@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GeneratePlayerRequest;
 use App\Http\Requests\PlayerStoreRequest;
-use App\Models\Club;
+use App\Models\Country;
 use App\Models\Player;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
+use App\Services\PlayerServices\GeneratePlayerService;
 
 class PlayerController extends Controller
 {
@@ -25,7 +25,7 @@ class PlayerController extends Controller
             ]
         );
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -36,10 +36,10 @@ class PlayerController extends Controller
     public function store(PlayerStoreRequest $request)
     {
         $player = Player::create($request->all());
-        
+
         return redirect()->route('players')->with('status_success', 'Player ID-' . $player->id . ' was updated successfully.');
     }
-        /**
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -55,10 +55,10 @@ class PlayerController extends Controller
         return redirect()->route('players')->with('status_success', 'Player ID-' . $player->id . ' was updated successfully.');
     }
 
-        /**
+    /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Player  $player
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -67,5 +67,55 @@ class PlayerController extends Controller
 
         $player->delete();
         return redirect()->route('players')->with('status_success', 'Player ID- ' . $player->id . ' was deleted.');
+    }
+
+    public function generateIndex()
+    {
+        return view(
+            'players.generator.index',
+            [
+                'positions' => Player::PLAYER_POSITIONS,
+                'countries' => Country::get()
+            ]
+        );
+    }
+
+    public function generatePlayer(GeneratePlayerRequest $request, GeneratePlayerService $generatePlayerService)
+    {
+        if ($player = $generatePlayerService->processRequest($request)) {
+            $id = $player->id;
+
+            return redirect()->route('genPlayer', $id)->with('status_success', 'Player ID-' . $player->id . ' was generated successfully.');
+            // return $this->success('Success');
+
+        }
+        return $this->error('Failed to generate a player.');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Player  $player
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $player = Player::where('id', '=', $id)->firstOrFail();
+
+        return view('players.show', ['player' => $player]);
+    }
+
+    /**
+     * Deletes entire table
+     *
+     * @param  \App\Models\Player  $player
+     * @return \Illuminate\Http\Response
+     */
+    public function clear($value)
+    {
+        if ($value == 'all') {
+            Player::truncate(); // Delete all records from the "players" table
+            return redirect()->back()->with('status_success', 'All players have been deleted.');
+        }
     }
 }

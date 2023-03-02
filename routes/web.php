@@ -62,7 +62,11 @@ Route::controller(PlayerController::class)->group(function () {
     Route::get('players', 'index')->middleware('auth')->name('players');
     Route::post('players', 'store')->middleware('auth')->name('players.store');
     Route::get('players/{id}', 'destroy')->middleware('auth')->name('player.delete');
+    Route::get('players/clear/{value}', 'clear')->middleware('auth')->name('player.clear');
     Route::post('players/edit/{id}', 'update')->middleware('auth')->name('player.update');
+    Route::get('generator', 'generateIndex')->middleware('auth')->name('generator');
+    Route::post('player-generator', 'generatePlayer')->middleware('auth')->name('playerGenerator');
+    Route::get('generated-player/{id}', 'show')->middleware('auth')->name('genPlayer');
 });
 
 Route::controller(NameSurnameController::class)->group(function () {
@@ -74,7 +78,6 @@ Route::controller(NameSurnameController::class)->group(function () {
     Route::post('name/edit/{id}', 'updateName')->middleware('auth')->name('name.update');
     Route::post('surname/edit/{id}', 'updateSurname')->middleware('auth')->name('surname.update');
 });
-
 // Route::get('users', function() {
 //     return view('users.index');
 

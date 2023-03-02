@@ -1,15 +1,32 @@
+select, input {
+    width:200px;
+    box-sizing:border-box;
+    border-radius:5px; 
+  }
+
+  input:disabled {
+    background: #dddddd;
+  }
 /* dashboard */
-
+.boxx {
+    display:flex;
+   
+}
 .adminPanel {
-
-    display: block;
+    display: flex;
+    flex-direction: column;
+    width:20%;
     background-color: rgb(203, 65, 84);
-    padding: 0.5rem;
+    padding: 1rem;
+    margin-left: 1rem;
     border: 3px solid rgb(145, 163, 176);
 }
 
 .adminPanel h5 {
     text-align: center;
+}
+.loginBlock{
+    margin-right: 12rem;
 }
 
 /* show */
@@ -55,6 +72,8 @@
     color: #000;
     text-decoration: none;
     font-family: sans-serif;
+    max-width:200px;
+    margin: 0.2em;
 }
 
 .button:active {
@@ -230,4 +249,41 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+/* generator */
+.main {
+    display:flex;
+    justify-content: center;
+    margin: 2em;
+    padding: 2em;
+}
+.mainItem {
+    width:30%;
+    border:2px solid rgb(203,65,84);
+    border-radius: 10px;
+    padding: 1em;
+    margin:auto;
+}
+.generateForm {
+
+}
+.inputItem input {
+    
+}
+.title {
+    text-align: center;
+    margin:0.5em;
+}
+.playershow {
+    background-color: rgb(140,158,94, 0.5);
+    padding:0.5em;
+    border:1px solid rgb(140,158,94, 0.9);
+    border-radius: 10px;
+    margin: 5em, auto;
+}
+.optionBlock {
+    margin:0.5em;
+}
+.formBlock {
+    padding:0.6em;
 }

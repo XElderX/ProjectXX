@@ -76,11 +76,29 @@ This is project XX
 * added validation for names and surnames form requests;
 * implemented filter to filter results by country;
 
-#### 2023.02.12
+#### 2023.02.26
 
 * HOTfix fixed bug where checking user last   logins showing viewing user logins instead specific user that to be checked;
 * HOTfix when new user register and logged for first time app crashes becouse of no last logins records;
 * Updated update modal for names and surname that now can select from dropdown list;
 * fixed bug in update surname modal;
 * General code sorting(removed commented lines);
+
+* added blade index file with form;
+* update players controller adding new method to generate player;
+* created a new Service file for processing request for generating new random player;
+* added methods in service file; 
+
+#### 2023.02.27
+
+* updated generate player form, (youth quality field added);
+* added JQuery for disabling youth quality field if generating type is not youth selected;
+* updated generate player service, youth player generating logic implemented;
+* added button in player blade and implemented its metod 'clear' to truncate all records from table - players in database; 
+* Fixed bug when after loged in showin most recent login instead one before;
+
+#### 2023.02.28
+
+* changes in namesSurnames controller - now corecting inputed value to first uppercase and rest to lowercase letters;
+* added search in names surnames;
 

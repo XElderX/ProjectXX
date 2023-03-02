@@ -28,7 +28,7 @@
                                     <option value="{{ $surname->country_id }}">
                                         {{ $surname->country->country }} </option>
                                     @foreach ($countries as $country)
-                                        @if ($country->id === $name->country_id)
+                                        @if ($country->id === $surname->country_id)
                                             @continue
                                         @endif
                                         <option value="{{ $country->id }}">
