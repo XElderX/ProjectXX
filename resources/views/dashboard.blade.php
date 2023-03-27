@@ -44,25 +44,29 @@
                             </button>
                             <button class="button">
                                 <a href="{{ route('towns') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Towns</a>
+                                    class="text-sm text-gray-700 dark:text-gray-500">Towns</a>
                             </button>
                             <button class="button">
                                 <a href="{{ route('clubs') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Clubs</a>
+                                    class="text-sm text-gray-700 dark:text-gray-500">Clubs</a>
                             </button>
                             <button class="button">
                                 <a href="{{ route('players') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Players</a>
+                                    class="text-sm text-gray-700 dark:text-gray-500">Players</a>
                             </button>
                             <button class="button">
                                 <a href="{{ route('nameSurname') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Names and Surnames
+                                    class="text-sm text-gray-700 dark:text-gray-500">Names and Surnames
                                     pools</a>
                             </button>
                             <button class="button">
                                 <a href="{{ route('generator') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Generate players</a>
+                                    class="text-sm text-gray-700 dark:text-gray-500">Generate Players/Teams</a>
                             </button>
+                            {{-- <button class="button">
+                                <a href="{{ route('generator-teams') }}"
+                                    class="text-sm text-gray-700 dark:text-gray-500">Generate Teams</a>
+                            </button> --}}
                         </div>
                     @endif
         </div>

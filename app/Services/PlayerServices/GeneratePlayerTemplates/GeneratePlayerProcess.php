@@ -28,7 +28,7 @@ class GeneratePlayerProcess extends BasePlayerProcessService
         $this->repeat = false;
     }
 
-    public function process($type, $data)
+    public function process(string $type, $data)
     {
         try {
             $this->player->club_id = $data->club_id;
@@ -83,9 +83,9 @@ class GeneratePlayerProcess extends BasePlayerProcessService
         $this->player->salary = $this->salaryResolver($this->player);
         $this->player->value = $this->valueResolver($this->player);
         } catch (Exception $e) {
-            throw new \Exception("error generatin a player");
+            dd($e);
+            throw new \Exception("Error generatin a player");
         }
-        $this->player->save();
         return $this->player;
     }
 
@@ -103,7 +103,6 @@ class GeneratePlayerProcess extends BasePlayerProcessService
         // $this->player->heading = round($this->resolveSkill($this->player->position, $this->player->age, 'heading'), 3);
         // $this->player->str = round($this->resolveSkill($this->player->position, $this->player->age, 'str'), 3);
         // $this->player->stamina = round($this->resolveSkill($this->player->position, $this->player->age, 'stamina'), 3);
-
     }
 
     private function youthSkills (): void
@@ -113,5 +112,15 @@ class GeneratePlayerProcess extends BasePlayerProcessService
             $this->youthModifieder = $qualityBoost;
             $this->player->$value = round($this->resolveSkill($this->player->position, $this->player->age, $value), 3) * $qualityBoost;
         }
+    }
+
+    public function getPlayer()
+    {
+        return $this->player;
+    }
+
+    public function savePlayer()
+    {
+        return $this->player->save();
     }
 }

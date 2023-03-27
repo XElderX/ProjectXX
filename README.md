@@ -4,7 +4,7 @@
 
 This is project XX
 
-## technologies used:
+## Technologies used:
 
 * uuid generator: composer require webpatser/laravel-uuid
 * flags (https://github.com/lipis/flag-icons) use (import "/node_modules/flag-icons/css/flag-icons.min.css";)
@@ -83,7 +83,6 @@ This is project XX
 * Updated update modal for names and surname that now can select from dropdown list;
 * fixed bug in update surname modal;
 * General code sorting(removed commented lines);
-
 * added blade index file with form;
 * update players controller adding new method to generate player;
 * created a new Service file for processing request for generating new random player;
@@ -101,4 +100,20 @@ This is project XX
 
 * changes in namesSurnames controller - now corecting inputed value to first uppercase and rest to lowercase letters;
 * added search in names surnames;
+
+#### 2023.03.02
+
+* <del>added button in dashboard blade for navigating to generate teams blade page;</del>
+* removed underline style from buttons in dashboard blade;
+* created controller - generatorController
+* renamed button in dashboard from generate player to generatePlayer/team;
+* relocated from playerController some methods to generatorController: generatorIndex() -> index() and generatePlayer();
+* added new method generateTeam();
+* implemented JS script for town selection dependant on selected country;
+
+#### 2023.03.26
+
+*
+
+
 

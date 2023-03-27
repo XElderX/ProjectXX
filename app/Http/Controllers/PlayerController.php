@@ -69,29 +69,6 @@ class PlayerController extends Controller
         return redirect()->route('players')->with('status_success', 'Player ID- ' . $player->id . ' was deleted.');
     }
 
-    public function generateIndex()
-    {
-        return view(
-            'players.generator.index',
-            [
-                'positions' => Player::PLAYER_POSITIONS,
-                'countries' => Country::get()
-            ]
-        );
-    }
-
-    public function generatePlayer(GeneratePlayerRequest $request, GeneratePlayerService $generatePlayerService)
-    {
-        if ($player = $generatePlayerService->processRequest($request)) {
-            $id = $player->id;
-
-            return redirect()->route('genPlayer', $id)->with('status_success', 'Player ID-' . $player->id . ' was generated successfully.');
-            // return $this->success('Success');
-
-        }
-        return $this->error('Failed to generate a player.');
-    }
-
     /**
      * Display the specified resource.
      *

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\GeneratorController;
 use App\Http\Controllers\NameSurnameController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\TownController;
@@ -56,6 +57,7 @@ Route::controller(ClubController::class)->group(function () {
     Route::get('clubs/{id}', 'destroy')->middleware('auth')->name('club.delete');
     Route::post('clubs/edit/{id}', 'update')->middleware('auth')->name('club.update');
     Route::post('clubs/dynamic', 'fetch')->middleware('auth')->name('club.fetch');
+    Route::get('generated-team/{id}', 'show')->middleware('auth')->name('genTeam');
 });
 
 Route::controller(PlayerController::class)->group(function () {
@@ -64,8 +66,6 @@ Route::controller(PlayerController::class)->group(function () {
     Route::get('players/{id}', 'destroy')->middleware('auth')->name('player.delete');
     Route::get('players/clear/{value}', 'clear')->middleware('auth')->name('player.clear');
     Route::post('players/edit/{id}', 'update')->middleware('auth')->name('player.update');
-    Route::get('generator', 'generateIndex')->middleware('auth')->name('generator');
-    Route::post('player-generator', 'generatePlayer')->middleware('auth')->name('playerGenerator');
     Route::get('generated-player/{id}', 'show')->middleware('auth')->name('genPlayer');
 });
 
@@ -77,6 +77,13 @@ Route::controller(NameSurnameController::class)->group(function () {
     Route::get('delete-surname/{id}', 'destroySurname')->middleware('auth')->name('surname.delete');
     Route::post('name/edit/{id}', 'updateName')->middleware('auth')->name('name.update');
     Route::post('surname/edit/{id}', 'updateSurname')->middleware('auth')->name('surname.update');
+});
+Route::controller(GeneratorController::class)->group(function () {
+    Route::get('generator', 'index')->middleware('auth')->name('generator');
+    Route::post('player-generator', 'generatePlayer')->middleware('auth')->name('playerGenerator');
+    Route::post('team-generator', 'generateTeam')->middleware('auth')->name('teamGenerator');
+    Route::get('get-towns/{id}', 'getTowns')->name('getTownz');
+    
 });
 // Route::get('users', function() {
 //     return view('users.index');
