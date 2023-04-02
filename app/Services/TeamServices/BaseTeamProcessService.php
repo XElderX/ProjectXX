@@ -31,8 +31,6 @@ class BaseTeamProcessService
         for ($i = 0; $i < 18; $i++) {
             $this->generatePlayer($i);
         }
-
-        dd($this->playersCount);
     }
 
     private function generatePlayer(int $iteration): void
@@ -52,6 +50,7 @@ class BaseTeamProcessService
         } else {
             $position = Player::POSITION_STR;
         }
+        
         $type = '1';
         $position =
             $data = [

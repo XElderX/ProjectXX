@@ -111,9 +111,14 @@ This is project XX
 * added new method generateTeam();
 * implemented JS script for town selection dependant on selected country;
 
-#### 2023.03.26
+#### 2023.03.27
 
-*
+* GenerateTeamService and baseTeamProcess service implementated with its logic;
+* Implemented auto generating team players of 18 players;
+
+#### 2023.04.02
+
+* added blades and css for generated team and it's player list;
 
 
 

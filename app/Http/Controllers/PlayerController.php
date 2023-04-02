@@ -95,4 +95,21 @@ class PlayerController extends Controller
             return redirect()->back()->with('status_success', 'All players have been deleted.');
         }
     }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function teamPlayersList(int $id)
+    {
+        return view(
+            'players.teamPlayers',
+            [
+                'players'   => Player::where('club_id', $id)->get(),
+                'positions' => Player::PLAYER_POSITIONS,
+                'club_id' => $id,
+            ]
+        );
+    }
 }

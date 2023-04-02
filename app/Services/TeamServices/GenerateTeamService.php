@@ -22,6 +22,6 @@ class GenerateTeamService
         if ($request->team_type === '3') {
             return $this->generateTeamProcess->process($request->team_type, $request);
         }
-        throw new \Exception('Unable to generate player ');
+        throw new \Exception('Unable to generate a Team ');
     }
 }

@@ -9,7 +9,6 @@ use App\Models\Player;
 use App\Models\Town;
 use App\Services\PlayerServices\GeneratePlayerService;
 use App\Services\TeamServices\GenerateTeamService;
-use Illuminate\Http\Request;
 
 class GeneratorController extends Controller
 {
@@ -30,10 +29,8 @@ class GeneratorController extends Controller
         if ($player = $generatePlayerService->processRequest($request)) {
             $player->save();
             $id = $player->id;
-
             return redirect()->route('genPlayer', $id)->with('status_success', 'Player ID-' . $player->id . ' was generated successfully.');
             // return $this->success('Success');
-
         }
         return $this->error('Failed to generate a player.');
     }
@@ -45,7 +42,6 @@ class GeneratorController extends Controller
 
             return redirect()->route('genTeam', $id)->with('status_success', 'Team ID-' . $team->id . ' was generated successfully.');
             // return $this->success('Success');
-
         }
         return $this->error('Failed to generate a Team.');
     }
