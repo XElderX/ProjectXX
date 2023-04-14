@@ -62,6 +62,9 @@
                                     <button type="button" class="button" data-bs-toggle="modal"
                                         data-bs-target="#edit{{ $club->id }}">Edit
                                     </button>
+                                    <button class="button">
+                                        <a href="{{ route('genTeam', [$club->id] ) }}" class="text-sm text-gray-700 dark:text-gray-500">Check teams details</a>
+                                    </button>
                                     @include('clubs.editModal')
                                 </div>
                             </div>

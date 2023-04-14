@@ -68,6 +68,7 @@ Route::controller(PlayerController::class)->group(function () {
     Route::post('players/edit/{id}', 'update')->middleware('auth')->name('player.update');
     Route::get('generated-player/{id}', 'show')->middleware('auth')->name('genPlayer');
     Route::get('club/{id}/players', 'teamPlayersList')->middleware('auth')->name('teamPlayers');
+    Route::get('club/players/{id}', 'fire')->middleware('auth')->name('player.fire');
 });
 
 Route::controller(NameSurnameController::class)->group(function () {

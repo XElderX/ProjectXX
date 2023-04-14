@@ -20,7 +20,7 @@ class PlayerController extends Controller
         return view(
             'players.index',
             [
-                'players'   => Player::orderBy('id')->paginate(10),
+                'players'   => Player::orderBy('id')->paginate(30),
                 'positions' => Player::PLAYER_POSITIONS,
             ]
         );
@@ -111,5 +111,20 @@ class PlayerController extends Controller
                 'club_id' => $id,
             ]
         );
+    }
+
+     /**
+     * Dismiss player from the team squad.
+     *
+     * @param  \App\Models\Player  $player
+     * @return \Illuminate\Http\Response
+     */
+    public function fire($id)
+    {
+        $player = Player::findOrFail($id);
+        $teamId = $player->club_id;
+        $player->club_id = null;
+        $player->save();
+        return redirect()->route('teamPlayers', [$teamId])->with('status_success', 'Player ID- ' . $player->id . ' was dismissed.');
     }
 }

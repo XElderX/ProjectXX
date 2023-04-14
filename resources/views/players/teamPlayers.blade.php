@@ -3,9 +3,22 @@
     <div class="card-body">
         <div class='container-block'>
             <h2>Players List </h2>
+            <div> Players count: <span style="color: #008000">{{count($players)}}</span></div>
             <div>
+                @if ($errors->any())
+            <div class="alert alert-danger">
+                <p><strong>Opps Something went wrong</strong></p>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            @elseif(session()->has('status_success'))
+                <div class="alert alert-success">
+                    {{ session()->get('status_success') }}
+                </div>
+        @endif      
                 @foreach ($players as $player)
-
                 <div class = "playerBlock">
                     <div class="container playershow">
                         <div class="fn">First name: <b> {{$player->first_name}} </b></div>
@@ -41,12 +54,13 @@
                 
                         <div class="created" style="border-top: 3px solid rgb(95,158,160, 0.8); padding-top:1em;">Created_at: <b> {{$player->created_at}} </b></div>
                         <div class="upd" style="border-top: 3px solid rgb(95,158,160, 0.8); padding-top: 1em;">Updated_at: <b> {{$player->updated_at}} </b></div>
+                        <button type="button" class="buttonFire" data-bs-toggle="modal"
+                                            data-bs-target="#fire{{ $player->id }}">Fire</button>
+                        @include('players.firePlayer')
                     </div>
-                </div>
-                    
-                @endforeach
-
-                <div style = 'display:flex; flex-direction:column; align-items: center; margin:0.5em;'>
+                    </div>
+                    @endforeach
+                    <div style = 'display:flex; flex-direction:column; align-items: center; margin:0.5em;'>
                     <button class="button">
                         <a href="{{ route('genTeam', [$club_id] ) }}" class="text-sm text-gray-700 dark:text-gray-500">Back to team details</a>
                     </button>
@@ -55,7 +69,6 @@
                         <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500">Back to dashboard</a>
                     </button>
                 </div>
-               
             </div>
         </div>
     </div>
