@@ -59,7 +59,6 @@ class GeneratePlayerProcess extends BasePlayerProcessService
             ? $this->player->position = Player::PLAYER_POSITIONS[(rand(1, count(Player::PLAYER_POSITIONS)))-1]
             : $this->player->position = $data->position;
 
-
         $this->player->first_name = $this->setFirstName($this->player->country_id);
         $this->player->last_name = $this->setLastName($this->player->country_id);
         $this->player->height = $this->randomizer('height', rand(0, 6));
@@ -82,7 +81,6 @@ class GeneratePlayerProcess extends BasePlayerProcessService
         $this->player->salary = $this->salaryResolver($this->player) / 2.2;
         $this->player->value = $this->valueResolver($this->player) / 4.1;
         } catch (Exception $e) {
-            dd($e);
             throw new \Exception("Error generatin a player" . $e);
         }
         return $this->player;
