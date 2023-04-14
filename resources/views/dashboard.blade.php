@@ -63,10 +63,6 @@
                                 <a href="{{ route('generator') }}"
                                     class="text-sm text-gray-700 dark:text-gray-500">Generate Players/Teams</a>
                             </button>
-                            {{-- <button class="button">
-                                <a href="{{ route('generator-teams') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500">Generate Teams</a>
-                            </button> --}}
                         </div>
                     @endif
         </div>

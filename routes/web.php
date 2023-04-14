@@ -87,11 +87,6 @@ Route::controller(GeneratorController::class)->group(function () {
     Route::get('get-towns/{id}', 'getTowns')->name('getTownz');
     
 });
-// Route::get('users', function() {
-//     return view('users.index');
-
-// })->name('users');
-
 
 Route::get('/dashboard', function () {
     return view('dashboard');

@@ -79,12 +79,11 @@ class GeneratePlayerProcess extends BasePlayerProcessService
             $this->playerSkills (); //TODO implement coaching skills logic
         }
         
-
-        $this->player->salary = $this->salaryResolver($this->player);
-        $this->player->value = $this->valueResolver($this->player);
+        $this->player->salary = $this->salaryResolver($this->player) / 2.2;
+        $this->player->value = $this->valueResolver($this->player) / 4.1;
         } catch (Exception $e) {
             dd($e);
-            throw new \Exception("Error generatin a player");
+            throw new \Exception("Error generatin a player" . $e);
         }
         return $this->player;
     }
@@ -94,15 +93,6 @@ class GeneratePlayerProcess extends BasePlayerProcessService
         foreach ($this->skills as $key => $value) {
             $this->player->$value = round($this->resolveSkill($this->player->position, $this->player->age, $value), 3);
         }
-        // $this->player->gk = round($this->resolveSkill($this->player->position, $this->player->age, 'gk'), 3);
-        // $this->player->def = round($this->resolveSkill($this->player->position, $this->player->age, 'def'), 3);
-        // $this->player->pm = round($this->resolveSkill($this->player->position, $this->player->age, 'pm'), 3);
-        // $this->player->pace = round($this->resolveSkill($this->player->position, $this->player->age, 'pace'), 3);
-        // $this->player->tech = round($this->resolveSkill($this->player->position, $this->player->age, 'tech'), 3);
-        // $this->player->pass = round($this->resolveSkill($this->player->position, $this->player->age, 'pass'), 3);
-        // $this->player->heading = round($this->resolveSkill($this->player->position, $this->player->age, 'heading'), 3);
-        // $this->player->str = round($this->resolveSkill($this->player->position, $this->player->age, 'str'), 3);
-        // $this->player->stamina = round($this->resolveSkill($this->player->position, $this->player->age, 'stamina'), 3);
     }
 
     private function youthSkills (): void

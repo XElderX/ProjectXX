@@ -173,26 +173,15 @@
                         </div>
                         <div class="inputItem">
                             <select name="town_id" id="teamTown" class="">
-                                <option value="0" selected disabled>Select Town</option>
-                                            
-                                        {{-- @foreach (App\Http\Controllers\ClubController::getTowns(1) as $town)
-                                        
-                                        <option value="{{ $town->id }}"> 
-                                            {{ $town->town_name }}
-                                        </option>
-                                            @endforeach --}}
-                                                                               
+                                <option value="0" selected disabled>Select Town</option>                             
                             </select>
                         </div>
                     </div>
-
                 </div>
-
             <button type="submit" class="button">Submit</button>
         </form>
     </div>
     </div>
-    
 </div>
 
 <script type="text/javascript">

@@ -121,6 +121,3 @@ This is project XX
 * added blades and css for generated team and it's player list;
 * added fire button and its method to dismiss player from team and set  that player without a club;
 * added player count indicator to show how many players in team's player list;
-
-
-
