@@ -20,7 +20,7 @@ class PlayerController extends Controller
         return view(
             'players.index',
             [
-                'players'   => Player::orderBy('id')->paginate(10),
+                'players'   => Player::orderBy('id')->paginate(30),
                 'positions' => Player::PLAYER_POSITIONS,
             ]
         );
@@ -69,29 +69,6 @@ class PlayerController extends Controller
         return redirect()->route('players')->with('status_success', 'Player ID- ' . $player->id . ' was deleted.');
     }
 
-    public function generateIndex()
-    {
-        return view(
-            'players.generator.index',
-            [
-                'positions' => Player::PLAYER_POSITIONS,
-                'countries' => Country::get()
-            ]
-        );
-    }
-
-    public function generatePlayer(GeneratePlayerRequest $request, GeneratePlayerService $generatePlayerService)
-    {
-        if ($player = $generatePlayerService->processRequest($request)) {
-            $id = $player->id;
-
-            return redirect()->route('genPlayer', $id)->with('status_success', 'Player ID-' . $player->id . ' was generated successfully.');
-            // return $this->success('Success');
-
-        }
-        return $this->error('Failed to generate a player.');
-    }
-
     /**
      * Display the specified resource.
      *
@@ -117,5 +94,37 @@ class PlayerController extends Controller
             Player::truncate(); // Delete all records from the "players" table
             return redirect()->back()->with('status_success', 'All players have been deleted.');
         }
+    }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function teamPlayersList(int $id)
+    {
+        return view(
+            'players.teamPlayers',
+            [
+                'players'   => Player::where('club_id', $id)->get(),
+                'positions' => Player::PLAYER_POSITIONS,
+                'club_id' => $id,
+            ]
+        );
+    }
+
+     /**
+     * Dismiss player from the team squad.
+     *
+     * @param  \App\Models\Player  $player
+     * @return \Illuminate\Http\Response
+     */
+    public function fire($id)
+    {
+        $player = Player::findOrFail($id);
+        $teamId = $player->club_id;
+        $player->club_id = null;
+        $player->save();
+        return redirect()->route('teamPlayers', [$teamId])->with('status_success', 'Player ID- ' . $player->id . ' was dismissed.');
     }
 }

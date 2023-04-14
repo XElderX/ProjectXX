@@ -4,7 +4,7 @@
         <div class='container-block'>
             <h2>Players List </h2>
             <div>
-                <table style="undefined;table-layout: fixed; width: 220px">
+                <table style="font-size:0.7rem">
                     <colgroup>
                         <col style="width: 30px">
                         <col style="width: 100px">
@@ -23,7 +23,7 @@
                         <col style="width: 100px">
                         <col style="width: 150px">
                     </colgroup>
-                    <thead class='tableHead'>
+                    <thead class=''>
                         <tr>
                             <td>id</td>
                             <td>first_name</td>
@@ -43,35 +43,35 @@
                             <td>Actions</td>
                         </tr>
                     </thead>
-                    <tbody class='tableBody'>
+                    <tbody class=''>
                         @foreach ($players as $player)
                             <tr>
-                                <td>{{ $player->id }}</td>
-                                <td>{{ $player->first_name }}</td>
-                                <td>{{ $player->last_name }}</td>
-                                <td>{{ $player->value }}</td>
-                                <td>{{ $player->salary }}</td>
-                                <td>{{ $player->height }}</td>
-                                <td>{{ $player->weight }}</td>
-                                <td>{{ $player->age }}</td>
-                                <td>{{ $player->injury_days }}</td>
-                                <td>{{ $player->fatique }}</td>
-                                <td>{{ $player->position }}</td>
-                                <td>{{ $player->club_id }}</td>
-                                <td>{{ $player->country_id }}</td>
-                                <td>{{ $player->created_at }}</td>
-                                <td>{{ $player->updated_at }}</td>
+                                <td style="background-color:green">{{ $player->id }}</td>
+                                <td style="height:1em;">{{ $player->first_name }}</td>
+                                <td style="height:1em;">{{ $player->last_name }}</td>
+                                <td style="height:1em;">{{ $player->value }}</td>
+                                <td style="height:1em;">{{ $player->salary }}</td>
+                                <td style="height:1em;">{{ $player->height }}</td>
+                                <td style="height:1em;">{{ $player->weight }}</td>
+                                <td style="height:1em;">{{ $player->age }}</td>
+                                <td style="height:1em;">{{ $player->injury_days }}</td>
+                                <td style="height:1em;">{{ $player->fatique }}</td>
+                                <td style="height:1em;">{{ $player->position }}</td>
+                                <td style="height:1em;">{{ $player->club_id }}</td>
+                                <td style="height:1em;">{{ $player->country_id }}</td>
+                                <td style="height:1em;">{{ $player->created_at }}</td>
+                                <td style="height:1em;">{{ $player->updated_at }}</td>
                                 <!-- Button trigger deletion modal -->
-                                <td>
-                                    <button type="button" class="button" data-bs-toggle="modal"
+                                <td style="height:1em; display: flex;">
+                                    <button  type="button" class="buttonSm" data-bs-toggle="modal"
                                         data-bs-target="#stats{{ $player->id }}">View Stats</button>
                                     @include('players.statsModalPlayer')
 
-                                    <button type="button" class="button" data-bs-toggle="modal"
+                                    <button type="button" class="buttonSm" data-bs-toggle="modal"
                                         data-bs-target="#delete{{ $player->id }}">Delete</button>
                                     @include('players.deleteModalPlayer')
                                     <!-- Button trigger modal -->
-                                    <button type="button" class="button" data-bs-toggle="modal"
+                                    <button type="button" class="buttonSm" data-bs-toggle="modal"
                                         data-bs-target="#edit{{ $player->id }}">Edit
                                     </button>
                                     @include('players.editModalPlayer')</div>

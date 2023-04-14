@@ -22,6 +22,6 @@ class GeneratePlayerService
         if ($request->type === '3') {
             return $this->generatePlayerProcess->process($request->type, $request);
         }
-        throw new \Exception('Unable to generate player ');
+        throw new \Exception('Unable to generate player');
     }
 }
