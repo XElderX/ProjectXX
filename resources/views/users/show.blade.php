@@ -28,7 +28,6 @@
         </div>
         <button class="BackBtn">
             <a href="{{ route('users') }}">Back </a>
-        </button>
-        
+        </button>  
     </div>
 @endsection

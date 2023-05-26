@@ -25,46 +25,60 @@
                             <div> first login </div>
                         @endif
                     </div>
-                        @if (!Auth::user())
-                            <button>
-                                <a href="{{ route('login') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
-                            </button>
-                        @endif             
+                    @if (!Auth::user())
+                        <button>
+                            <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log
+                                in</a>
+                        </button>
+                    @endif
                 </div>
             </div>
+            <div>
+                <button class="button">
+                    <a href="{{ route('users.info') }}" class="text-sm text-gray-700 dark:text-gray-500">MyAccount</a>
+                </button>
+                <button class="button">
+                    <a href="{{ route('friendlyView') }}" class="text-sm text-gray-700 dark:text-gray-500">Propose
+                        Friendly</a>
+                </button>
+                <button class="button">
+                    <a href="{{ route('friendlyInvitations') }}" class="text-sm text-gray-700 dark:text-gray-500">
+                        Friendly Invitations</a>
+                </button>
+            </div>
             @if (Auth::user()->role === 'admin')
-                        <div class='adminPanel'>
-                            <h5>Admin panel </h5>
-                            <button class="button">
-                                <a href="{{ route('users') }}">Users</a>
-                            </button>
-                            <button class="button">
-                                <a href="{{ route('national') }}">Countries</a>
-                            </button>
-                            <button class="button">
-                                <a href="{{ route('towns') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500">Towns</a>
-                            </button>
-                            <button class="button">
-                                <a href="{{ route('clubs') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500">Clubs</a>
-                            </button>
-                            <button class="button">
-                                <a href="{{ route('players') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500">Players</a>
-                            </button>
-                            <button class="button">
-                                <a href="{{ route('nameSurname') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500">Names and Surnames
-                                    pools</a>
-                            </button>
-                            <button class="button">
-                                <a href="{{ route('generator') }}"
-                                    class="text-sm text-gray-700 dark:text-gray-500">Generate Players/Teams</a>
-                            </button>
-                        </div>
-                    @endif
+                <div class='adminPanel'>
+                    <h5>Admin panel </h5>
+                    <button class="button">
+                        <a href="{{ route('users') }}">Users</a>
+                    </button>
+                    <button class="button">
+                        <a href="{{ route('national') }}">Countries</a>
+                    </button>
+                    <button class="button">
+                        <a href="{{ route('towns') }}" class="text-sm text-gray-700 dark:text-gray-500">Towns</a>
+                    </button>
+                    <button class="button">
+                        <a href="{{ route('clubs') }}" class="text-sm text-gray-700 dark:text-gray-500">Clubs</a>
+                    </button>
+                    <button class="button">
+                        <a href="{{ route('players') }}" class="text-sm text-gray-700 dark:text-gray-500">Players</a>
+                    </button>
+                    <button class="button">
+                        <a href="{{ route('nameSurname') }}" class="text-sm text-gray-700 dark:text-gray-500">Names and
+                            Surnames
+                            pools</a>
+                    </button>
+                    <button class="button">
+                        <a href="{{ route('generator') }}" class="text-sm text-gray-700 dark:text-gray-500">Generate
+                            Players/Teams</a>
+                    </button>
+                    <button class="button">
+                        <a href="{{ route('friendlyView') }}" class="text-sm text-gray-700 dark:text-gray-500">Propose
+                            Friendly</a>
+                    </button>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

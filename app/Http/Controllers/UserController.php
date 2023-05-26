@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Club;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
@@ -98,5 +99,38 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('users')->with('status_success', 'disabled');
+    }
+
+     /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function info()
+    {
+        $user = auth()->user();
+        $clubs = Club::where('user_id', $user->id)->get();
+        // dd($clubs);
+        return view('users.accountInfo', [
+            'user'  => $user,
+            'clubs' => $clubs
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function infoUpdate(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        // dd($user->userClub);
+        $user->setClub($request->club_id);
+        $user->save();
+
+        return redirect()->route('users.info')->with('status_success', 'User assigned' . $user->userClub->club_name . ' as active club.');
     }
 }

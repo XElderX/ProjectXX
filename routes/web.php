@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\FriendlyInvitationController;
 use App\Http\Controllers\GeneratorController;
+use App\Http\Controllers\MatchScheduleController;
 use App\Http\Controllers\NameSurnameController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\TownController;
@@ -32,8 +34,10 @@ Route::get('/', function () {
 
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index')->middleware('auth')->name('users');
+    Route::get('users/myAccount', 'info')->middleware('auth')->name('users.info');
     Route::get('users/{uuid}', 'show')->middleware('auth')->name('users.show');
     Route::get('users/ban/{uuid}', 'disable')->middleware('auth')->name('users.ban');
+    Route::post('users/myAccount/{id}', 'infoUpdate')->middleware('auth')->name('user.update');
 });
 
 Route::controller(CountryController::class)->group(function () {
@@ -86,6 +90,18 @@ Route::controller(GeneratorController::class)->group(function () {
     Route::post('team-generator', 'generateTeam')->middleware('auth')->name('teamGenerator');
     Route::get('get-towns/{id}', 'getTowns')->name('getTownz');
     
+});
+
+Route::controller(MatchScheduleController::class)->group(function () {
+    Route::get('propose-friendly', 'proposeFriendlyView')->middleware('auth')->name('friendlyView');   
+});
+
+Route::controller(FriendlyInvitationController::class)->group(function () { 
+    Route::post('propose-friendly', 'proposeFriendly')->middleware('auth')->name('proposeFriendly');
+    Route::get('friendly-invitations', 'friendlyInvitations')->middleware('auth')->name('friendlyInvitations');
+    Route::get('{id}/cancel-friendly', 'cancelFriendly')->middleware('auth')->name('cancelInvitation');
+    Route::post('host-friendly', 'hostFriendly')->middleware('auth')->name('hostFriendly');
+    Route::get('{id}/accept-friendly', 'acceptMatch')->middleware('auth')->name('acceptInvitation');
 });
 
 Route::get('/dashboard', function () {

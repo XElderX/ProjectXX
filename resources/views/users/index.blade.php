@@ -110,7 +110,7 @@
                         @endforeach
                     </tbody>
                 </table>
-                <button>
+                <button type="button" class="button">
                     <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Back to
                         dashboard</a>
                 </button>

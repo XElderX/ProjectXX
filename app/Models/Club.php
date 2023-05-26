@@ -43,6 +43,7 @@ class Club extends Model
     public function town(){
         return $this->belongsTo(Town::class);
     }
+    
     public function country(){
         return $this->belongsTo(Country::class);
     }

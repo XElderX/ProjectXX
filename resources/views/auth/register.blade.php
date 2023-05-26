@@ -18,6 +18,64 @@
                 <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
+            <!-- TeamName -->
+            <div class="mt-4">
+                <x-input-label for="club_name" :value="__('Club Name')" />
+
+                <x-text-input id="clubName" class="block mt-1 w-full" type="text" name="club_name" :value="old('club_name')" required autofocus />
+
+                <x-input-error :messages="$errors->get('club_name')" class="mt-2" />
+            </div>
+
+            <!-- Country for team -->
+
+            <div class="mt-4">
+                <x-input-label for="country" :value="__('Country')" />
+
+                <x-select-country name="country" :options="\App\Models\Country::get()" :value="old('country')" required autofocus/>
+
+                <x-input-error :messages="$errors->get('country')" class="mt-2" />
+            </div>
+
+  
+
+
+
+            {{-- <label for="Country"
+                            class="w-96 block text-gray-700 text-sm font-bold mb-2">Country</label>
+                        <div class="col-sm-10">
+                            <select name="country_id" id="new"
+                                class="form-control dynamic" data-dependent ='town_name'>
+                                <option value="" disabled selected>
+                                   Select Country </option>
+                                    @foreach ($countries as $country)
+                                    <option value="{{ $country->id }}">
+                                        {{ $country->country }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                        <label for="Town"
+                                class="w-96 block text-gray-700 text-sm font-bold mb-2">Town</label>
+                            <div class="col-sm-10">
+                                <select name="town_id" id="newa"
+                                    class="form-control">
+                                    <option value="" disabled selected>
+                                        Select Town </option>              
+                                        @foreach (App\Http\Controllers\ClubController::getTowns($club->country->id) as $town)
+                                        
+                                        <option value="{{ $town->id }}"> 
+                                            {{ $town->town_name }}</option>
+                                            @endforeach
+                                            @if ( ($club->town->id ?? null) !==null )
+                                            <option value=""> 
+                                                -</option>
+                                        @endif
+                                        </select>
+                                    </div>
+
+ --}}
+
+
             <!-- Email Address -->
             <div class="mt-4">
                 <x-input-label for="email" :value="__('Email')" />
