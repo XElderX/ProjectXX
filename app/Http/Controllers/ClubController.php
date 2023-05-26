@@ -97,7 +97,7 @@ class ClubController extends Controller
         foreach ($data as $row) {
             $output .= '<option value="' . $row->id . '">' . $row->$dependent . '</option>';
         }
-        echo $output;
+        // echo $output;
     }
 
      /**

@@ -121,3 +121,27 @@ This is project XX
 * added blades and css for generated team and it's player list;
 * added fire button and its method to dismiss player from team and set  that player without a club;
 * added player count indicator to show how many players in team's player list;
+
+#### 2023.04.14
+
+* Created match schedule table and model;
+
+#### 2023.05.21
+
+* A new field in register page club name and country, required for creating a team;
+* Update registeredController, now as new user register a team automaticlly created for him;
+* Added accountinfo at dashboard; it has method to assign active clube for the user; 
+
+#### 2023.05.22
+
+* A new model FriendlyInvitation was created;
+
+#### 2023.05.26
+
+* Implemented invite friendly logic;
+* Implemented host friendly logic;
+* Implemented acceping friendly logic;
+* MatchService queries added;
+
+
+

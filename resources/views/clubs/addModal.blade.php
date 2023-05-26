@@ -96,8 +96,6 @@
                                         </select>
                                     </div>
                                     {{csrf_field()}}
-                                   
-
                                     <label for="user_id"
                             class="w-96 block text-gray-700 text-sm font-bold mb-2">Team owner id?</label>
                             <div class="col-sm-10">

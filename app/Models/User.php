@@ -57,7 +57,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array<string, string>
      */
-    
+
     protected $casts = [
         'email_verified_at' => 'datetime',
         'logins' => 'array'
@@ -70,8 +70,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function userClub()
     {
-        return $this->hasOne(Club::class);
+        return $this->hasOne(Club::class, 'id', 'club_id');
     }
+
+    public function activeClub()
+    {  
+        return $this->hasOne(Club::class, 'id', 'club_id');
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -87,25 +93,37 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    protected static function addLoginRecord($user){
+    protected static function addLoginRecord($user)
+    {
         $logins = (array) $user->logins;
         $ip = date("Y-m-d H:i:s", time()) . '~' . 'IP : ' . self::getUserIpAddr();
         array_unshift($logins, $ip);
-        $new_array  = array_slice($logins, 0 , 19);
+        $new_array  = array_slice($logins, 0, 19);
         $user->logins = $new_array;
         $user->save();
     }
 
-    private static function getUserIpAddr(){
-        if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+    private static function getUserIpAddr()
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             //ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
-        }elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             //ip pass from proxy
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        }else{
+        } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         return $ip;
+    }
+
+    /**
+     * @param int $clubId
+     * @return $this
+     */
+    public function setClub(int $clubId): self
+    {
+        $this->club_id = $clubId;
+        return $this;
     }
 }
