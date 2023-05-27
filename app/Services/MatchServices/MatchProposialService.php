@@ -110,16 +110,19 @@ class MatchProposialService
         $opponent = $request->opponent_id;
         $hostTeam = auth()->user()->club_id;
 
+
+
         $exist = FriendlyInvitation::where(function ($query) use ($opponent, $date, $hostTeam) {
             $query->where('status', FriendlyInvitation::STATUS_ACCEPTED)
-                ->where(function ($query) use ($opponent, $date, $hostTeam) {
-                    $query->where(function ($query) use ($opponent, $date) {
+            ->where('match_date', $date)
+            ->where(function ($query) use ($opponent, $hostTeam) {
+                    $query->where(function ($query) use ($opponent, ) {
                         $query->where('opponent_team_id', $opponent)
-                            ->where('match_date', $date);
+                        ->orWhere('host_team_id', $opponent);
                     })
-                        ->orWhere(function ($query) use ($opponent, $hostTeam) {
-                            $query->where('host_team_id', $opponent)
-                                ->where('opponent_team_id', $hostTeam);
+                        ->orWhere(function ($query) use ($hostTeam) {
+                            $query->where('host_team_id', $hostTeam)
+                                ->orWhere('opponent_team_id', $hostTeam);
                         });
                 });
         })->orWhere(function ($query) use ($opponent, $date, $hostTeam) {
@@ -129,7 +132,6 @@ class MatchProposialService
         })->exists();
 
         return $exist;
-        //TODO check if host already planned match; check if host planed match as opponent and check if opponent planed match as host
     }
 
     private function isAlreadyHosting($request, $date)
@@ -150,7 +152,6 @@ class MatchProposialService
         })->exists();
 
         return $exist;
-        //TODO check if host already planned match; check if host planed match as opponent and check if opponent planed match as host
     }
 
     protected function cancelRemainingInvitations($invitation): void
@@ -173,22 +174,6 @@ class MatchProposialService
                     });
                 });
         })->get();
-
-        // $invitations = FriendlyInvitation::where(function ($query) use ($date, $team1, $team2) {
-        //     $query->where('match_date', $date)
-        //         ->whereNot('status', FriendlyInvitation::STATUS_ACCEPTED)
-        //         ->where(function ($query) use ($team1) {
-        //             $query->where(function ($query) use ($team1) {
-        //                 $query->where('host_team_id', $team1)
-        //                     ->orWhere('opponent_team_id', $team1);
-        //             });
-        //         })->where(function ($query) use ($team2) {
-        //             $query->where(function ($query) use ($team2) {
-        //                 $query->where('host_team_id', $team2)
-        //                     ->orWhere('opponent_team_id', $team2);
-        //             });
-        //         });
-        // })->get();
 
         $invitations->each(function ($invitation) {
             $invitation->status = FriendlyInvitation::STATUS_CANCELED;

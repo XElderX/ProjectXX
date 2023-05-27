@@ -45,7 +45,6 @@ class MatchSchedule extends Model
 
     public function fillMatchData($invitation): self
     {
-
         $homeTeam = $invitation->host_team_id;
         $awayTeam = $invitation->opponent_team_id;
 
@@ -69,6 +68,5 @@ class MatchSchedule extends Model
         $this->match_date = $invitation->match_date;
 
         return $this;
-
     }
 }

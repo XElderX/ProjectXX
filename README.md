@@ -143,5 +143,11 @@ This is project XX
 * Implemented acceping friendly logic;
 * MatchService queries added;
 
+#### 2023.05.27
+
+* Fixed bug in query when inviting friendly.. <del>team with already accepted match can invite again....</del>;
+
+
+
 
 
