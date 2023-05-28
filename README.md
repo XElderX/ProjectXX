@@ -146,8 +146,10 @@ This is project XX
 #### 2023.05.27
 
 * Fixed bug in query when inviting friendly.. <del>team with already accepted match can invite again....</del>;
+* implemented other users hosted matches and its logic and methods.
 
+#### 2023.05.28
 
-
-
-
+* minnor changes in blade layout;
+* now when inviting host edvertismenting team for match it sent pending request for match;
+* user can accept pending matches offers and generate prematch record;

@@ -88,6 +88,11 @@ class FriendlyInvitation extends Model
         $query->where('status', self::STATUS_INVITED);
     }
 
+    public function scopeStatusPending($query)
+    {
+        $query->where('status', self::STATUS_PENDING);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'host_id', 'id');

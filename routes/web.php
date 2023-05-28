@@ -102,6 +102,7 @@ Route::controller(FriendlyInvitationController::class)->group(function () {
     Route::get('{id}/cancel-friendly', 'cancelFriendly')->middleware('auth')->name('cancelInvitation');
     Route::post('host-friendly', 'hostFriendly')->middleware('auth')->name('hostFriendly');
     Route::get('{id}/accept-friendly', 'acceptMatch')->middleware('auth')->name('acceptInvitation');
+    Route::get('{id}/invite-host', 'inviteHost')->middleware('auth')->name('inviteHost');
 });
 
 Route::get('/dashboard', function () {
