@@ -45,6 +45,10 @@
                     <a href="{{ route('friendlyInvitations') }}" class="text-sm text-gray-700 dark:text-gray-500">
                         Friendly Invitations</a>
                 </button>
+                <button class="button">
+                    <a href="{{ route('schedules') }}" class="text-sm text-gray-700 dark:text-gray-500">
+                        Fixtures</a>
+                </button>
             </div>
             @if (Auth::user()->role === 'admin')
                 <div class='adminPanel'>

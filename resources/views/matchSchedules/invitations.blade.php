@@ -21,9 +21,6 @@
                 <h3> Friendly Invitations</h3>
             </div>
             <div>
-                <div class="title">
-                    <h3> Your hosting match</h3>
-                </div>
                 <div style="display:flex; flex-direction: column; justify-content: space-between; border:2px solid black; padding:5px; margin:2rem 0;">
                     @if (!is_string($host))
                     <div style="text-align:center;">Your search as a host</div>
@@ -40,7 +37,7 @@
                             <div>Match Date: <div style="font-weight:900;">{{ $host->match_date }}</div>
                             </div>
                             <div> <button type="button" class="button">
-                                    <a href="{{ route('cancelInvitation', [$host->id]) }}"
+                                    <a href="{{ route('proposialAction', [$host->id, 'canceled']) }}"
                                         class="text-sm text-gray-700 dark:text-gray-500">Cancel it</a>
                                 </button>
                             </div>
@@ -70,7 +67,7 @@
                                     <div>Match Date: <div style="font-weight:900;">{{ $pendingMatch->match_date }}</div>
                                     </div>
                                     <div> <button type="button" class="button">
-                                            <a href="{{ route('acceptInvitation', [$pendingMatch->id]) }}"
+                                            <a href="{{ route('proposialAction', [$pendingMatch->id, 'accepted']) }}"
                                                 class="text-sm text-gray-700 dark:text-gray-500">Approve</a>
                                         </button>
                                     </div>
@@ -140,7 +137,7 @@
                                 <div>Match Date: <div style="font-weight:900;">{{ $invitation->match_date }}</div>
                                 </div>
                                 <div> <button type="button" class="button">
-                                        <a href="{{ route('acceptInvitation', [$invitation->id]) }}"
+                                        <a href="{{ route('proposialAction', [$invitation->id, 'accepted']) }}"
                                             class="text-sm text-gray-700 dark:text-gray-500">Accept it</a>
                                     </button> </div>
                             </div>
@@ -171,7 +168,7 @@
                                 <div>Match Date: <div style="font-weight:900;">{{ $friendly->match_date }}</div>
                                 </div>
                                 <div> <button type="button" class="button">
-                                        <a href="{{ route('inviteHost', [$friendly->id]) }}"
+                                        <a href="{{ route('proposialAction', [$friendly->id, 'pending']) }}"
                                             class="text-sm text-gray-700 dark:text-gray-500">Invite</a>
                                     </button> </div>
                             </div>

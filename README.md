@@ -153,3 +153,8 @@ This is project XX
 * minnor changes in blade layout;
 * now when inviting host edvertismenting team for match it sent pending request for match;
 * user can accept pending matches offers and generate prematch record;
+
+#### 2023.05.30
+
+* match report blade created;
+

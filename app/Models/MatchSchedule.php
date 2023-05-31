@@ -27,20 +27,34 @@ class MatchSchedule extends Model
 
     protected $fillable = [
         'home_team_id', 'away_team_id', 'attendance',
-        'weather','report', 'home_tactic', 'away_tactic',
+        'weather', 'report', 'home_tactic', 'away_tactic',
         'report', 'home_lineup', 'away_lineup',
         'status', 'complete', 'type', 'match_date'
     ];
-    
+
     protected $attributes = [
         'status'   => self::STATUS_PENDING,
         'type'     => self::TYPE_FRIENDLY,
         'complete' => 0,
     ];
 
+    protected $casts = [
+        'report' => 'array'
+    ];
+
     public function clubs()
     {
         return $this->hasMany(Club::class);
+    }
+
+    public function homeTeam()
+    {
+        return $this->hasMany(Club::class, 'id', 'home_team_id');
+    }
+
+    public function awayTeam()
+    {
+        return $this->hasMany(Club::class, 'id', 'away_team_id');
     }
 
     public function fillMatchData($invitation): self
@@ -67,6 +81,26 @@ class MatchSchedule extends Model
         $this->type = $invitation->type;
         $this->match_date = $invitation->match_date;
 
+        return $this;
+    }
+
+    public function setTactic(string $data, string $subject = 'home'): self
+    {
+        if ($subject ==='away') {
+            $this->away_tactic = $data;
+            return $this;
+        }
+        $this->home_tactic = $data;
+        return $this;
+    }
+
+    public function setLineup(string $data, string $subject = 'home'): self
+    {
+        if ($subject ==='away') {
+            $this->away_lineup = $data;
+            return $this;
+        }
+        $this->home_lineup = $data;
         return $this;
     }
 }

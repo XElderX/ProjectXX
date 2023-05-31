@@ -29,25 +29,10 @@ class FriendlyInvitationController extends Controller
         );
     }
 
-    public function proposeFriendly(Request $request, MatchProposialService $matchProposialService)
+    public function proposialAction(Request $request,  MatchProposialService $matchProposialService, string $id = null, string $action = 'host')
     {
         try {
-            $status = $matchProposialService->processProposial($request, FriendlyInvitation::STATUS_INVITED);
-
-            if ($status === true) {
-                return redirect()->route('friendlyView')->with('status_success', 'Your request has been processed successfully.');
-            } else {
-                throw new \Exception('An error occurred while processing your request.');
-            }
-        } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
-        }
-    }
-
-    public function cancelFriendly(string $id, Request $request, MatchProposialService $matchProposialService)
-    {
-        try {
-            $status = $matchProposialService->processProposial($request, FriendlyInvitation::STATUS_CANCELED, $id);
+            $status = $matchProposialService->processProposial($request, $action, $id);
 
             if ($status === true) {
                 return back()->with('status_success', 'Your request has been processed successfully.');
@@ -63,36 +48,6 @@ class FriendlyInvitationController extends Controller
     {
         try {
             $status = $matchProposialService->processProposial($request);
-
-            if ($status === true) {
-                return back()->with('status_success', 'Your request has been processed successfully.');
-            } else {
-                throw new \Exception('An error occurred while processing your request.');
-            }
-        } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
-        }
-    }
-
-    public function acceptMatch(string $id, Request $request, MatchProposialService $matchProposialService)
-    {
-        try {
-            $status = $matchProposialService->processProposial($request, FriendlyInvitation::STATUS_ACCEPTED, $id);
-
-            if ($status === true) {
-                return back()->with('status_success', 'Your request has been processed successfully.');
-            } else {
-                throw new \Exception('An error occurred while processing your request.');
-            }
-        } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
-        }
-    }
-
-    public function inviteHost(string $id, Request $request, MatchProposialService $matchProposialService)
-    {
-        try {
-            $status = $matchProposialService->processProposial($request, FriendlyInvitation::STATUS_PENDING, $id);
 
             if ($status === true) {
                 return back()->with('status_success', 'Your request has been processed successfully.');
