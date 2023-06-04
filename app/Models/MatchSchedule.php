@@ -29,7 +29,7 @@ class MatchSchedule extends Model
         'home_team_id', 'away_team_id', 'attendance',
         'weather', 'report', 'home_tactic', 'away_tactic',
         'report', 'home_lineup', 'away_lineup',
-        'status', 'complete', 'type', 'match_date'
+        'status', 'complete', 'type', 'match_date', 'time'
     ];
 
     protected $attributes = [
@@ -80,13 +80,41 @@ class MatchSchedule extends Model
         $this->complete = false;
         $this->type = $invitation->type;
         $this->match_date = $invitation->match_date;
+        // Set the timezone
+        $timeZone = Country::findOrFail(Club::findOrFail($homeTeam)->country_id)->timezone; // Replace with your desired timezone, e.g., 'America/New_York'
+        // Create a Carbon instance with the desired time and timezone
+        $time = $this->setTime($timeZone);
+        $this->time = $time;
 
         return $this;
     }
 
+
+    private function setTime($time)
+    {
+        // Set the server timezone
+        $serverTimeZone = 'Europe/London'; // Replace with your server's timezone
+
+        // Set the desired timezone
+        $desiredTimeZone = $time; // Replace with your desired timezone
+
+        // Create a Carbon instance with the current server time
+        $serverTime = Carbon::createFromTime(19, 0, 0, $serverTimeZone);
+
+        // Convert the server time to the desired timezone
+        $desiredTime = $serverTime->setTimezone($desiredTimeZone);
+
+        // Extract the desired time components
+        $hour = $desiredTime->format('H');
+        $minute = $desiredTime->format('i');
+        $second = $desiredTime->format('s');
+
+        return "$hour:$minute:$second";
+    }
+
     public function setTactic(string $data, string $subject = 'home'): self
     {
-        if ($subject ==='away') {
+        if ($subject === 'away') {
             $this->away_tactic = $data;
             return $this;
         }
@@ -96,7 +124,7 @@ class MatchSchedule extends Model
 
     public function setLineup(string $data, string $subject = 'home'): self
     {
-        if ($subject ==='away') {
+        if ($subject === 'away') {
             $this->away_lineup = $data;
             return $this;
         }

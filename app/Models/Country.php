@@ -15,6 +15,11 @@ class Country extends Model
         'country',
         'population',
         'flag',
+        'timezone'
+    ];
+
+    protected $attributes = [
+        'timezone'              => 'Europe/London',
     ];
 
     public function town()
