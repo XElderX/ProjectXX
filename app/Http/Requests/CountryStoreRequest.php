@@ -34,6 +34,7 @@ class CountryStoreRequest extends FormRequest
             'flag'  => [
                 'required',  'string'
             ],
+            'timezone' => 'required|string|max:255',
         ];
     }
 }

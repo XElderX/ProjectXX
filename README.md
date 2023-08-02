@@ -160,9 +160,17 @@ This is project XX
 
 #### 2023.06.04
 
-* addedcrin command where checks every 30 min matchSchedules if matchday and time and set that model status to accepted; 
+* added cron command that checks every 30 min table matchSchedule. All found records and if matchday and time and set that model status to accepted; 
 * added new column to match_schedule table "time";
 * added new column to country table "timezone";
 * updated fillMatchData method in matchSchedule model with new field timezone which extracted from home_team;
-//TODO updaye Countrfy bladesand forms by adding new field timezone;
+//TODO update Country blades and forms by adding new field timezone;
 // Implement match logic creating basic match engine; 
+
+#### 2023.08.02
+
+* updated country blade added timezone field to both add and update forms modal; 
+* ypdated countryController passing timezone  list array;
+* created config/timezone.php file with timezones";
+* added new provider class "TimezonesServiceProvider" for the custom configuration file;
+ 
