@@ -33,9 +33,11 @@ class MatchSchedule extends Model
     ];
 
     protected $attributes = [
-        'status'   => self::STATUS_PENDING,
-        'type'     => self::TYPE_FRIENDLY,
-        'complete' => 0,
+        'status'     => self::STATUS_PENDING,
+        'type'       => self::TYPE_FRIENDLY,
+        'complete'   => 0,
+        'home_goals' => 0,
+        'away_goals' => 0,
     ];
 
     protected $casts = [
@@ -49,12 +51,12 @@ class MatchSchedule extends Model
 
     public function homeTeam()
     {
-        return $this->hasMany(Club::class, 'id', 'home_team_id');
+        return $this->hasOne(Club::class, 'id', 'home_team_id');
     }
 
     public function awayTeam()
     {
-        return $this->hasMany(Club::class, 'id', 'away_team_id');
+        return $this->hasOne(Club::class, 'id', 'away_team_id');
     }
 
     public function fillMatchData($invitation): self

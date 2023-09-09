@@ -164,8 +164,8 @@ This is project XX
 * added new column to match_schedule table "time";
 * added new column to country table "timezone";
 * updated fillMatchData method in matchSchedule model with new field timezone which extracted from home_team;
-//TODO update Country blades and forms by adding new field timezone;
-// Implement match logic creating basic match engine; 
+<del>//TODO update Country blades and forms by adding new field timezone;</del>
+<del>// Implement match logic creating basic match engine; </del>
 
 #### 2023.08.02
 
@@ -173,4 +173,22 @@ This is project XX
 * ypdated countryController passing timezone  list array;
 * created config/timezone.php file with timezones";
 * added new provider class "TimezonesServiceProvider" for the custom configuration file;
- 
+
+ #### 2023.08.06
+
+* Match engine implementation;
+* Command to process matches;
+* Match service created;
+
+ #### 2023.09.08
+
+* started implementing match report;
+ #### 2023.09.09
+
+* updating match report;
+* baseMatchEvents class created;
+* added new fields to match_schedules table (home_goals,  away_goals, home_shots,  away_shots, home_on_target, away_on_target);
+
+
+
+

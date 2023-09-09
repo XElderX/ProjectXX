@@ -22,6 +22,13 @@ class Player extends Model
     public const TYPE_YOUTH = 'youth';
     public const TYPE_TRAINER = 'coach';
 
+    public const SKILL_PROPORTIONS = [
+        'goalkeeper' => ['gk' => 0.7, 'pace' => 0.2, 'pass' => 0.1],
+        'defender' => ['def' => 0.45, 'pm' => 0.1, 'tech' => 0.05, 'head' => 0.2, 'pass' => 0.1, 'pace' => 0.1],
+        'midfielder' => ['def' => 0.1, 'pace' => 0.1, 'pass' => 0.25, 'tech' => 0.2, 'head' => 0.05, 'pm' => 0.3],
+        'striker' => ['pace' => 0.25, 'pass' => 0.05, 'tech' => 0.15, 'head' => 0.2, 'stri' => 0.35],
+    ];
+
     public const PLAYER_POSITIONS = [
         self::POSITION_GK, self::POSITION_DEF,
         self::POSITION_DEF_WING, self::POSITION_MID_WING, 

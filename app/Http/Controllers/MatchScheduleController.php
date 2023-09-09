@@ -81,13 +81,17 @@ class MatchScheduleController extends Controller
         $team = Club::findOrFail(auth()->user()->club_id);
         $players = Player::where('club_id', $team->id)->get();
         $positions = ['DEF', 'MID', 'FOW'];
+
+        // $lineup = $schedule->home_team_id === $team->id ? json_decode($schedule->home_lineup) : json_decode($schedule->away_lineup);
+
         return view(
             'matchSchedules.matchForm',
             [
-                'schedule'  => $schedule,
-                'team'      => $team,
-                'options'   => $players,
-                'positions' => $positions 
+                'schedule'   => $schedule,
+                'team'       => $team,
+                'options'    => $players,
+                'positions'  => $positions,
+                // 'lineupData' => $lineup
             ]
         );
     }

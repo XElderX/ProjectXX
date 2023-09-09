@@ -19,7 +19,7 @@
                     </div>
                     <div class="loginBlock">
                         @if (Auth::user()->logins !== null)
-                            <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[1]) }}
+                            <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[0]) }} //fix it
                             </div>
                         @else
                             <div> first login </div>

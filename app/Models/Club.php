@@ -55,4 +55,8 @@ class Club extends Model
     public function player(){
         return $this->hasMany(Player::class);
     }
+
+    public function selectPlayerById($id){
+
+    }
 }
