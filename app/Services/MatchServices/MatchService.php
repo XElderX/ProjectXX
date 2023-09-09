@@ -237,47 +237,6 @@ class MatchService extends BaseMatchEvents
             $eventDesc .= $this->eventIteration($minute, $possessingTeam, $eventDesc);
 
 
-            // // Simulate events for each minute
-            // $event = rand(1, 100); // Random number to determine events probability
-
-            // // Probability of a goal being scored (you can adjust these probabilities as needed)
-            // $goalProbability = 2; // 2% chance of a goal
-
-            // // Probability of a foul happening
-            // $foulProbability = 5; // 5% chance of a foul
-
-            // // Probability of a card being shown
-            // $cardProbability = 2; // 2% chance of a card
-
-            // // Simulate a goal
-            // if ($event <= $goalProbability) {
-            //     $scorer = rand(1, 2); // Randomly select the team that scores (1: Home, 2: Away)
-            //     if ($scorer === 1) {
-            //         $homeGoals++;
-            //     } else {
-            //         $awayGoals++;
-            //     }
-            //     echo "Goal at minute $minute! Home: $homeGoals - Away: $awayGoals\n";
-            // }
-
-            // // Simulate a foul
-            // if ($event <= $foulProbability) {
-            //     $foulTeam = rand(1, 2); // Randomly select the team committing the foul (1: Home, 2: Away)
-            //     echo "Foul at minute $minute! Foul by Team $foulTeam\n";
-            // }
-
-            // // Simulate a card being shown
-            // if ($event <= $cardProbability) {
-            //     $cardTeam = rand(1, 2); // Randomly select the team receiving the card (1: Home, 2: Away)
-            //     $cardType = rand(0, 1); // Randomly choose between yellow (0) and red (1) card
-            //     $cardColor = ($cardType === 0) ? 'Yellow' : 'Red';
-            //     echo "$cardColor card shown at minute $minute! Team $cardTeam\n";
-            // }
-
-            // // Simulate other events and actions as needed
-
-            // // Add a delay or sleep to create the real-time effect
-            // // You can adjust the duration to control the match speed.
             echo "~~~~~~~~~~~~\n";
 
             $eventDesc .= " \n";
@@ -292,13 +251,7 @@ class MatchService extends BaseMatchEvents
             $this->awayChance
         );
         $finalEvent = $this->finalEvent($this->match, $homePossessionCount);
-        // $homePoss = round($homePossessionCount * 100 / 90);
-        // $awayPoss = 100 - $homePoss;
-
-        // $finalEvent = 'Rungtynes pasibaige rezultatu: ' . $this->match->homeTeam->club_name . ' ' . $this->match->home_goals . ' - ' . $this->match->away_goals . ' ' . $this->match->awayTeam->club_name . " \n";
-        // $finalEvent .= 'Kamuolio kontrole: ' . $this->match->homeTeam->club_name . ' ' . $homePoss . ' - ' . $awayPoss . ' ' . $this->match->awayTeam->club_name . " \n";
-        // $finalEvent .= 'Pavojingos progos rungtynese: ' . $this->match->homeTeam->club_name . ' ' . $this->homeChance . ' - ' . $this->awayChance . ' ' . $this->match->awayTeam->club_name . " \n";
-        array_push($report, $finalEvent);
+          array_push($report, $finalEvent);
         $this->match->report = $report;
 
         dd($report);
@@ -345,12 +298,7 @@ class MatchService extends BaseMatchEvents
             }
             $randomIndex = array_rand($filteredPlayers);
             $scorer = $filteredPlayers[$randomIndex];
-            // dd($scorer->player_id);
-
-            // dd($selectedPlayer);
-
-            // dd($scorer);
-            // dd($this->match->homeTeam->player);
+   
             if ($possessingTeam === 'home') {
                 $selectedPlayer = $this->match->homeTeam->player->firstWhere('id', $scorer->player_id);
                 $strike = (int)$selectedPlayer['str'] + ((int)$selectedPlayer['tech'] * 0.3) + ((int)$selectedPlayer['pace'] * 0.3);
