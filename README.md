@@ -189,6 +189,12 @@ This is project XX
 * baseMatchEvents class created;
 * added new fields to match_schedules table (home_goals,  away_goals, home_shots,  away_shots, home_on_target, away_on_target);
 
+ #### 2023.09.10
+
+* Relocated methods to baseMatchEvents class;
+* Created EcentsTemplates class; 
+
+
 
 
 

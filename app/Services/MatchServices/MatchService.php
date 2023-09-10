@@ -4,6 +4,7 @@ namespace App\Services\MatchServices;
 
 use App\Models\MatchSchedule;
 use App\Models\Player;
+use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 use Illuminate\Database\Eloquent\Collection;
 
 class MatchService extends BaseMatchEvents
@@ -28,6 +29,9 @@ class MatchService extends BaseMatchEvents
     public $awayGoals = 0;
     public $homeChance = 0;
     public $awayChance = 0;
+
+    public $homeTarget = 0;
+    public $awayTarget = 0;
 
     public function __construct(MatchSchedule $match)
     {
@@ -174,8 +178,8 @@ class MatchService extends BaseMatchEvents
 
 
         // Calculate the luck factor (0-5%)
-        $homeLuckFactor = rand(0, 10) / 100;
-        $awayLuckFactor = rand(0, 10) / 100;
+        $homeLuckFactor = rand(0, 50) / 100;
+        $awayLuckFactor = rand(0, 50) / 100;
         $this->match->home_goals = 0;
         $this->match->away_goals = 0;
         $this->match->home_shots = 0;
@@ -186,18 +190,17 @@ class MatchService extends BaseMatchEvents
         $report = [];
 
         for ($minute = 1; $minute <= $matchDuration; $minute++) {
-            $eventDesc = $minute . 'min: ';
+            $eventDesc = '';
             // Calculate the probability of each team winning possession based on their midfield skill
+
             if ($minute === 1) {
                 $homeStart ? $possessingTeam = 'home' : $possessingTeam = 'away';
                 $event = $this->startMatchHalf('first', $possessingTeam, $this->match);
                 $eventDesc .= $event;
-                echo "1st minute possesion has >$possessingTeam<<\n";
             } elseif ($minute === 46) {
                 $homeStart ? $possessingTeam = 'away' : $possessingTeam = 'home';
                 $event = $this->startMatchHalf('second', $possessingTeam, $this->match);
                 $eventDesc .= $event;
-                echo "46th minute possesion has >$possessingTeam<\n";
             } else {
                 if ($consecutivePossessionTeam) {
                     if ($consecutivePossessionTeam === 'home') {
@@ -207,24 +210,21 @@ class MatchService extends BaseMatchEvents
                         $awayPossessionProbability -= $momentumFactor;
                         $homePossessionProbability = $defaultHomePossessionProbability; // Reset home team probability
                     }
-                    $homePossessionProbability = max(min($homePossessionProbability, 1), 0); // Ensure the probability is within the valid range [0, 1]
-                    $awayPossessionProbability = max(min($awayPossessionProbability, 1), 0); // Ensure the probability is within the valid range [0, 1]
+                    $homePossessionProbability = max(min($homePossessionProbability, 1), 0);
+                    $awayPossessionProbability = max(min($awayPossessionProbability, 1), 0);
                 }
-
+                
                 $randa = rand(0, 100) / 100;
                 // Determine which team wins possession for this minute
                 if ($homePossessionProbability > $awayPossessionProbability) {
-                    // echo "home poss better possesion Ratio: " . (($awayPossessionProbability / $homePossessionProbability) / 2)  . " **** randa $randa\n";
                     $possessingTeam = $randa <= (($awayPossessionProbability / $homePossessionProbability)) ? 'home' : 'away';
                 } else if ($homePossessionProbability < $awayPossessionProbability) {
-                    $possessingTeam = $randa <= (($homePossessionProbability / $awayPossessionProbability)) ? 'away' : 'home';
-                    // echo "away poss better possesion Ratio: " . (($homePossessionProbability / $awayPossessionProbability) / 2) . " **** randa $randa\n";
+                    $possessingTeam = $randa <= (($homePossessionProbability / $awayPossessionProbability)) ? 'away' : 'home';;
                 } else {
-                    echo "equal possesion Ratio: **** randa $randa\n";
                     $possessingTeam = rand(0, 1) ? 'home' : 'away';
                 }
             }
-
+            
             // Update possession count and the consecutivePossessionTeam variable
             if ($possessingTeam === 'home') {
                 $homePossessionCount++;
@@ -233,14 +233,18 @@ class MatchService extends BaseMatchEvents
                 $awayPossessionCount++;
                 $consecutivePossessionTeam = 'away';
             }
+            if ($minute !== 90 && $minute % 15 === 0) { //TODO FINISH THIS
+                $eventDesc .= $this->provideMatchStatsEvent($this->match, $homePossessionCount, $minute, $this->homeChance, $this->awayChance, $this->homeTarget, $this->awayTarget );
+            }
             // echo "possesion count home : $homePossessionCount  away: $awayPossessionCount\n";
-            $eventDesc .= $this->eventIteration($minute, $possessingTeam, $eventDesc);
-
-
+            $eventDesc .= $this->eventIteration($minute, $possessingTeam, $eventDesc, $homeLuckFactor, $awayLuckFactor);
             echo "~~~~~~~~~~~~\n";
 
-            $eventDesc .= " \n";
-            array_push($report, $eventDesc);
+            if (strlen($eventDesc) < 8) {
+                $eventDesc = "";
+            } else {
+                array_push($report, $eventDesc);
+            }
             sleep(0);
         }
         $this->updateMatchStats(
@@ -251,7 +255,7 @@ class MatchService extends BaseMatchEvents
             $this->awayChance
         );
         $finalEvent = $this->finalEvent($this->match, $homePossessionCount);
-          array_push($report, $finalEvent);
+        array_push($report, $finalEvent);
         $this->match->report = $report;
 
         dd($report);
@@ -261,116 +265,42 @@ class MatchService extends BaseMatchEvents
     {
         $event = rand(0, 10000) / 100;
 
-        // Output the result with two decimal places
-        $event = number_format($event, 4);
         echo "laikas $minute , komanda valdo kamuoli $possessingTeam eventoRollNr $event\n";
-        if ($possessingTeam === 'home') {
-            $attackMarks = $this->homeStriking;
-            $defenceMarks = $this->awayDefending;
-        } else {
-            $attackMarks = $this->awayStriking;
-            $defenceMarks = $this->homeDefending;
-        }
-        $goalProbability = $this->calculateGoalProbability($attackMarks, $defenceMarks);
 
+        $marks = $this->attackDefenceMarks($possessingTeam, $this->homeStriking, $this->awayStriking, $this->homeDefending, $this->awayDefending);
+
+        // dd($marks);
+        $goalProbability = $this->calculateGoalProbability($marks[0], $marks[1]);
+
+        // dd($goalProbability);
+        //select possesioning teams players
         $players = $possessingTeam === 'home' ?  $players = json_decode($this->match->home_lineup) :  $players = json_decode($this->match->away_lineup);
         // Simulate a goal
         if ($event <= $goalProbability) {
-            $scorerRand = rand(1, 10);
-            $scorer = '';
-            if ($scorerRand <= 7) {
-                $filteredPlayers = array_filter($players, function ($player) {
-                    return $player->position === "FOW";
-                });
+            $scorer = $this->playerToScore($players);
 
-                $filteredPlayers = array_values($filteredPlayers);
-            } elseif ($scorerRand <= 9) {
-                $filteredPlayers = array_filter($players, function ($player) {
-                    return $player->position === "MID";
-                });
+            $selectedPlayerModel = $this->getPlayerModel($this->match, $possessingTeam, $scorer);
+            $strike = $this->calculateStrike($selectedPlayerModel, $possessingTeam === 'home' ? $this->homeStriking : $this->awayStriking);
+            $scoreChance = $this->chanceToScore();
+            $saveChance = $this->chanceToSave($strike, $possessingTeam === 'home' ? $this->homeGoalkeeping : $this->awayGoalkeeping);
+            $eventDesc .= $this->reportEvent($minute, EventsTemplates::TYPE_OPPORTUNITY, $possessingTeam === 'home' ? $this->match->homeTeam->club_name : $this->match->awayTeam->club_name, $selectedPlayerModel);
 
-                $filteredPlayers = array_values($filteredPlayers);
+            ($possessingTeam === 'home') ? $this->homeChance++ : $this->awayChance++;
+            ($possessingTeam === 'home') ? $this->homeTarget++ : $this->awayTarget++;
+
+            if ($scoreChance >= $saveChance) {
+                ($possessingTeam === 'home') ? $this->homeGoals++ : $this->awayGoals++;
+                $eventDesc .= $this->reportEvent($minute, EventsTemplates::TYPE_SCORE, $possessingTeam === 'home' ? $this->match->homeTeam->club_name : $this->match->awayTeam->club_name, $selectedPlayerModel);
+                echo "Goal at minute $minute! Home Team scores: $this->homeGoals\n";
             } else {
-                $filteredPlayers = array_filter($players, function ($player) {
-                    return $player->position === "DEF";
-                });
-                $filteredPlayers = array_values($filteredPlayers);
+                $eventDesc .= $this->reportEvent($minute, EventsTemplates::TYPE_SAVEGK, $possessingTeam === 'home' ? $this->match->homeTeam->club_name : $this->match->awayTeam->club_name, $selectedPlayerModel);
+                echo "Away Goalkeeper made save at minute $minute!\n";
             }
-            $randomIndex = array_rand($filteredPlayers);
-            $scorer = $filteredPlayers[$randomIndex];
-   
-            if ($possessingTeam === 'home') {
-                $selectedPlayer = $this->match->homeTeam->player->firstWhere('id', $scorer->player_id);
-                $strike = (int)$selectedPlayer['str'] + ((int)$selectedPlayer['tech'] * 0.3) + ((int)$selectedPlayer['pace'] * 0.3);
-                $strike *= ((int)$selectedPlayer['exp'] / 100) + 1;
-                $strike += (-5 + (int)$selectedPlayer['form']);
+            $eventDesc .= $this->resultEvent($minute, $this->homeGoals, $this->awayGoals, $this->match);
+            // dd($this->match->homeTeam->player);
 
-                $strike += $this->homeStriking / 11;
-                // dd($strike);
-                echo "ATTCKER $this->homeStriking vs GOALKEEPER $this->awayGoalkeeping";
-
-                $this->homeChance++;
-                $saveChance = 100 / ($strike / $this->awayGoalkeeping);
-                $saveChance >= 1 ?? $saveChance = 0.94;
-                $scoreRoll = rand(1, 10000);
-                $scoreChance = $scoreRoll / 100;
-
-                $eventDesc .= $this->match->homeTeam->club_name . ' turi proga isvystiti puolima. ';
-
-                echo "chance at $minute! Home Team chance: $scoreChance vs save $saveChance\n";
-                if ($scoreChance >= $saveChance) {
-                    $this->homeGoals++;
-                    $eventDesc .= $this->match->homeTeam->club_name . ' pelno ivarti!! Ivartis pelnytas ' . $minute . ' min. Ivarcio autorius: ' . $selectedPlayer->first_name . ' ' . $selectedPlayer->last_name;
-
-                    echo "Goal at minute $minute! Home Team scores: $this->homeGoals\n";
-                } else {
-                    $eventDesc .= $this->match->awayTeam->club_name . ' vartininkas atremia pavojingai ' . $selectedPlayer->first_name . ' ' . $selectedPlayer->last_name . ' spiriama kamuoli i jo saugomus vartus ';
-                    echo "Away Goalkeeper made save at minute $minute!\n";
-                }
-                $eventDesc .= ' Rungtyniu rezultatas: ' . $this->match->homeTeam->club_name . ' ' . $this->homeGoals . ' - ' . $this->awayGoals . ' ' . $this->match->awayTeam->club_name;
-            } else {
-                $selectedPlayer = $this->match->awayTeam->player->firstWhere('id', $scorer->player_id);
-                $strike = (int)$selectedPlayer['str'] + ((int)$selectedPlayer['tech'] * 0.3) + ((int)$selectedPlayer['pace'] * 0.3);
-                $strike *= ((int)$selectedPlayer['exp'] / 100) + 1;
-                $strike += (-5 + (int)$selectedPlayer['form']);
-                echo "ATTCKER $this->awayStriking vs GOALKEEPER $this->homeGoalkeeping";
-                $this->awayChance++;
-                $saveChance = 100 / ($strike  / $this->homeGoalkeeping);
-                $saveChance >= 1 ?? $saveChance = 0.94;
-                $scoreRoll = rand(1, 10000);
-                $scoreChance = $scoreRoll / 100;
-                $eventDesc .= $this->match->awayTeam->club_name . ' turi proga isvystiti puolima. ';
-
-                echo "chance at $minute! away Team chance: $scoreChance vs save $saveChance\n";
-                if ($scoreChance >= $saveChance) {
-                    $this->awayGoals++;
-                    $eventDesc .= $this->match->awayTeam->club_name . ' pelno ivarti!! Ivartis pelnytas ' . $minute . 'min.  Ivarcio autorius: ' . $selectedPlayer->first_name . ' ' . $selectedPlayer->last_name;
-
-                    echo "Goal at minute $minute! Home Team scores: $this->awayGoals\n";
-                } else {
-                    $eventDesc .= $this->match->homeTeam->club_name . ' vartininkas atremia pavojingai ' . $selectedPlayer->first_name . ' ' . $selectedPlayer->last_name . ' spiriama kamuoli i jo saugomus vartus ';
-                    echo "Home Goalkeeper made save at minute $minute!\n";
-                }
-                $eventDesc .= ' Rungtyniu rezultatas: ' . $this->match->homeTeam->club_name . ' ' . $this->homeGoals . ' - ' . $this->awayGoals . ' ' . $this->match->awayTeam->club_name;
-            }
             echo "at minute $minute! Result is Home: $this->homeGoals - Away: $this->awayGoals\n";
-            return $eventDesc;
+            return $eventDesc . "\n";
         }
-    }
-
-    public function calculateGoalProbability($attackMarks, $defenceMarks, $defaultGoalProbability = 0.1, $defaultAttackMarks = 100, $defaultDefenceMarks = 100, $scalingFactor = 20)
-    {
-        // Calculate the relative strength of the attack compared to the default equal marks
-        $relativeAttackStrength = $attackMarks / $defenceMarks;
-
-        $newGoalProbabilityPercentage = ($relativeAttackStrength * $defaultGoalProbability) * 100;
-
-        // echo "$attackMarks, $defenceMarks ... ivarcio tikimybe: $newGoalProbabilityPercentage\n";
-        return $newGoalProbabilityPercentage;
-    }
-
-    function sigmoid($x)
-    {
-        return 1 / (1 + exp(-$x));
     }
 }
