@@ -8,15 +8,15 @@ use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 
 class BaseMatchEvents extends EventsTemplates
 {
-    public function startMatchHalf(string $half, string $team, MatchSchedule $match): string
+    public function startMatchHalf(string $half, bool $isHome, MatchSchedule $match): string
     {
         if ($half === 'first') {
-            $event = $team === 'home'
+            $event = $isHome
                 ? 'Namu komanda ' . $match->homeTeam->club_name . ' pradeda rungtynes su kamuoliu, issispirdami kamuoli nuo vidurio aikstes linijos. '
                 : 'Sveciu komanda ' . $match->awayTeam->club_name . ' pradeda rungtynes su kamuoliu, issispirdami kamuoli nuo vidurio aikstes linijos. ';
         }
         if ($half === 'second') {
-            $event = $team === 'home'
+            $event = $isHome
                 ? 'Namu komanda ' . $match->homeTeam->club_name . ' antra rungtyniu dali pradeda su kamuoliu, issispirdami kamuoli nuo vidurio aikstes linijos. '
                 : 'Sveciu komanda ' . $match->awayTeam->club_name . ' antra rungtyniu dali pradeda su kamuoliu, issispirdami kamuoli nuo vidurio aikstes linijos. ';
         }
@@ -64,9 +64,9 @@ class BaseMatchEvents extends EventsTemplates
         $match->save();
     }
 
-    public function attackDefenceMarks(string $possessingTeam, float $homeStr, float $awayStr, float $homeDef, float $awayDef): array
+    public function attackDefenceMarks(bool $isHome, float $homeStr, float $awayStr, float $homeDef, float $awayDef): array
     {
-        return $possessingTeam === 'home' ? [$homeStr, $awayDef] : [$awayStr, $homeDef];
+        return $isHome ? [$homeStr, $awayDef] : [$awayStr, $homeDef];
     }
 
     public function calculateGoalProbability($attackMarks, $defenceMarks, $defaultGoalProbability = 0.1, $defaultAttackMarks = 100, $defaultDefenceMarks = 100, $scalingFactor = 20)
@@ -105,14 +105,14 @@ class BaseMatchEvents extends EventsTemplates
         return  $filteredPlayers[$randomIndex];
     }
 
-    public function getPlayerModel(MatchSchedule $match, string $possessingTeam, object $scorer)
-    {
-        if ($possessingTeam === 'home') {
-            return  $match->homeTeam->player->firstWhere('id', $scorer->player_id);
-        } else {
-            return $match->awayTeam->player->firstWhere('id', $scorer->player_id);
-        }
-    }
+    // public function getPlayerModel(MatchSchedule $match, string $possessingTeam, object $scorer)
+    // {
+    //     if ($possessingTeam === 'home') {
+    //         return  $match->homeTeam->player->firstWhere('id', $scorer->player_id);
+    //     } else {
+    //         return $match->awayTeam->player->firstWhere('id', $scorer->player_id);
+    //     }
+    // }
 
     public function calculateStrike(Player $selectedPlayer, $teamStr)
     {
@@ -137,13 +137,13 @@ class BaseMatchEvents extends EventsTemplates
         return $scoreRoll / 100;
     }
 
-    public function reportEvent($minute, $eventName, $teamName = '', $player): string
+    public function reportEvent($minute, $eventName, $teamName = '', $player, $position = ''): string
     {
         $eventId = array_rand($this->$eventName);
         $eventTemplate = $this->$eventName[$eventId];
         $eventString = str_replace(
-            ['$minute', '$teamName', '$player'],
-            [$minute, $teamName, $player->first_name . ' ' . $player->last_name],
+            ['$minute', '$teamName', '$player', '$position'],
+            [$minute, $teamName, $player->first_name . ' ' . $player->last_name, $position],
             $eventTemplate);
         return $eventString . " \n";
     }

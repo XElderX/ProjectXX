@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('matches:update-status')->everyThirtyMinutes();
-        $schedule->command('matches:process-match')->everyThirtyMinutes();
+        $schedule->command('matches:process-matches')->everyThirtyMinutes();
     }
     
 

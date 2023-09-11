@@ -192,7 +192,14 @@ This is project XX
  #### 2023.09.10
 
 * Relocated methods to baseMatchEvents class;
-* Created EcentsTemplates class; 
+* Created EventsTemplates class; 
+
+ #### 2023.09.11
+
+* Created matchMechanics classes; 
+* Relocated methods to matchMechanics class;
+* Further developing match engine(last man foul scenario started )
+
 
 
 
