@@ -12,23 +12,22 @@ class BaseMatchMechanics
         $squad = $this->selectOppositeTeamPlayer($isHome, $base);
         $player = $this->selectPlayers($squad);
         $model = $this->getPlayerModel($base->match, !$isHome, $player);
-        dd($model);//TODO FROM HERE
 
         $eventDesc .= $base->reportEvent(
             $minute,
-            eventName:EventsTemplates::TYPE_LASTFOUL, 
-            teamName:$isHome 
-            ? $base->match->awayTeam->club_name 
-            : $base->match->homeTeam->club_name, 
-            player:$model,
-            position:$player->position
+            eventName: EventsTemplates::TYPE_LASTFOUL,
+            teamName: $isHome
+                ? $base->match->awayTeam->club_name
+                : $base->match->homeTeam->club_name,
+            player: $model,
+            position: $player->position
         );
-
-        dd($eventDesc);
-
+        $this->dismisalPlayer($base, $isHome, $player);
+        return $eventDesc;
     }
+
     public function getPlayerModel(MatchSchedule $match, bool $isHome, object $playerModel)
-    {echo $isHome . 'z' . $playerModel->player_id . 'x';
+    {
         if ($isHome) {
             return  $match->homeTeam->player->firstWhere('id', $playerModel->player_id);
         } else {
@@ -68,5 +67,29 @@ class BaseMatchMechanics
         $randomIndex = array_rand($filteredPlayers);
 
         return $filteredPlayers[$randomIndex];
+    }
+
+    public function dismisalPlayer($base, bool $isHome, object $player): void
+    {
+        dd($base->homeLineup);
+        // Determine the lineup to modify based on $isHome
+        $lineup = $isHome ? $base->awayLineup : $base->homeLineup;
+
+        // Assuming $base->homeLineup is your array and $player is the player to remove
+        $playerIdToRemove = $player->player_id;
+
+        // Use array_filter to create a new array without the matching player
+        $lineup = array_filter($lineup, function ($item) use ($playerIdToRemove) {
+            return $item->player_id !== $playerIdToRemove;
+        });
+        // Assign the modified lineup back to the correct property
+        if ($isHome) {
+            $base->awayLineup = $lineup;
+        } else {
+            $base->homeLineup = $lineup;
+        }
+        dd($base->awayLineup);
+        $base->isDismissed = true;
+        echo '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@DISMISSED@@@@@@@@@@@@@@@@@@@@@@@';
     }
 }

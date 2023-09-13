@@ -8,6 +8,8 @@ use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 
 class BaseMatchEvents extends EventsTemplates
 {
+
+
     public function startMatchHalf(string $half, bool $isHome, MatchSchedule $match): string
     {
         if ($half === 'first') {
@@ -154,4 +156,94 @@ class BaseMatchEvents extends EventsTemplates
        
         return $eventString ." \n";
     }
+
+    public function calculatePlayerSkills($playerData)
+    {
+        $player = Player::find($playerData->player_id);
+        if ($player) {
+            // Extract skills based on player's position
+            $position = $playerData->position;
+            $gkSkill = (float) $player->gk;
+            $paceSkill = (float) $player->pace;
+            $passSkill = (float) $player->pass;
+            $defSkill = (float) $player->def;
+            $pmSkill = (float) $player->pm;
+            $techSkill = (float) $player->tech;
+            $headingSkill = (float) $player->head;
+            $strSkill = (float) $player->str;
+            $staminaSkill = (float) $player->stamina;
+            $expSkill = (float) $player->exp;
+            $leadSkill = (float) $player->lead;
+            $formSkill = (float) $player->form;
+
+            // Calculate skills based on player's position
+            if ($position === 'GK') {
+                $skillProportions = Player::SKILL_PROPORTIONS['goalkeeper'];
+                $goalkeeping = $gkSkill * $skillProportions['gk'] + $paceSkill * $skillProportions['pace'] + $passSkill * $skillProportions['pass'];
+                $exp = ($goalkeeping / 3) * ($expSkill * 0.1);
+                $form = (($goalkeeping / 3) + $exp) * ($formSkill * 0.1);
+                $goalkeeping += $exp + $form + $leadSkill * 0.15;
+                return $goalkeeping;
+            } elseif ($position === 'DEF') {
+                $skillProportions = Player::SKILL_PROPORTIONS['defender'];
+                $defending = $defSkill * $skillProportions['def'] + $pmSkill * $skillProportions['pm'] + $techSkill * $skillProportions['tech'] + $headingSkill * $skillProportions['head'] + $passSkill * $skillProportions['pass'] + $paceSkill * $skillProportions['pace'];
+                $exp = ($defending / 6) * ($expSkill * 0.13);
+                $form = (($defending / 6) + $exp) * ($formSkill * 0.13);
+                $defending += $exp + $form + $leadSkill * 0.17;
+                return $defending;
+            } elseif ($position === 'MID') {
+                $skillProportions = Player::SKILL_PROPORTIONS['midfielder'];
+                $midfielding = $defSkill * $skillProportions['def'] + $paceSkill * $skillProportions['pace'] + $passSkill * $skillProportions['pass'] + $techSkill * $skillProportions['tech'] + $headingSkill * $skillProportions['head'] + $pmSkill * $skillProportions['pm'];
+                $exp = ($midfielding / 6) * ($expSkill * 0.13);
+                $form = (($midfielding / 6) + $exp) * ($formSkill * 0.13);
+                $midfielding += $exp + $form + $leadSkill * 0.17;
+                return $midfielding;
+            } elseif ($position === 'FOW') {
+                $skillProportions = Player::SKILL_PROPORTIONS['striker'];
+                $striking = $paceSkill * $skillProportions['pace'] + $passSkill * $skillProportions['pass'] + $techSkill * $skillProportions['tech'] + $headingSkill * $skillProportions['head'] + $strSkill * $skillProportions['stri'];
+                $exp = ($striking / 5) * ($expSkill * 0.14);
+                $form = (($striking / 5) + $exp) * ($formSkill * 0.15);
+                $striking += $exp + $form + $leadSkill * 0.19;
+                return $striking;
+            }
+        }
+
+        return 0; // Return 0 if player not found or invalid position
+    }
+
+    
+    public function fetchTeamSkills($base, array $lineup, &$goalkeeping, &$defending, &$midfielding, &$striking)
+{
+    // Check if $lineup is not null and is an array before proceeding
+    if (!is_array($lineup)) {
+        return [];
+    }
+
+    $teamPlayers = [];
+
+    foreach ($lineup as $playerData) {
+        $skill = $base->calculatePlayerSkills($playerData);
+        if ($skill > 0) {
+            $teamPlayers[] = Player::find($playerData->player_id);
+
+            // Assign skills based on position
+            switch ($playerData->position) {
+                case 'GK':
+                    $goalkeeping += $skill;
+                    break;
+                case 'DEF':
+                    $defending += $skill;
+                    break;
+                case 'MID':
+                    $midfielding += $skill;
+                    break;
+                case 'FOW':
+                    $striking += $skill;
+                    break;
+            }
+        }
+    }
+
+    return $teamPlayers;
+}
 }

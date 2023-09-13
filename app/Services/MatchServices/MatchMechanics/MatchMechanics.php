@@ -22,35 +22,35 @@ class MatchMechanics extends BaseMatchMechanics
     {
         $scorer = $base->playerToScore($players);
 
-            $selectedPlayerModel = $this->getPlayerModel($base->match, $isHome, $scorer);
-            $strike = $base->calculateStrike($selectedPlayerModel, $isHome ? $base->homeStriking : $base->awayStriking);
-            $scoreChance = $base->chanceToScore();
-            $saveChance = $base->chanceToSave($strike, $isHome ? $base->homeGoalkeeping : $base->awayGoalkeeping);
-            $eventDesc .= $base->reportEvent($minute, EventsTemplates::TYPE_OPPORTUNITY, $isHome ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
+        $selectedPlayerModel = $this->getPlayerModel($base->match, $isHome, $scorer);
+        $strike = $base->calculateStrike($selectedPlayerModel, $isHome ? $base->homeStriking : $base->awayStriking);
+        $scoreChance = $base->chanceToScore();
+        $saveChance = $base->chanceToSave($strike, $isHome ? $base->homeGoalkeeping : $base->awayGoalkeeping);
+        $eventDesc .= $base->reportEvent($minute, EventsTemplates::TYPE_OPPORTUNITY, $isHome ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
 
-            ($isHome) ? $base->homeChance++ : $base->awayChance++;
-            
-            if ($scoreChance >= $saveChance) {
-                if (rand(0, 20) === 0) {
-                    $this->lastManFoul($base, $isHome, $eventDesc, $minute);
-                }
+        ($isHome) ? $base->homeChance++ : $base->awayChance++;
+        $eventDesc .= $this->lastManFoul($base, $isHome, $eventDesc, $minute);//DELETE
+        if ($scoreChance >= $saveChance) {
+            if (rand(0, 20) === 0) {
+                $eventDesc .= $this->lastManFoul($base, $isHome, $eventDesc, $minute);
+            } else {
                 ($isHome) ? $base->homeTarget++ : $base->awayTarget++;
                 ($isHome) ? $base->homeGoals++ : $base->awayGoals++;
                 $eventDesc .= $base->reportEvent($minute, EventsTemplates::TYPE_SCORE, $isHome ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
                 echo "Goal at minute $minute! Home Team scores: $base->homeGoals\n";
-            } else {
-                $eventDesc .= $base->reportEvent($minute, EventsTemplates::TYPE_SAVEGK, $isHome ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
-                echo "Away Goalkeeper made save at minute $minute!\n";
             }
-            $eventDesc .= $base->resultEvent($minute, $base->homeGoals, $base->awayGoals, $base->match);
-            // dd($base->match->homeTeam->player);
+        } else {
+            $eventDesc .= $base->reportEvent($minute, EventsTemplates::TYPE_SAVEGK, $isHome ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
+            echo "Away Goalkeeper made save at minute $minute!\n";
+        }
+        $eventDesc .= $base->resultEvent($minute, $base->homeGoals, $base->awayGoals, $base->match);
+        // dd($base->match->homeTeam->player);
 
-            echo "at minute $minute! Result is Home: $base->homeGoals - Away: $base->awayGoals\n";
-            return $eventDesc . "\n";
+        echo "at minute $minute! Result is Home: $base->homeGoals - Away: $base->awayGoals\n";
+        return $eventDesc . "\n";
     }
 
     public function foulScenario()
     {
-
     }
 }

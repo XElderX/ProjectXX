@@ -200,8 +200,8 @@ This is project XX
 * Relocated methods to matchMechanics class;
 * Further developing match engine(last man foul scenario started )
 
+ #### 2023.09.12
 
-
-
-
-
+* Remodulated code for more concise and maintainable,; 
+* Further developing match engine(last man foul scenario started )
+* added dismisalPlayer method;
