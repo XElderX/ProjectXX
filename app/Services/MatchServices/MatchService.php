@@ -3,8 +3,6 @@
 namespace App\Services\MatchServices;
 
 use App\Models\MatchSchedule;
-use App\Models\Player;
-use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 use App\Services\MatchServices\MatchMechanics\MatchMechanics;
 
 
@@ -34,7 +32,7 @@ class MatchService extends BaseMatchEvents
 
     public $homeTarget = 0;
     public $awayTarget = 0;
-    public $isDismissed = false;
+    public $isDismissed = false; //DEBUG VARIABLE
 
     public function __construct(MatchSchedule $match)
     {
@@ -47,8 +45,8 @@ class MatchService extends BaseMatchEvents
         $this->awayLineup = json_decode($match->away_lineup);
 
         // Usage:
-        $this->homeLineup = $this->fetchTeamSkills($this, $this->homeLineup, $this->homeGoalkeeping, $this->homeDefending, $this->homeMidfielding, $this->homeStriking);
-        $this->awayLineup = $this->fetchTeamSkills($this, $this->awayLineup, $this->awayGoalkeeping, $this->awayDefending, $this->awayMidfielding, $this->awayStriking);
+        $this->homeTeamFetch($this);
+        $this->awayTeamFetch($this);
     }
 
     public function simulateMatch()
@@ -59,7 +57,6 @@ class MatchService extends BaseMatchEvents
 
         $homePossessionCount = 0;
         $awayPossessionCount = 0;
-
 
         $momentumFactor = 0.02; // A small value to decrease the probability of consecutive possessions
         $consecutivePossessionTeam = null;
@@ -80,16 +77,22 @@ class MatchService extends BaseMatchEvents
         $report = [];
 
         for ($minute = 1; $minute <= $matchDuration; $minute++) {
-            $this->homeLineup = $this->fetchTeamSkills($this, $this->homeLineup, $this->homeGoalkeeping, $this->homeDefending, $this->homeMidfielding, $this->homeStriking);
-            $this->awayLineup = $this->fetchTeamSkills($this, $this->awayLineup, $this->awayGoalkeeping, $this->awayDefending, $this->awayMidfielding, $this->awayStriking);
+            $this->homeTeamFetch($this);
+            $this->awayTeamFetch($this);
             $totalMidfieldSkill = $this->homeMidfielding + $this->awayMidfielding;
-            echo ">>>>>>>>>>>>>>>>>>".$totalMidfieldSkill."<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
-            if ($this->isDismissed) {
-               dd($this->homeLineup);
-               print_r ($this->awayLineup);
-               die;
+            $totalDefSkill = $this->homeDefending + $this->awayDefending;
+            $totalFowSkill = $this->homeStriking + $this->awayStriking;
+            $this->matchMechanics->homeDefending = $this->homeDefending;
+            $this->matchMechanics->awayDefending = $this->awayDefending;
 
-            }
+            //JUST FOR DEBUGING
+            // echo ">>>>>>>>>>>>>>>>>>$totalMidfieldSkill -$totalDefSkill -$totalFowSkill -<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
+            // if ($this->isDismissed) {
+            //    print_r ($this->awayLineup);
+            //    print_r ($this->homeLineup);
+            //    die;
+
+            // }
 
             $defaultHomePossessionProbability = $this->homeMidfielding / $totalMidfieldSkill; // Default possession probability without momentum
             $defaultAwayPossessionProbability = $this->awayMidfielding / $totalMidfieldSkill; // Default possession probability without momentum

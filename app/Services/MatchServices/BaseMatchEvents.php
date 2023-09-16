@@ -8,8 +8,6 @@ use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 
 class BaseMatchEvents extends EventsTemplates
 {
-
-
     public function startMatchHalf(string $half, bool $isHome, MatchSchedule $match): string
     {
         if ($half === 'first') {
@@ -212,38 +210,70 @@ class BaseMatchEvents extends EventsTemplates
     }
 
     
-    public function fetchTeamSkills($base, array $lineup, &$goalkeeping, &$defending, &$midfielding, &$striking)
-{
-    // Check if $lineup is not null and is an array before proceeding
-    if (!is_array($lineup)) {
-        return [];
-    }
-
-    $teamPlayers = [];
-
-    foreach ($lineup as $playerData) {
-        $skill = $base->calculatePlayerSkills($playerData);
-        if ($skill > 0) {
-            $teamPlayers[] = Player::find($playerData->player_id);
-
-            // Assign skills based on position
-            switch ($playerData->position) {
-                case 'GK':
-                    $goalkeeping += $skill;
-                    break;
-                case 'DEF':
-                    $defending += $skill;
-                    break;
-                case 'MID':
-                    $midfielding += $skill;
-                    break;
-                case 'FOW':
-                    $striking += $skill;
-                    break;
+    public function homeTeamFetch($base):void
+    {
+        $homeGoalkeeping = 0;
+        $homeDefending = 0;
+        $homeMidfielding = 0;
+        $homeStriking = 0;
+        if (is_array($base->homeLineup)) {
+            foreach ($base->homeLineup as $playerData) {
+                $skill = $base->calculatePlayerSkills($playerData);
+                if ($skill > 0) {
+                    $homeLineupPlayers[] = Player::find($playerData->player_id);
+                    if ($playerData->position === 'GK') {
+                        $homeGoalkeeping += $skill;
+                    }
+                    // Assign other skills based on position
+                    elseif ($playerData->position === 'DEF') {
+                        $homeDefending += $skill;
+                    } elseif ($playerData->position === 'MID') {
+                        $homeMidfielding += $skill;
+                    } elseif ($playerData->position === 'FOW') {
+                        $homeStriking += $skill;
+                    }
+                }
             }
+            
+               $base->homeGoalkeeping = $homeGoalkeeping;
+               $base->homeDefending = $homeDefending;
+               $base->homeMidfielding = $homeMidfielding;
+               $base->homeStriking = $homeStriking;
         }
     }
 
-    return $teamPlayers;
-}
+    public function awayTeamFetch($base):void
+    {
+        $awayGoalkeeping = 0;
+        $awayDefending = 0;
+        $awayMidfielding = 0;
+        $awayStriking = 0;
+       
+        if (is_array($base->awayLineup)) {
+            foreach ($base->awayLineup as $playerData) {
+                $skill = $base->calculatePlayerSkills($playerData);
+                if ($skill > 0) {
+                    $awayLineupPlayers[] = Player::find($playerData->player_id);
+                    if ($playerData->position === 'GK') {
+                        $awayGoalkeeping += $skill;
+                    }
+                    // Assign other skills based on position
+                    if ($playerData->position === 'DEF') {
+                        $awayDefending += $skill;
+                    } elseif ($playerData->position === 'MID') {
+                        $awayMidfielding += $skill;
+                    } elseif ($playerData->position === 'FOW') {
+                        $awayStriking += $skill;
+                    }
+                }
+            }
+            $base->awayGoalkeeping = $awayGoalkeeping;
+            $base->awayDefending = $awayDefending;
+            $base->awayMidfielding = $awayMidfielding;
+            $base->awayStriking = $awayStriking;
+        }
+        else{
+            dd('error in fetch');
+        }
+    }
 }

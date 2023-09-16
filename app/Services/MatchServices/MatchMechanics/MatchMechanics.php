@@ -6,6 +6,10 @@ use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 
 class MatchMechanics extends BaseMatchMechanics
 {
+
+    public $homeDefending;
+    public $awayDefending;
+
     public function eventPhases(array $marks) //determines possible event turns count 
     {
         $ratio = $marks[0] / $marks[1];
@@ -27,12 +31,15 @@ class MatchMechanics extends BaseMatchMechanics
         $scoreChance = $base->chanceToScore();
         $saveChance = $base->chanceToSave($strike, $isHome ? $base->homeGoalkeeping : $base->awayGoalkeeping);
         $eventDesc .= $base->reportEvent($minute, EventsTemplates::TYPE_OPPORTUNITY, $isHome ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
-
+        
         ($isHome) ? $base->homeChance++ : $base->awayChance++;
-        $eventDesc .= $this->lastManFoul($base, $isHome, $eventDesc, $minute);//DELETE
+        $eventDesc = $this->lastManFoul($base, $isHome, $eventDesc, $minute);//DELETE
+        $eventDesc = $this->setPiece($base, $isHome, $eventDesc, $minute);
+        dd($eventDesc );
         if ($scoreChance >= $saveChance) {
             if (rand(0, 20) === 0) {
-                $eventDesc .= $this->lastManFoul($base, $isHome, $eventDesc, $minute);
+                $eventDesc = $this->lastManFoul($base, $isHome, $eventDesc, $minute);
+                $eventDesc = $this->setPiece($base, $isHome, $eventDesc, $minute);
             } else {
                 ($isHome) ? $base->homeTarget++ : $base->awayTarget++;
                 ($isHome) ? $base->homeGoals++ : $base->awayGoals++;

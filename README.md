@@ -205,3 +205,20 @@ This is project XX
 * Remodulated code for more concise and maintainable,; 
 * Further developing match engine(last man foul scenario started )
 * added dismisalPlayer method;
+
+ #### 2023.09.13
+
+* Made HotFix for serious issue with fetching Lineup; 
+
+ #### 2023.09.14
+
+* Made penalty set piece scenario; 
+
+ #### 2023.09.16
+
+* added penalty score and penalty save report templates; 
+* Made freeKick set piece scenario;
+* added freeKick score and freeKick save report templates; 
+
+
+
