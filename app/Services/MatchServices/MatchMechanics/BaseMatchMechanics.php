@@ -35,22 +35,8 @@ class BaseMatchMechanics
             $eventDesc = $this->penalty($base, $isHome, $eventDesc, $minute);
         } else {
             $eventDesc = $this->freeKick($base, $isHome, $eventDesc, $minute);
-            // $eventDesc .= $this->freeKick($base, bool $isHome, $eventDesc, $minute);
         } //TODO FINISH IMPLEMENT THESE 2 setPieces
-        // $squad = $this->selectOppositeTeamPlayer($isHome, $base);
-        // $player = $this->selectPlayers($squad);
-        // $model = $this->getPlayerModel($base->match, !$isHome, $player);
-
-        // $eventDesc .= $base->reportEvent(
-        //     $minute,
-        //     eventName: EventsTemplates::TYPE_LASTFOUL,
-        //     teamName: $isHome
-        //         ? $base->match->awayTeam->club_name
-        //         : $base->match->homeTeam->club_name,
-        //     player: $model,
-        //     position: $player->position
-        // );
-        // $this->dismisalPlayer($base, $isHome, $player);
+      
         return $eventDesc;
     }
 

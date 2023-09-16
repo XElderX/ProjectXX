@@ -82,5 +82,6 @@ class EventsTemplates
         ' $teamName vartininkas $player pirstu galais nukreipia kamuoli i virpsta!! isgelbydamas savo komanda nuo ivarcio!!  ',
         ' $teamName vartininkas $player pirstu galais nukreipia kamuoli i uzrybi!! isgelbydamas savo komanda nuo ivarcio!!  ',
         ' $teamName vartininkui $player pavyksta atremti varzovu pakelta kamuoli ir smugiuota galva i vartus smugi  ',
+        ' $teamName vartininkui $player laisvai apsigina nuo pavojingo smugio, kadangi varzovas labai netiksliai smugiuoja ir net nepataiko i vartus  ',
     ];
 }

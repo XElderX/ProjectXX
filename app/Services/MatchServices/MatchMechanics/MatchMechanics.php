@@ -33,9 +33,8 @@ class MatchMechanics extends BaseMatchMechanics
         $eventDesc .= $base->reportEvent($minute, EventsTemplates::TYPE_OPPORTUNITY, $isHome ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
         
         ($isHome) ? $base->homeChance++ : $base->awayChance++;
-        $eventDesc = $this->lastManFoul($base, $isHome, $eventDesc, $minute);//DELETE
-        $eventDesc = $this->setPiece($base, $isHome, $eventDesc, $minute);
-        dd($eventDesc );
+        // $eventDesc = $this->lastManFoul($base, $isHome, $eventDesc, $minute);//DELETE
+        // $eventDesc = $this->setPiece($base, $isHome, $eventDesc, $minute);
         if ($scoreChance >= $saveChance) {
             if (rand(0, 20) === 0) {
                 $eventDesc = $this->lastManFoul($base, $isHome, $eventDesc, $minute);
