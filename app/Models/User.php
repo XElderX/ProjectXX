@@ -126,4 +126,5 @@ class User extends Authenticatable implements JWTSubject
         $this->club_id = $clubId;
         return $this;
     }
+    //TODO currently bug when selecting same as active team  again thow sql exception
 }

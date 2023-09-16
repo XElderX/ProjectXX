@@ -93,15 +93,18 @@ Route::controller(GeneratorController::class)->group(function () {
 });
 
 Route::controller(MatchScheduleController::class)->group(function () {
-    Route::get('propose-friendly', 'proposeFriendlyView')->middleware('auth')->name('friendlyView');   
+    Route::get('propose-friendly', 'proposeFriendlyView')->middleware('auth')->name('friendlyView');
+    Route::get('fixtures', 'scheduledMatches')->middleware('auth')->name('schedules');   
+    Route::get('{id}/match-details', 'matchDetails')->middleware('auth')->name('matchReport');
+    Route::get('{id}/matchForm', 'matchForm')->middleware('auth')->name('matchOrders');     
+    Route::post('{id}submit-lineup', 'lineup')->middleware('auth')->name('postLineup');         
 });
 
 Route::controller(FriendlyInvitationController::class)->group(function () { 
     Route::post('propose-friendly', 'proposeFriendly')->middleware('auth')->name('proposeFriendly');
     Route::get('friendly-invitations', 'friendlyInvitations')->middleware('auth')->name('friendlyInvitations');
-    Route::get('{id}/cancel-friendly', 'cancelFriendly')->middleware('auth')->name('cancelInvitation');
-    Route::post('host-friendly', 'hostFriendly')->middleware('auth')->name('hostFriendly');
-    Route::get('{id}/accept-friendly', 'acceptMatch')->middleware('auth')->name('acceptInvitation');
+    Route::get('{id}/proposial-action/{action}', 'proposialAction')->middleware('auth')->name('proposialAction');
+    Route::post('host-friendly', 'proposialAction')->middleware('auth')->name('hostFriendly');
 });
 
 Route::get('/dashboard', function () {

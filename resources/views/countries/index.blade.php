@@ -110,6 +110,14 @@
                                                                     class="w-96 form-control" id="flag"
                                                                     value="{{ $country->flag }}">
                                                             </div>
+                                                            <label for="timezone" class="w-96 block text-gray-700 text-sm font-bold mb-2">Timezone</label>
+                                                            <div class="col-sm-10">
+                                                                <select name="timezone" id="timezone">
+                                                                    @foreach ($timezones as $timezoneValue => $timezoneLabel)
+                                                                    <option value="{{ $timezoneValue }}">{{ $timezoneLabel }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -182,6 +190,14 @@
                                     <input type="text" name="flag" class="w-96 form-control" id="flag"
                                         placeholder="flag (ex. gr)">
                                 </div>
+                                <label for="timezone" class="w-96 block text-gray-700 text-sm font-bold mb-2">Timezone</label>
+                                <div class="col-sm-10">
+                                <select name="timezone" id="timezone">
+                                    @foreach ($timezones as $timezoneValue => $timezoneLabel)
+                                    <option value="{{ $timezoneValue }}">{{ $timezoneLabel }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             </div>
                     </div>
                     <div class="modal-footer">

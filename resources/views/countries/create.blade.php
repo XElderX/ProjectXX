@@ -1,10 +1,9 @@
 @extends('layouts.app')
 @section('content')
-<div>ok</div>
+{{-- No used --}}
 
 
 <div class="createContainer">
-
     <form class=" newProductForm bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="{{ route('countries.store') }}" method="POST">
         <div class="newProductDiv row mb-3">
             @csrf
@@ -19,6 +18,10 @@
             <label for="flag" class="w-96 block text-gray-700 text-sm font-bold mb-2">flag url</label>
             <div class="col-sm-10">
                 <input type="text" name="flag" class="w-96 form-control" id="flag" placeholder="flag (ex. gr)">
+            </div>
+            <label for="timezone" class="w-96 block text-gray-700 text-sm font-bold mb-2">Timezone</label>
+            <div class="col-sm-10">
+                <input type="text" name="timezone" class="w-96 form-control" id="timezone" placeholder="timezone (ex. gr)">
             </div>
         </div>
         <div class="row">

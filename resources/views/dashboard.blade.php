@@ -19,7 +19,7 @@
                     </div>
                     <div class="loginBlock">
                         @if (Auth::user()->logins !== null)
-                            <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[1]) }}
+                            <div>Last login was: {{ str_replace('~', ' from ', array_values(Auth::user()->logins)[0]) }} //fix it
                             </div>
                         @else
                             <div> first login </div>
@@ -44,6 +44,10 @@
                 <button class="button">
                     <a href="{{ route('friendlyInvitations') }}" class="text-sm text-gray-700 dark:text-gray-500">
                         Friendly Invitations</a>
+                </button>
+                <button class="button">
+                    <a href="{{ route('schedules') }}" class="text-sm text-gray-700 dark:text-gray-500">
+                        Fixtures</a>
                 </button>
             </div>
             @if (Auth::user()->role === 'admin')

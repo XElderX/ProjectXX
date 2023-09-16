@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CountryStoreRequest;
 use App\Models\Country;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
+use Config;
 
 class CountryController extends Controller
 {
@@ -16,11 +15,13 @@ class CountryController extends Controller
      */
     public function index()
     {
+        $timezones = config('timezones.options');
         return view(
             'countries.index',
             [
                 'countries' => Country::orderBy('id')->paginate(10),
-            ]
+            ],
+            compact('timezones')
         );
     }
 
@@ -46,6 +47,7 @@ class CountryController extends Controller
             'country'    => $request->country,
             'population' => (integer) $request->population,
             'flag'       => $request->flag,
+            'timezone'   => $request->timezone,
         ]);
         
         return redirect()->route('national')->with('status_success', 'country ' . $country->country . ' was added.');;
@@ -101,5 +103,14 @@ class CountryController extends Controller
         
         $country->delete();
         return redirect()->route('national')->with('status_success', 'Country ' . $country->country . ' was deleted.');;
+    }
+
+    private function getTimezones()
+    {
+        return [
+            'America/New_York',
+            'Europe/London',
+            // Add more timezone options as needed
+        ];
     }
 }

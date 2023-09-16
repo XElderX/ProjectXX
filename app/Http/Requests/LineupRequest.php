@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CountryStoreRequest extends FormRequest
+class LineupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +25,13 @@ class CountryStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'country' => [
-                'required', Rule::unique('countries')->ignore($this->id)
-            ],
-            'population' => [
-                'required', 
-            ],
-            'flag'  => [
-                'required',  'string'
-            ],
-            'timezone' => 'required|string|max:255',
+
+
+            'players'   => ['required', 'array','min:3'],
+            'players.*' =>  ['nullable', 'numeric', Rule::exists('players', 'id')],     // each string must have min 3 chars,
+            'positions'   => ['required', 'array','min:3'],
+            'positions.*' => ['nullable','string' ]
         ];
     }
+
 }

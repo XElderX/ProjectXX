@@ -143,5 +143,82 @@ This is project XX
 * Implemented acceping friendly logic;
 * MatchService queries added;
 
+#### 2023.05.27
+
+* Fixed bug in query when inviting friendly.. <del>team with already accepted match can invite again....</del>;
+* implemented other users hosted matches and its logic and methods.
+
+#### 2023.05.28
+
+* minnor changes in blade layout;
+* now when inviting host edvertismenting team for match it sent pending request for match;
+* user can accept pending matches offers and generate prematch record;
+
+#### 2023.05.30
+
+* match report blade created;
+
+#### 2023.06.04
+
+* added cron command that checks every 30 min table matchSchedule. All found records and if matchday and time and set that model status to accepted; 
+* added new column to match_schedule table "time";
+* added new column to country table "timezone";
+* updated fillMatchData method in matchSchedule model with new field timezone which extracted from home_team;
+<del>//TODO update Country blades and forms by adding new field timezone;</del>
+<del>// Implement match logic creating basic match engine; </del>
+
+#### 2023.08.02
+
+* updated country blade added timezone field to both add and update forms modal; 
+* ypdated countryController passing timezone  list array;
+* created config/timezone.php file with timezones";
+* added new provider class "TimezonesServiceProvider" for the custom configuration file;
+
+ #### 2023.08.06
+
+* Match engine implementation;
+* Command to process matches;
+* Match service created;
+
+ #### 2023.09.08
+
+* started implementing match report;
+ #### 2023.09.09
+
+* updating match report;
+* baseMatchEvents class created;
+* added new fields to match_schedules table (home_goals,  away_goals, home_shots,  away_shots, home_on_target, away_on_target);
+
+ #### 2023.09.10
+
+* Relocated methods to baseMatchEvents class;
+* Created EventsTemplates class; 
+
+ #### 2023.09.11
+
+* Created matchMechanics classes; 
+* Relocated methods to matchMechanics class;
+* Further developing match engine(last man foul scenario started )
+
+ #### 2023.09.12
+
+* Remodulated code for more concise and maintainable,; 
+* Further developing match engine(last man foul scenario started )
+* added dismisalPlayer method;
+
+ #### 2023.09.13
+
+* Made HotFix for serious issue with fetching Lineup; 
+
+ #### 2023.09.14
+
+* Made penalty set piece scenario; 
+
+ #### 2023.09.16
+
+* added penalty score and penalty save report templates; 
+* Made freeKick set piece scenario;
+* added freeKick score and freeKick save report templates; 
+
 
 
