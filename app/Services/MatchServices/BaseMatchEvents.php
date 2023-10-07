@@ -71,12 +71,9 @@ class BaseMatchEvents extends EventsTemplates
 
     public function calculateGoalProbability($attackMarks, $defenceMarks, $defaultGoalProbability = 0.1, $defaultAttackMarks = 100, $defaultDefenceMarks = 100, $scalingFactor = 20)
     {
-        // Calculate the relative strength of the attack compared to the default equal marks
         $relativeAttackStrength = $attackMarks / $defenceMarks;
-
         $newGoalProbabilityPercentage = ($relativeAttackStrength * $defaultGoalProbability) * 100;
 
-        // echo "$attackMarks, $defenceMarks ... ivarcio tikimybe: $newGoalProbabilityPercentage\n";
         return $newGoalProbabilityPercentage;
     }
 
@@ -105,6 +102,18 @@ class BaseMatchEvents extends EventsTemplates
         return  $filteredPlayers[$randomIndex];
     }
 
+    public function getRandomDefender($players): object
+    {
+        if ($players)  {
+            $filteredPlayers = array_filter($players, function ($player) {
+                return $player->position === "DEF";
+            });
+            $filteredPlayers = array_values($filteredPlayers);
+        }
+        $randomIndex = array_rand($filteredPlayers);
+        return  $filteredPlayers[$randomIndex];
+    }
+
     // public function getPlayerModel(MatchSchedule $match, string $possessingTeam, object $scorer)
     // {
     //     if ($possessingTeam === 'home') {
@@ -122,6 +131,16 @@ class BaseMatchEvents extends EventsTemplates
         $strike += $teamStr / 11;
 
         return $strike;
+    }
+
+    public function calculateDefence(Player $selectedPlayer, $teamDef)
+    {
+        $defence = (int)$selectedPlayer['def'] + ((int)$selectedPlayer['pace'] * 0.3) + ((int)$selectedPlayer['tech'] * 0.3 + (int)$selectedPlayer['pace'] * 0.1);
+        $defence *= ((int)$selectedPlayer['exp'] / 100) + 1;
+        $defence += (-5 + (int)$selectedPlayer['form']);
+        $defence += $teamDef / 11;
+
+        return $defence;
     }
 
     public function chanceToScore():float
@@ -276,4 +295,5 @@ class BaseMatchEvents extends EventsTemplates
             dd('error in fetch');
         }
     }
+
 }

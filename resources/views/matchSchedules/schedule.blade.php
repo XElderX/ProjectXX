@@ -30,15 +30,14 @@
                 </tr>
             <div>
                 @foreach ($schedules as $schedule)
-{{--  --}}
                     <tr>
                         <td>{{$schedule->match_date}} </td>
                         <td>
-                        @if ($schedule->homeTeam->isNotEmpty())
-                            {{ $schedule->homeTeam[0]->club_name }}
+                        @if (!is_null($schedule->homeTeam))
+                            {{ $schedule->homeTeam->club_name }}
                         @endif vs  
-                        @if ($schedule->awayTeam->isNotEmpty())
-                        {{ $schedule->awayTeam[0]->club_name }}
+                        @if (!is_null($schedule->awayTeam))
+                        {{ $schedule->awayTeam->club_name }}
                         @endif
                         </td>
                         <td>{{ $schedule->type }}</td>

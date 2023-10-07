@@ -20,11 +20,11 @@
             <div class="title">
                 <h3>Match Orders</h3>
                 <p>
-                    @if ($schedule->homeTeam->isNotEmpty())
-                        {{ $schedule->homeTeam[0]->club_name }}
+                    @if (!is_null($schedule->homeTeam))
+                        {{ $schedule->homeTeam->club_name }}
                     @endif vs
-                    @if ($schedule->awayTeam->isNotEmpty())
-                        {{ $schedule->awayTeam[0]->club_name }}
+                    @if (!is_null($schedule->awayTeam))
+                        {{ $schedule->awayTeam->club_name }}
                     @endif
                 </p>
             </div>

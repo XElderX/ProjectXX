@@ -175,17 +175,33 @@ class MatchService extends BaseMatchEvents
 
     public function eventIteration(int $minute, bool $isHome, string $eventDesc)
     {
-        $players = $isHome ?  $players = json_decode($this->match->home_lineup) :  $players = json_decode($this->match->away_lineup);
+        if ($isHome) {
+            $players = json_decode($this->match->home_lineup);
+            $oppPlayers = json_decode($this->match->away_lineup);
+        } else {
+            $players = json_decode($this->match->away_lineup);
+            $oppPlayers = json_decode($this->match->home_lineup);
+        }
+  
         $marks = $this->attackDefenceMarks($isHome, $this->homeStriking, $this->awayStriking, $this->homeDefending, $this->awayDefending);
         $phases = $this->matchMechanics->eventPhases($marks);
 
         for ($i = 0; $i < $phases; $i++) {
-            $event = rand(0, 10000) / 100;
-            $quickAttack = $this->calculateGoalProbability($marks[0], $marks[1]);
+            $event = mt_rand(0, 10000) / 100;
+      
+            $quickAttack = $this->calculateGoalProbability($marks[0], $marks[1], 0.05);
             if ($event <= $quickAttack) {
-                $eventDesc .= $this->matchMechanics->quickAttack($this, $minute, $players, $isHome, $eventDesc);
-                break;
+                $getDefender = $this->getRandomDefender($oppPlayers);
+    
+                $foul =  $this->matchMechanics->foulScenario($isHome, $marks[0], $getDefender, $minute, $this);
+                if ($foul == false) {
+                    $eventDesc .= $this->matchMechanics->quickAttack($this, $minute, $players, $isHome, $eventDesc);
+                    break;
+                } else {
+                    $eventDesc .= $foul;
+                }
             }
+            
         }
         // dd($phases);
 
