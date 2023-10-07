@@ -58,7 +58,7 @@ class PreMatchService extends MatchProposialService
             if ($playerData->club_id !== auth()->user()->club_id) {
                 throw new \Exception('error occured!! player is not this team player!! ');
             }
-            $data = ['pos_no' => $i, 'player_id' => $players[$i], 'name' => $playerData->first_name, 'last_name' => $playerData->last_name, 'position' => $positions[$i]];
+            $data = ['pos_no' => $i, 'player_id' => $players[$i], 'player' => $playerData, 'position' => $positions[$i], 'booked' => false, 'goals' => 0, 'assists' => 0, 'injury' => null];
             array_push($lineup, $data);
         }
 

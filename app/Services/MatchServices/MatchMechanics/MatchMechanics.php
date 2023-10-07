@@ -6,7 +6,6 @@ use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 
 class MatchMechanics extends BaseMatchMechanics
 {
-
     public $homeDefending;
     public $awayDefending;
 
@@ -25,13 +24,12 @@ class MatchMechanics extends BaseMatchMechanics
     public function quickAttack($base, $minute, $players, bool $isHome, $eventDesc)
     {
         $scorer = $base->playerToScore($players);
-
         $selectedPlayerModel = $this->getPlayerModel($base->match, $isHome, $scorer);
         $strike = $base->calculateStrike($selectedPlayerModel, $isHome ? $base->homeStriking : $base->awayStriking);
         $scoreChance = $base->chanceToScore();
         $saveChance = $base->chanceToSave($strike, $isHome ? $base->homeGoalkeeping : $base->awayGoalkeeping);
         $eventDesc .= $base->reportEvent($minute, EventsTemplates::TYPE_OPPORTUNITY, $isHome ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
-        
+
         ($isHome) ? $base->homeChance++ : $base->awayChance++;
         // $eventDesc = $this->lastManFoul($base, $isHome, $eventDesc, $minute);//DELETE
         // $eventDesc = $this->setPiece($base, $isHome, $eventDesc, $minute);
@@ -56,7 +54,57 @@ class MatchMechanics extends BaseMatchMechanics
         return $eventDesc . "\n";
     }
 
-    public function foulScenario()
+    public function foulScenario(bool $isHome, float $attackerStrength, object $defender, $minute, $base)
     {
+        $selectedPlayerModel = $this->getPlayerModel($base->match, !$isHome, $defender);
+    // dd($defender);
+        $defenderStrength = $base->calculateDefence($selectedPlayerModel, $isHome ? $base->awayDefending : $base->homeDefending);
+    //    dd($attackerStrength);
+        // Calculate the likelihood of a foul
+        $likelihoodOfFoul = ((30 + $defenderStrength) - $attackerStrength);
+
+        // Generate a random number between 0 and 100
+        $randomNumber = mt_rand(0, 100);
+
+        // Check if a foul occurs based on the likelihood
+
+        $isSecondYellow = false;
+        if ($randomNumber <= $likelihoodOfFoul) {
+            if ($defender->booked) {
+                $isSecondYellow = true;
+                $this->dismisalPlayer($base, $isHome, $defender);
+                echo "2nd yellow card!!!!!!!!!!!\n";
+            } else {
+                $defender->booked = true;
+                echo "YYellow card!!!!!!!!!!!\n";
+            }
+
+            return $base->reportEvent(
+                $minute,
+                eventName: $isSecondYellow ? EventsTemplates::TYPE_NDYELLOW : EventsTemplates::TYPE_YELLOW,
+                teamName: $isHome
+                    ? $base->match->awayTeam->club_name
+                    : $base->match->homeTeam->club_name,
+                player: $selectedPlayerModel,
+                position: $defender->position
+            );
+        } else {
+           return false;
+        } //TODO FINISH
+        //give player yellow or 2nd yellow
+        //check if player have yellow
+        //if yes dissmis that player
+    }
+
+    function Chance($chance, $universe = 100)
+    {
+        $chance = abs(intval($chance));
+        $universe = abs(intval($universe));
+
+        if (mt_rand(1, $universe) <= $chance) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -19,11 +19,11 @@
 
             <div class="title">
                 <h3>Match Report</h3>
-                <p>@if ($schedule->homeTeam->isNotEmpty())
-                    {{ $schedule->homeTeam[0]->club_name }}
+                <p>@if (!is_null($schedule->homeTeam))
+                    {{ $schedule->homeTeam->club_name }}
                 @endif vs  
-                @if ($schedule->awayTeam->isNotEmpty())
-                {{ $schedule->awayTeam[0]->club_name }}
+                @if (!is_null($schedule->awayTeam))
+                {{ $schedule->awayTeam->club_name }}
             @endif</p>
 
                 <div style="display:flex; flex-direction:row; justify-content: space-between; border:2px solid black; padding:5px">
@@ -32,12 +32,12 @@
             <table>
 
                 <tr>
-                    <td> {{ $schedule->homeTeam[0]->club_name }}</td>
-                    <td>{{ $schedule->homeTeam[0]->user->username }}</td>
+                    <td> {{ $schedule->homeTeam->club_name }}</td>
+                    <td>{{ $schedule->homeTeam->user->username }}</td>
                 </tr>
                 <tr>
-                    <td>{{ $schedule->awayTeam[0]->club_name }}</td>
-                    <td>{{ $schedule->awayTeam[0]->user->username }}</td>
+                    <td>{{ $schedule->awayTeam->club_name }}</td>
+                    <td>{{ $schedule->awayTeam->user->username }}</td>
                 </tr>
                 <tr>
                     <td>Competition</td>

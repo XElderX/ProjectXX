@@ -14,11 +14,13 @@ class EventsTemplates
     public const TYPE_FKSAVE = 'fkSaveEvents';
     public const TYPE_FKSCORE = 'fkScoreEvents';
 
+    public const TYPE_NDYELLOW = 'ndYellow';
+    public const TYPE_YELLOW = 'yellow';
+
     public const EVENT_TYPES = [
         self::TYPE_OPPORTUNITY, self::TYPE_SCORE, self::TYPE_SAVEGK,
         self::TYPE_PENALTYSAVE, self::TYPE_PENALTYSCORE,
-        self::TYPE_FKSAVE, self::TYPE_FKSCORE,
-
+        self::TYPE_FKSAVE, self::TYPE_FKSCORE, self::TYPE_NDYELLOW, self::TYPE_YELLOW,
     ];
 
     public $opportunityEvents = [
@@ -84,4 +86,11 @@ class EventsTemplates
         ' $teamName vartininkui $player pavyksta atremti varzovu pakelta kamuoli ir smugiuota galva i vartus smugi  ',
         ' $teamName vartininkui $player laisvai apsigina nuo pavojingo smugio, kadangi varzovas labai netiksliai smugiuoja ir net nepataiko i vartus  ',
     ];
+
+    public $ndYellow = [
+        ' $teamName zaidejas $player uzsidirba antraja geltona kortele. Taigi, jam uz tai tenka palikti aikste ',
+    ];
+    public $yellow = [
+        ' $teamName zaidejas $player uzsidirba geltona kortele ',
+];
 }

@@ -35,6 +35,7 @@ class MatchScheduleController extends Controller
     public function scheduledMatches()
     {
         $schedules = MatchSchedule::where('home_team_id', auth()->user()->club_id)->orWhere('away_team_id', auth()->user()->club_id)->paginate(15);
+
         return view(
             'matchSchedules.schedule',
             [

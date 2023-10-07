@@ -221,4 +221,14 @@ This is project XX
 * added freeKick score and freeKick save report templates; 
 
 
+ #### 2023.10.06
+
+* foul scenario started to create;
+* resolve issues for fixtures page blade when no team names shown;
+* foul scenario for quickAttack made, if quick attack opportunity ocured defending team' defender  have possibility to foul and end that attack and get booked or 2nd time booked and be dissmised;
+
+//TODO finish foul scenario
+
+
+
 
