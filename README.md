@@ -229,6 +229,31 @@ This is project XX
 
 //TODO finish foul scenario
 
+ #### 2023.10.07
+
+* attack flow stages started to implement; //TODO finish it stage 2 and stage 3 and scoring opportunity
+
+ #### 2023.10.08
+
+* nerfed quickAttack function propability now quickAttack can occur once per iteration instead of count of phases;
+* increased min phases count to 3, and increased maximum count proportionaly for att/def marks; ratio; 
+* 2nd and 3rd stage of attacking scenario implemented; 
+
+ #### 2023.10.13
+
+* changes in third stage mechanical logic now scoring pportunity based by skills and random instead of skills to determinate outcome;
+
+ #### 2023.10.14
+
+* $isHome changed to $activeTeam having value isntead bool true/false now have home/away for better understanding and easier debugging;
+* added on target and shots on third stage;
+
+ #### 2023.10.15
+
+* restructured matchServices classes;
+
+
+
 
 
 
