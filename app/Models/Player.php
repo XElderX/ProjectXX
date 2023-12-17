@@ -12,10 +12,10 @@ class Player extends Model
     public const POSITION_GK = 'goalkeeper'; //gk 70%; pace 20%; pass 10%;
     public const POSITION_DEF = 'defender'; // Def 45%; pm 10% tech 5% head 20% pass 10% pace 10%; pm 10%;stri 0
     public const POSITION_DEF_WING = 'winger_defender'; // Def 35%; pace 25%; pass 15% tech 15%; head 5%; pm 5%; stri 0
-    public const POSITION_MID_WING = 'winger_midfielder';//Def 10%; pace 30%; pass 25%; tech 20%  head 0%  pm 10% str 5% ;
+    public const POSITION_MID_WING = 'winger_midfielder'; //Def 10%; pace 30%; pass 25%; tech 20%  head 0%  pm 10% str 5% ;
     public const POSITION_DM = 'def_midfield'; // def 20%; pace 15%; pass 15%; tech 20%; head 5%; pm 25%; stri 0;
     public const POSITION_MID = 'midfielder'; // def 10%; pace 10%; pass 25% tech 20% head 5%; pm 30% stri;
-    public const POSITION_AM = 'att_midfield';// def 5%; pace 15% pass 30% tech 20% head 5% pm 20% stri 5%
+    public const POSITION_AM = 'att_midfield'; // def 5%; pace 15% pass 30% tech 20% head 5% pm 20% stri 5%
     public const POSITION_STR = 'striker'; //def 0; pace 25%; pass 5%; tech 15%; head 20%; pm 0; stri 35% 
 
     public const TYPE_PLAYER = 'player';
@@ -31,9 +31,9 @@ class Player extends Model
 
     public const PLAYER_POSITIONS = [
         self::POSITION_GK, self::POSITION_DEF,
-        self::POSITION_DEF_WING, self::POSITION_MID_WING, 
-        self::POSITION_DM, self::POSITION_MID, 
-        self::POSITION_AM, self::POSITION_STR, 
+        self::POSITION_DEF_WING, self::POSITION_MID_WING,
+        self::POSITION_DM, self::POSITION_MID,
+        self::POSITION_AM, self::POSITION_STR,
     ];
 
     public const NPC_TYPES = [
@@ -55,16 +55,16 @@ class Player extends Model
         'fatigue',
         'position',
 
-        'gk',//0
-        'def',//1
-        'pm',//2
-        'pace',//3
-        'tech',//4
-        'pass',//5
-        'heading',//6
-        'str',//7
+        'gk', //0
+        'def', //1
+        'pm', //2
+        'pace', //3
+        'tech', //4
+        'pass', //5
+        'heading', //6
+        'str', //7
 
-        'stamina',//8
+        'stamina', //8
         'exp',
         'lead',
         'form',
@@ -82,4 +82,9 @@ class Player extends Model
         return $this->belongsTo(Country::class);
     }
 
+    // Define an accessor for the full name
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 }

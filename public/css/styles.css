@@ -1,4 +1,5 @@
 @import "teamGenerated.css"; /* Using a string */
+@import "match-styles.css"
 
 select, input {
     width:200px;
@@ -301,11 +302,18 @@ select, input {
     padding: 2em;
 }
 .mainItem {
-    width:30%;
+    width:50%;
     border:2px solid rgb(203,65,84);
     border-radius: 10px;
     padding: 1em;
     margin:auto;
+}
+
+.lineupList {
+    list-style: decimal;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 .generateForm {
 

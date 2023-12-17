@@ -251,8 +251,22 @@ This is project XX
  #### 2023.10.15
 
 * restructured matchServices classes;
+* created accessor in Player model to retrieve player's full name;
+* updated matchServices classes methods providing datatypes in parameters;
+* bugfixing;
 
+//TODO finish fixing 2nd yellow card dismmising
 
+ #### 2023.11.03
+
+* fixing match report storage;
+
+//TODO FIX matchReportBlade
+
+ #### 2023.11.05
+
+* matchReport blade update;
+//TODO finish update matchReport blade
 
 
 

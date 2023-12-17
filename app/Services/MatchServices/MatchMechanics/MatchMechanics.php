@@ -5,6 +5,7 @@ namespace App\Services\MatchServices\MatchMechanics;
 use App\Services\MatchServices\BaseMatchEvents;
 use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 use App\Services\MatchServices\MatchService;
+use Illuminate\Support\Str;
 
 class MatchMechanics extends BaseMatchMechanics
 {
@@ -23,11 +24,13 @@ class MatchMechanics extends BaseMatchMechanics
         };
     }
 
-    public function quickAttack(MatchService $base, $minute, $players, string $activeTeam, $eventDesc)
+    public function quickAttack(MatchService $base, int $minute, array $players, string $activeTeam, string $eventDesc)
     {
+        $situationId = Str::random(4);
         $baseMatchEvents = new BaseMatchEvents;
         $scorer = $baseMatchEvents->playerToScore($players);
         $selectedPlayerModel = $this->getPlayerModel($base->match, $activeTeam, $scorer);
+        echo('xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
         $strike = $baseMatchEvents->calculateStrike($selectedPlayerModel, $activeTeam == BaseMatchEvents::HOME_TEAM ? $base->homeStriking : $base->awayStriking);
         $scoreChance = $baseMatchEvents->chanceToScore();
         $saveChance = $baseMatchEvents->chanceToSave($strike, $activeTeam == BaseMatchEvents::HOME_TEAM ? $base->homeGoalkeeping : $base->awayGoalkeeping);
@@ -37,17 +40,33 @@ class MatchMechanics extends BaseMatchMechanics
         // $eventDesc = $this->lastManFoul($base, $isHome, $eventDesc, $minute);//DELETE
         // $eventDesc = $this->setPiece($base, $isHome, $eventDesc, $minute);
         if ($scoreChance >= $saveChance) {
-            if (rand(0, 20) === 0) {
-
-                $eventDesc = $this->lastManFoul($base, $activeTeam , $eventDesc, $minute);
+            if (mt_rand(0, 20) === 0) {
+                $eventDesc = $this->lastManFoul($base, $activeTeam, $eventDesc, $minute);
                 $eventDesc = $this->setPiece($base, $activeTeam, $eventDesc, $minute);
             } else {
-                ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeTarget++ : $base->awayTarget++;
-                ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeGoals++ : $base->awayGoals++;
+                if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                    $base->homeTarget++;
+                    $base->homeScorers[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $selectedPlayerModel->id, 'full_name' => $selectedPlayerModel->full_name];
+                    // $base->homeAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+                }
+                if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                    $base->awayTarget++;
+                    $base->awayScorers[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $selectedPlayerModel->id, 'full_name' => $selectedPlayerModel->full_name];
+                    // $base->awayAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+                }
+
                 $eventDesc .= $baseMatchEvents->reportEvent($minute, EventsTemplates::TYPE_SCORE, $activeTeam == BaseMatchEvents::HOME_TEAM ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
                 echo "Goal at minute $minute! \n";
             }
         } else {
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $base->homeTarget++;
+                $base->awayKeeperSaves++;
+            }
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                $base->awayTarget++;
+                $base->homeKeeperSaves++;
+            }
             $eventDesc .= $baseMatchEvents->reportEvent($minute, EventsTemplates::TYPE_SAVEGK, $activeTeam == BaseMatchEvents::HOME_TEAM ? $base->match->homeTeam->club_name : $base->match->awayTeam->club_name, $selectedPlayerModel);
             echo " Goalkeeper made save at minute $minute!\n";
         }
@@ -60,30 +79,77 @@ class MatchMechanics extends BaseMatchMechanics
 
     public function foulScenario(string $activeTeam, float $attackerStrength, object $defender, int $minute, MatchService $base, int $baseFoul = 30)
     {
+        $situationId = Str::random(4);
         $baseMatchEvents = new BaseMatchEvents;
-      
-        $selectedPlayerModel = $this->getPlayerModel($base->match,  $activeTeam == BaseMatchEvents::HOME_TEAM ? BaseMatchEvents::AWAY_TEAM : BaseMatchEvents::HOME_TEAM, $defender);
-
+        $selectedPlayerModel = $this->getPlayerModel($base->match, $activeTeam === BaseMatchEvents::HOME_TEAM ? BaseMatchEvents::AWAY_TEAM : BaseMatchEvents::HOME_TEAM, $defender);
+        if ($selectedPlayerModel === null) {
+            
+        }
         $defenderStrength = $baseMatchEvents->calculateDefence($selectedPlayerModel, $activeTeam == BaseMatchEvents::HOME_TEAM ? $base->awayDefending : $base->homeDefending);
         //    dd($attackerStrength);
         // Calculate the likelihood of a foul
         $likelihoodOfFoul = (($baseFoul + $defenderStrength) - $attackerStrength);
-
+        
         // Generate a random number between 0 and 100
         $randomNumber = mt_rand(0, 100);
-
+        
         // Check if a foul occurs based on the likelihood
-
+        
         $isSecondYellow = false;
         if ($randomNumber <= $likelihoodOfFoul) {
             if ($defender->booked) {
+                echo('xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
                 $isSecondYellow = true;
-                $this->dismisalPlayer($base, $activeTeam, $defender);
+
+                $this->dismisalPlayer($base, $activeTeam == BaseMatchEvents::AWAY_TEAM
+                    ? BaseMatchEvents::HOME_TEAM
+                    : BaseMatchEvents::AWAY_TEAM, $defender);
+                if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                    $base->awayBooked[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $selectedPlayerModel->id, 'full_name' => $selectedPlayerModel->full_name, 'card' => '2ndYellow'];
+
+                    // $base->homeAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+                }
+                if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                    $base->homeBooked[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $selectedPlayerModel->id, 'full_name' => $selectedPlayerModel->full_name, 'card' => '2ndYellow'];
+                    // $base->awayAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+                }
                 echo "2nd yellow card!!!!!!!!!!!\n";
             } else {
                 $defender->booked = true;
-                echo "YYellow card!!!!!!!!!!!\n";
+                if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                    $base->awayBooked[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $selectedPlayerModel->id, 'full_name' => $selectedPlayerModel->full_name, 'card' => 'Yellow'];
+
+                    $lineup = $base->awayLineup;
+                    foreach ($lineup as &$player) {
+                        echo('Loop - Player ID: ' . $player->player_id . ' Defender ID: ' . $defender->player_id . "\n");
+                        if ($player->player_id === $defender->player_id) {
+                            echo('yyyy');
+                            $player->booked = true;
+                        }
+                    }
+                    $base->awayLineup = $lineup;
+                    echo '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AWAY BOOKED@@@@@@@@@@@@@@@@@@@@@@@'. $defender->player_id;
+                    
+                } else if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                    $base->homeBooked[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $selectedPlayerModel->id, 'full_name' => $selectedPlayerModel->full_name, 'card' => 'Yellow'];
+                    $lineup = $base->homeLineup;
+
+                    foreach ($lineup as &$player) {
+                        echo('Loop - Player ID: ' . $player->player_id . ' Defender ID: ' . $defender->player_id . "\n");
+                        if ($player->player_id === $defender->player_id) {
+                            echo('xxxx');
+                            $player->booked = true;
+                        }
+                    }
+                    $base->homeLineup = $lineup;
+                
+                    echo '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HOME BOOKED @@@@@@@@@@@@@@@@@@@@@@@' . $defender->player_id;
+                }
             }
+            $base->isWarned = true;
+
+            echo "YYellow card!!!!!!!!!!!\n";
+
             return $baseMatchEvents->reportEvent(
                 $minute,
                 eventName: $isSecondYellow ? EventsTemplates::TYPE_NDYELLOW : EventsTemplates::TYPE_YELLOW,
@@ -93,7 +159,7 @@ class MatchMechanics extends BaseMatchMechanics
                 player: $selectedPlayerModel,
                 position: $defender->position
             );
-        } else {  
+        } else {
             return false;
         } //TODO FINISH
         //give player yellow or 2nd yellow
@@ -103,6 +169,7 @@ class MatchMechanics extends BaseMatchMechanics
 
     public function shootingStage(object $shooter, object $oppGoalkeeper, object $assister, string $scoreType, string $outcome, string $activeTeam, int $minute, MatchService $base)
     {
+        $situationId = Str::random(4);
         $baseMatchEvents = new BaseMatchEvents;
         $luck1 = mt_rand(0, 50) / 10;
         $luck2 = mt_rand(0, 30) / 10;
@@ -118,18 +185,28 @@ class MatchMechanics extends BaseMatchMechanics
             $oppGoalkeeperStrength = $luck2 + (($oppGoalkeeper->gk * 0.4) + ($oppGoalkeeper->pace * 0.45) + ($oppGoalkeeper->exp * 0.15)) * (1.5 + 0.5 * ($oppGoalkeeper->form - 5));
         }
         // $nerfBonus = $outcome !== 'FOW' ? rand(13, 20) / 10 : 1;
-        $totalStrength = ($forwardStrength ) + $assisterBonus;
+        $totalStrength = ($forwardStrength) + $assisterBonus;
         $totalOppStrength = $oppGoalkeeperStrength;
 
-//TODO FINISH DO THIS SHOOTING
-
+        //TODO FINISH DO THIS SHOOTING
+        // dd($shooter->full_name);
         if ($this->isAdvance($totalStrength, $totalOppStrength, $scoreType)) {
-        //    dd($assister);
-            ($activeTeam == BaseMatchEvents::AWAY_TEAM) ? $base->awayChance++ : $base->homeChance++ ;
-            ($activeTeam == BaseMatchEvents::AWAY_TEAM) ? $base->awayTarget++ : $base->homeTarget++ ;
-            ($activeTeam == BaseMatchEvents::AWAY_TEAM) ? $base->awayGoals++ : $base->homeGoals++;
 
-            
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $base->homeChance++;
+                $base->homeTarget++;
+                $base->homeGoals++;
+                $base->homeScorers[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $shooter->id, 'full_name' => $shooter->full_name];
+                $base->awayAssisters[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+            }
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                $base->awayChance++;
+                $base->awayTarget++;
+                $base->awayGoals++;
+                $base->awayScorers[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $shooter->id, 'full_name' => $shooter->full_name];
+                $base->awayAssisters[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+            }
+
             $outcome = $baseMatchEvents->reportEvent(
                 $minute,
                 eventName: $scoreType === 'simple' ? EventsTemplates::TYPE_SIMPLEGOAL : EventsTemplates::TYPE_HEADGOAL,
@@ -142,8 +219,19 @@ class MatchMechanics extends BaseMatchMechanics
                 subPlayer: $assister
             );
         } else {
-            ($activeTeam == BaseMatchEvents::AWAY_TEAM) ? $base->awayChance++ : $base->homeChance++ ;
-            ($activeTeam == BaseMatchEvents::AWAY_TEAM) ? $base->awayTarget++ : $base->homeTarget++ ;
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $base->homeChance++;
+                $base->homeTarget++;
+
+                $base->awayKeeperSaves++;
+            }
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                $base->awayChance++;
+                $base->awayTarget++;
+
+                $base->homeKeeperSaves++;
+            }
+
             $outcome = $baseMatchEvents->reportEvent(
                 $minute,
                 eventName: $scoreType === 'simple' ? EventsTemplates::TYPE_SIMPLEGKSAVE : EventsTemplates::TYPE_HEADGKSAVE,
@@ -158,9 +246,6 @@ class MatchMechanics extends BaseMatchMechanics
         }
 
         return $outcome;
-// dd($outcome);
-//         dd($assisterBonus);
-//         dd($forwardStrength . ' vs ' . $oppGoalkeeperStrength);
     }
 
     function Chance($chance, $universe = 100)

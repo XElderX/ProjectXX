@@ -48,7 +48,8 @@ class MatchScheduleController extends Controller
     {
         $schedule = MatchSchedule::findOrfail($id);
         $report = $schedule->report;
-        
+   
+        // dd(json_decode($schedule->home_lineup));
 
         // $arr = ['min' => 15, 'event' => 'some event happened5'];
         // $newArr = $schedule->report ?? [];

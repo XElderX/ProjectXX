@@ -7,16 +7,30 @@ use App\Models\Player;
 use App\Services\MatchServices\BaseMatchEvents;
 use App\Services\MatchServices\EventsStringTemplates\EventsTemplates;
 use App\Services\MatchServices\MatchService;
+use Exception;
+use Illuminate\Support\Str;
 
 class BaseMatchMechanics
 {
-    protected function lastManFoul($base, $activeTeam, $eventDesc, $minute)
+    protected function lastManFoul(MatchService $base, string $activeTeam, string $eventDesc, int $minute)
     {
+        $situationId = Str::random(4);
+        $baseMatchEvents = new BaseMatchEvents;
+
         $squad = $this->selectOppositeTeamPlayers($activeTeam, $base);
         $player = $this->selectPlayers($squad);
         $model = $this->getPlayerModel($base->match, $activeTeam == BaseMatchEvents::HOME_TEAM ? BaseMatchEvents::AWAY_TEAM : BaseMatchEvents::HOME_TEAM, $player);
 
-        $eventDesc .= $base->reportEvent(
+        if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+            $base->awayBooked[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $model->id, 'full_name' => $model->full_name, 'card' => 'red'];
+            // $base->homeAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+        }
+        if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+            $base->homeBooked[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $model->id, 'full_name' => $model->full_name, 'card' => 'red'];
+            // $base->awayAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+        }
+        
+        $eventDesc .= $baseMatchEvents->reportEvent(
             $minute,
             eventName: EventsTemplates::TYPE_LASTFOUL,
             teamName: $activeTeam == BaseMatchEvents::HOME_TEAM
@@ -29,7 +43,7 @@ class BaseMatchMechanics
         return $eventDesc;
     }
 
-    protected function setPiece($base, string $activeTeam, $eventDesc, $minute): string
+    protected function setPiece($base, string $activeTeam, string $eventDesc, int $minute): string
     {
         $decision = rand(1, 10);
         if ($decision <= 3) {
@@ -41,8 +55,9 @@ class BaseMatchMechanics
         return $eventDesc;
     }
 
-    public function penalty($base, string $activeTeam, $eventDesc, $minute)
+    public function penalty($base, string $activeTeam, string $eventDesc, int $minute)
     {
+        $situationId = Str::random(4);
         $baseMatchEvents = new BaseMatchEvents;
         // Get the team taking the penalty and the opposing team
         $penaltyTeam = $this->takingTeamPlayers($activeTeam, $base);
@@ -57,22 +72,38 @@ class BaseMatchMechanics
 
         // Update the match event description
         if ($isGoalScored) {
-
             // Update the score or other relevant statistics
             $eventDesc .= $baseMatchEvents->reportEvent(
                 $minute,
                 eventName: EventsTemplates::TYPE_PENALTYSCORE,
                 teamName: $activeTeam == BaseMatchEvents::HOME_TEAM
-                    ? $base->match->homeTeam->club_name
-                    : $base->match->awayTeam->club_name,
+                ? $base->match->homeTeam->club_name
+                : $base->match->awayTeam->club_name,
                 player: $penaltyTaker
             );
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeChance++ : $base->awayChance++;
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeTarget++ : $base->awayTarget++;
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeGoals++ : $base->awayGoals++;
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $base->homeChance++;
+                $base->homeTarget++;
+                $base->homeScorers[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $penaltyTaker->id, 'full_name' => $penaltyTaker->full_name];
+                // $base->homeAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+            }
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                $base->awayChance++;
+                $base->awayTarget++;
+                $base->awayScorers[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $penaltyTaker->id, 'full_name' => $penaltyTaker->full_name];
+                // $base->awayAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+            }
         } else {
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeChance++ : $base->awayChance++;
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeTarget++ : $base->awayTarget++;
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $base->homeChance++;
+                $base->homeTarget++;
+                $base->awayKeeperSaves++;
+            }
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                $base->awayChance++;
+                $base->awayTarget++;
+                $base->homeKeeperSaves++;
+            }
             $eventDesc .= $baseMatchEvents->reportEvent(
                 $minute,
                 eventName: EventsTemplates::TYPE_PENALTYSAVE,
@@ -85,8 +116,9 @@ class BaseMatchMechanics
         return $eventDesc;
     }
 
-    public function freeKick(MatchService $base, $activeTeam, $eventDesc, $minute)
+    public function freeKick(MatchService $base, string $activeTeam, string $eventDesc, int $minute)
     {
+        $situationId = Str::random(4);
         $baseMatchEvents = new BaseMatchEvents;
         // Get the team taking the penalty and the opposing team
         $penaltyTeam = $this->takingTeamPlayers($activeTeam, $base);
@@ -111,12 +143,29 @@ class BaseMatchMechanics
                     : $base->match->awayTeam->club_name,
                 player: $penaltyTaker
             );
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeChance++ : $base->awayChance++;
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeTarget++ : $base->awayTarget++;
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeGoals++ : $base->awayGoals++;
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $base->homeChance++;
+                $base->homeTarget++;
+                $base->homeScorers[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $penaltyTaker->id, 'full_name' => $penaltyTaker->full_name];
+                // $base->homeAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+            }
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                $base->awayChance++;
+                $base->awayTarget++;
+                $base->awayScorers[] = ['situation_id' => $situationId, 'min' => $minute, 'player_id' => $penaltyTaker->id, 'full_name' => $penaltyTaker->full_name];
+                // $base->awayAssisters[] = ['situation_id' => $situationId, 'player_id' => $assister->id, 'full_name' => $assister->full_name];
+            }
         } else {
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeChance++ : $base->awayChance++;
-            ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $base->homeTarget++ : $base->awayTarget++;
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $base->homeChance++;
+                $base->homeTarget++;
+                $base->awayKeeperSaves++;
+            }
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                $base->awayChance++;
+                $base->awayTarget++;
+                $base->homeKeeperSaves++;
+            }
             $eventDesc .= $baseMatchEvents->reportEvent(
                 $minute,
                 eventName: EventsTemplates::TYPE_FKSAVE,
@@ -130,17 +179,18 @@ class BaseMatchMechanics
         return $eventDesc;
     }
 
-    public function selectGoalkeeper($base, string $activeTeam, $players)
+    public function selectGoalkeeper($base, string $activeTeam, array $players)
     {
         foreach ($players as $player) {
             if ($player->position === 'GK') {
+              
                 return  $this->getPlayerModel($base->match, $activeTeam == BaseMatchEvents::HOME_TEAM ? BaseMatchEvents::AWAY_TEAM : BaseMatchEvents::HOME_TEAM, $player); // Return the first goalkeeper found
             }
         }
         return null; // Return null if no goalkeeper is found
     }
 
-    private function selectTaker(array $squad, $role)
+    private function selectTaker(array $squad, string $role)
     {
         $bestPlayer = null;
         $bestValue = -1; // Initialize with a value lower than the possible player values
@@ -164,7 +214,7 @@ class BaseMatchMechanics
         return $bestPlayer;
     }
 
-    private function simulateSetPieceOutcome(string $type, $taker, $goalkeeper, string $activeTeam)
+    private function simulateSetPieceOutcome(string $type, Player $taker, Player $goalkeeper, string $activeTeam)
     {
         if ($type === 'penalty') {
             $takerSkill = ($taker->str * 0.5 + $taker->tech * 0.2);
@@ -186,11 +236,21 @@ class BaseMatchMechanics
 
     public function getPlayerModel(MatchSchedule $match, string $activeTeam, object $playerModel)
     {
-        if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
-            return  $match->homeTeam->player->firstWhere('id', $playerModel->player_id);
-        } else {
-            return $match->awayTeam->player->firstWhere('id', $playerModel->player_id);
-        }
+        $teamId = ($activeTeam == BaseMatchEvents::HOME_TEAM) ? $match->homeTeam->id : $match->awayTeam->id;
+    
+// dd($team);
+
+        // $team->find
+        // foreach ($team->player as $player) {
+        //     dd($player);
+        //     if ($player->id === $playerModel->player_id) {
+        //         return $player;
+        //     }
+        // }
+        echo('>>>>>>'.$playerModel->player_id.'<<<<<<');
+        return Player::where('club_id', $teamId)
+    ->where('id', $playerModel->player_id)
+    ->get()->first();
     }
 
     private function takingTeamPlayers(string $activeTeam, MatchService $base)
@@ -246,27 +306,50 @@ class BaseMatchMechanics
         return $filteredPlayers[$randomIndex];
     }
 
-    public function dismisalPlayer($base, string $activeTeam, object $player): void
+    public function dismisalPlayer(MatchService $base, string $activeTeam, object $player): void
     {
-        // Determine the lineup to modify based on $isHome
-        $lineup = $activeTeam == BaseMatchEvents::HOME_TEAM ? $base->awayLineup : $base->homeLineup;
-
-        // Assuming $base->homeLineup is your array and $player is the player to remove
-        $playerIdToRemove = $player->player_id;
-
-        // Use array_filter to create a new array without the matching player
-        $lineup = array_filter($lineup, function ($item) use ($playerIdToRemove) {
-            return $item->player_id !== $playerIdToRemove;
-        });
-        // Assign the modified lineup back to the correct property
-        if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
-            $base->awayLineup = $lineup;
-            echo '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AWAY DISMISSED@@@@@@@@@@@@@@@@@@@@@@@';
-        } else {
-            $base->homeLineup = $lineup;
-            echo '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HOME DISMISSED@@@@@@@@@@@@@@@@@@@@@@@';
+        if (!($player instanceof Player)) {
+          
+            $player = Player::find($player->player_id);
         }
-        $base->isDismissed = true;
+        try {
+            $situationId = Str::random(4);
+          
+            $lineup = $activeTeam == BaseMatchEvents::HOME_TEAM ? $base->awayLineup : $base->homeLineup;
+    
+
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $lineup = $base->awayLineup;
+
+                $base->awayDismissed[] = ['situation_id' => $situationId, 'min' => $base->minute, 'player_id' => $player->id, 'full_name' => $player->full_name];
+            }
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
+                $lineup = $base->homeLineup;
+                $base->homeDismissed[] = ['situation_id' => $situationId, 'min' => $base->minute, 'player_id' => $player->id, 'full_name' => $player?->full_name];
+            }
+    
+            // Assuming $base->homeLineup is your array and $player is the player to remove
+            $playerIdToRemove = $player->player_id;
+    
+            // Use array_filter to create a new array without the matching player
+            $lineup = array_filter($lineup, function ($item) use ($playerIdToRemove) {
+                return $item->player_id !== $playerIdToRemove;
+            });
+            // Assign the modified lineup back to the correct property
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+                $base->awayLineup = $lineup;
+                echo '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AWAY DISMISSED@@@@@@@@@@@@@@@@@@@@@@@';
+            } else {
+                $base->homeLineup = $lineup;
+                echo '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HOME DISMISSED@@@@@@@@@@@@@@@@@@@@@@@';
+            }
+    
+            $base->isDismissed = true;
+        } catch (Exception $e) {
+            // Handle the exception here (e.g., log or throw a new exception)
+            // You can add custom exception handling logic as needed.
+            dd('An exception occurred: ' . $e->getMessage());
+        }
     }
 
     public function isAdvance(float $strength, float $oppStrength, string $type = 'advance', ?int $stage = 1): bool

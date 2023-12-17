@@ -42,7 +42,7 @@ class BaseMatchEvents extends EventsTemplates
         return $event;
     }
 
-    public function finalEvent(MatchSchedule $match, $homePossCount)
+    public function finalEvent(MatchSchedule $match, int $homePossCount)
     {
         $homePoss = round($homePossCount * 100 / 90);
         $awayPoss = 100 - $homePoss;
@@ -94,7 +94,7 @@ class BaseMatchEvents extends EventsTemplates
         }
     }
 
-    public function calculateGoalProbability($attackMarks, $defenceMarks, $defaultGoalProbability = 0.1, $defaultAttackMarks = 100, $defaultDefenceMarks = 100, $scalingFactor = 20)
+    public function calculateGoalProbability(float $attackMarks, float $defenceMarks, float $defaultGoalProbability = 0.1, $defaultAttackMarks = 100, $defaultDefenceMarks = 100, $scalingFactor = 20)
     {
         $relativeAttackStrength = $attackMarks / $defenceMarks;
         $newGoalProbabilityPercentage = ($relativeAttackStrength * $defaultGoalProbability) * 100;
@@ -102,7 +102,7 @@ class BaseMatchEvents extends EventsTemplates
         return $newGoalProbabilityPercentage;
     }
 
-    public function playerToScore($players): object
+    public function playerToScore(array $players): object
     {
         $scorerRand = rand(1, 10);
         if ($scorerRand <= 7) {
@@ -127,7 +127,7 @@ class BaseMatchEvents extends EventsTemplates
         return  $filteredPlayers[$randomIndex];
     }
 
-    public function getRandomDefender($players): object
+    public function getRandomDefender(array $players): object
     {
         if ($players) {
             $filteredPlayers = array_filter($players, function ($player) {
@@ -148,7 +148,7 @@ class BaseMatchEvents extends EventsTemplates
     //     }
     // }
 
-    public function calculateStrike(Player $selectedPlayer, $teamStr)
+    public function calculateStrike(Player $selectedPlayer, float $teamStr)
     {
         $strike = (int)$selectedPlayer['str'] + ((int)$selectedPlayer['tech'] * 0.3) + ((int)$selectedPlayer['pace'] * 0.3);
         $strike *= ((int)$selectedPlayer['exp'] / 100) + 1;
@@ -158,7 +158,7 @@ class BaseMatchEvents extends EventsTemplates
         return $strike;
     }
 
-    public function calculateDefence(Player $selectedPlayer, $teamDef)
+    public function calculateDefence(Player $selectedPlayer, float $teamDef)
     {
         $defence = (int)$selectedPlayer['def'] + ((int)$selectedPlayer['pace'] * 0.3) + ((int)$selectedPlayer['tech'] * 0.3 + (int)$selectedPlayer['pace'] * 0.1);
         $defence *= ((int)$selectedPlayer['exp'] / 100) + 1;
@@ -181,7 +181,7 @@ class BaseMatchEvents extends EventsTemplates
         return $scoreRoll / 100;
     }
 
-    public function reportEvent($minute, $eventName, $teamName = '', object $player, $position = '', object $opponent = null, object $subPlayer = null): string
+    public function reportEvent(int $minute, string $eventName, string $teamName = '', object $player, string $position = '', object $opponent = null, object $subPlayer = null): string
     {
         $eventId = array_rand($this->$eventName);
         $eventTemplate = $this->$eventName[$eventId];
@@ -201,14 +201,14 @@ class BaseMatchEvents extends EventsTemplates
         return $eventString . " \n";
     }
 
-    public function resultEvent($minute, $homeGoals, $awayGoals, MatchSchedule $match): string
+    public function resultEvent(int $minute, int $homeGoals, int $awayGoals, MatchSchedule $match): string
     {
         $eventString = ' ' . $minute . ' min. Rungtyniu rezultatas: ' . $match->homeTeam->club_name . ' ' . $homeGoals . ' - ' . $awayGoals . ' ' . $match->awayTeam->club_name;
 
         return $eventString . " \n";
     }
 
-    public function calculatePlayerSkills($playerData)
+    public function calculatePlayerSkills(object $playerData)
     {
         $player = Player::find($playerData->player_id);
         if ($player) {
@@ -267,7 +267,7 @@ class BaseMatchEvents extends EventsTemplates
     }
 
 
-    public function homeTeamFetch($base): void
+    public function homeTeamFetch(object $base): void
     {
         $homeGoalkeeping = 0;
         $homeDefending = 0;
@@ -299,7 +299,7 @@ class BaseMatchEvents extends EventsTemplates
         }
     }
 
-    public function awayTeamFetch($base): void
+    public function awayTeamFetch(object $base): void
     {
         $awayGoalkeeping = 0;
         $awayDefending = 0;
@@ -379,16 +379,17 @@ class BaseMatchEvents extends EventsTemplates
       
         if ($this->matchMechanics->isAdvance($totalStrength, $totalOppStrength, stage:$stage)) {
             $classA->stage++;
-            return $this->reportEvent(
-                $minute,
-                EventsTemplates::TYPE_ADVANCE1,
-                teamName: $activeTeam == BaseMatchEvents::AWAY_TEAM
-                    ? $classA->awayTeamName
-                    : $classA->homeTeamName,
-                player: $player,
-                position: $player->position,
-                opponent: $oppPlayer
-            );
+            return;
+            // return $this->reportEvent(
+            //     $minute,
+            //     EventsTemplates::TYPE_ADVANCE1,
+            //     teamName: $activeTeam == BaseMatchEvents::AWAY_TEAM
+            //         ? $classA->awayTeamName
+            //         : $classA->homeTeamName,
+            //     player: $player,
+            //     position: $player->position,
+            //     opponent: $oppPlayer
+            // );
         } else {
             $classA->i++;
             if ($lastPhase) {
@@ -405,12 +406,6 @@ class BaseMatchEvents extends EventsTemplates
             }
             return;
         }
-        // dd($playerStrength . '----' . $oppPayerStrength);
-        // $newGoalProbabilityPercentage = ($relativeAttackStrength * $defaultGoalProbability) * 100;
-
-        // return $newGoalProbabilityPercentage;
-        // print_r($oppPlayer);
-        // dd($oppPayerStrength);
     }
 
     private function secondStage(array $players, array $oppPlayers, int $advanceEvent, int $minute, string $activeTeam, bool $lastPhase, $classA)
@@ -454,9 +449,6 @@ class BaseMatchEvents extends EventsTemplates
 
         $totalStrength = ($midfielderStrength * 0.7) + ($forwardStrength * 0.3);
         $totalOppStrength = ($oppMidfielderStrength * 0.3) + ($oppDefenderStrength * 0.7);
-
-        //    dd($totalStrength . ' vs ' . $totalOppStrength);
-        //   dd($advanceEvent);
 
         if ($this->matchMechanics->isAdvance($totalStrength, $totalOppStrength, stage:$stage)) {
             $classA->stage++;
@@ -579,7 +571,7 @@ class BaseMatchEvents extends EventsTemplates
 
             return $result;
         }
-        $result2 = $this->matchMechanics->foulScenario($activeTeam, $forwardStrength,  $randomOppDefenders, $minute, $classA, 15);
+        $result2 = $this->matchMechanics->foulScenario($activeTeam, $forwardStrength, $randomOppDefenders, $minute, $classA, 15);
         if ($result2) {
             //TODO perhaps penalty
             $result .= $result2;
@@ -616,7 +608,7 @@ class BaseMatchEvents extends EventsTemplates
         //TODO SHOOTING STAGE
     }
 
-    private function categorizePlayersByPosition(array $players, array $oppPlayers, string $position)
+    private function categorizePlayersByPosition(array $players, array $oppPlayers, string $position): array
     {
         $teamPlayers = [];
         $oppTeamPlayers = [];
@@ -636,7 +628,7 @@ class BaseMatchEvents extends EventsTemplates
         return [$teamPlayers, $oppTeamPlayers];
     }
 
-    private function determineOutcome($rand)
+    private function determineOutcome(int $rand): string
     {
         return match (true) {
             $rand >= 1 && $rand <= 60 => 'FOW',

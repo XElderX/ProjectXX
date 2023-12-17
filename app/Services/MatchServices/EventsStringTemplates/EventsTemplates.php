@@ -133,7 +133,7 @@ class EventsTemplates
     ];
 
     public $noadvance3 = [
-        ' $teamName zaidejas $player sumaistyje tarp gyneju praranda kamuoli ir varzovu gynejas $oppDefender perima kamuoli ',
+        ' $teamName zaidejas $player sumaistyje tarp gyneju praranda kamuoli ir varzovu gynejas $opponent perima kamuoli ',
         ' $teamName zaidejas $player neranda galimybiu testi puolimo ',
     ];
 
