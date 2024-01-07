@@ -28,7 +28,7 @@
                                       <h3>Active club</h3>                   
                         <select name="club_id" id="" class="form-control">
                             @if ($user->club_id !== null)
-                            <option>
+                            <option  value="{{ $user->club_id }}">
                                 {{ $user->userClub->club_name }}</option>    
                             @endif
                             @foreach ($clubs as $club)
@@ -49,10 +49,11 @@
         </div>
         <div class="user-block">
             <h3>Last 20 loggin </h3>
-
+            @if (isset(Auth::user()->logins))
             @foreach (Auth::user()->logins as $key => $val)
                 <div class='text'>{{ $key + 1 }} . {{ str_replace('~', ' from ', $val) }}</div>
             @endforeach
+            @endif
         </div>
         <button ype="button" class="button">
             <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Back to

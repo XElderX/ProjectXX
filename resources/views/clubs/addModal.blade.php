@@ -49,9 +49,12 @@
                                 <option value="" disabled selected>
                                     Supporters Mood</option>
                                 @foreach ($moods as $mood)
-                                    @if ($mood === $club->supporters_mood)
-                                        @continue
-                                    @endif
+
+                                @if (isset($club))      
+                                @if ($mood === $club->supporters_mood)
+                                    @continue
+                                @endif
+                                @endif
                                     <option value="{{ $mood }}">
                                         {{ $mood }}</option>
                                 @endforeach
@@ -66,42 +69,56 @@
                         </div>
                         <label for="Country"
                             class="w-96 block text-gray-700 text-sm font-bold mb-2">Country</label>
-                        <div class="col-sm-10">
-                            <select name="country_id" id="new"
-                                class="form-control dynamic" data-dependent ='town_name'>
-                                <option value="" disabled selected>
-                                   Select Country </option>
-                                    @foreach ($countries as $country)
-                                    <option value="{{ $country->id }}">
-                                        {{ $country->country }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                        <label for="Town"
-                                class="w-96 block text-gray-700 text-sm font-bold mb-2">Town</label>
+                            <label for="Country" class="w-96 block text-gray-700 text-sm font-bold mb-2">Country</label>
                             <div class="col-sm-10">
-                                <select name="town_id" id="newa"
-                                    class="form-control">
-                                    <option value="" disabled selected>
-                                        Select Town </option>              
-                                        @foreach (App\Http\Controllers\ClubController::getTowns($club->country->id) as $town)
-                                        
-                                        <option value="{{ $town->id }}"> 
-                                            {{ $town->town_name }}</option>
-                                            @endforeach
-                                            @if ( ($club->town->id ?? null) !==null )
-                                            <option value=""> 
-                                                -</option>
-                                        @endif
-                                        </select>
-                                    </div>
+                                <select name="country_id" id="new" class="form-control dynamic" data-dependent='town_name'>
+                                    <option value="" disabled selected>Select Country</option>
+                                    @foreach ($countries as $country)
+                                        <option value="{{ $country->id }}">{{ $country->country }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <label for="Town" class="w-96 block text-gray-700 text-sm font-bold mb-2">Town</label>
+                            <div class="col-sm-10">
+                                <select name="town_id" id="newa" class="form-control">
+                                    <option value="" disabled selected>Select Town</option>
+                                </select>
+                            </div>
+                            
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <script>
+                                $(document).ready(function () {
+                                    $('#new').change(function () {
+                                        var countryId = $(this).val();
+                                        if (countryId) {
+                                            $.ajax({
+                                                url: '/get-towns/' + countryId,
+                                                type: 'GET',
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    $('#newa').empty();
+                                                    $('#newa').append('<option value="" disabled selected>Select Town</option>');
+                                                    $.each(data, function (key, value) {
+                                                        $('#newa').append('<option value="' + value.id + '">' + value.town_name + '</option>');
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            $('#newa').empty();
+                                            $('#newa').append('<option value="" disabled selected>Select Town</option>');
+                                        }
+                                    });
+                                });
+                            </script>
+                                 
                                     {{csrf_field()}}
                                     <label for="user_id"
                             class="w-96 block text-gray-700 text-sm font-bold mb-2">Team owner id?</label>
                             <div class="col-sm-10">
                                 <input type="number" name="user_id"
                                 class="w-96 form-control" id="user_id"
-                                value="{{ $club->user_id }}">
+                                value="{{ Auth::id() }}">
                             </div>
                     </div>
             </div>

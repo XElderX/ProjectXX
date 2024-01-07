@@ -9,6 +9,13 @@ This is project XX
 * uuid generator: composer require webpatser/laravel-uuid
 * flags (https://github.com/lipis/flag-icons) use (import "/node_modules/flag-icons/css/flag-icons.min.css";)
 
+## Setup
+* composer update 
+* npm install
+* npm run dev
+* cp .env.example .env
+* php artisan key:generate
+
 ## ChangeLog
 
 # First batch (pushed 03.11.2022)
@@ -269,5 +276,11 @@ This is project XX
 //TODO finish update matchReport blade
 
 
+ #### 2024.01.07
+
+* Seeder for creating user as it serves as global admin needed for  first login;
+* updated clubs page, modifying add modal adding JS to dropdown towns list; 
+* now as new user registered new team assigned to him and 18 players generated too; 
+* fixed bug where in user panel selecting active team select same team thows error, so no it fixed; 
 
 
