@@ -89,18 +89,17 @@ Route::controller(GeneratorController::class)->group(function () {
     Route::post('player-generator', 'generatePlayer')->middleware('auth')->name('playerGenerator');
     Route::post('team-generator', 'generateTeam')->middleware('auth')->name('teamGenerator');
     Route::get('get-towns/{id}', 'getTowns')->name('getTownz');
-    
 });
 
 Route::controller(MatchScheduleController::class)->group(function () {
     Route::get('propose-friendly', 'proposeFriendlyView')->middleware('auth')->name('friendlyView');
-    Route::get('fixtures', 'scheduledMatches')->middleware('auth')->name('schedules');   
+    Route::get('fixtures', 'scheduledMatches')->middleware('auth')->name('schedules');
     Route::get('{id}/match-details', 'matchDetails')->middleware('auth')->name('matchReport');
-    Route::get('{id}/matchForm', 'matchForm')->middleware('auth')->name('matchOrders');     
-    Route::post('{id}submit-lineup', 'lineup')->middleware('auth')->name('postLineup');         
+    Route::get('{id}/matchForm', 'matchForm')->middleware('auth')->name('matchOrders');
+    Route::post('{id}submit-lineup', 'lineup')->middleware('auth')->name('postLineup');
 });
 
-Route::controller(FriendlyInvitationController::class)->group(function () { 
+Route::controller(FriendlyInvitationController::class)->group(function () {
     Route::post('propose-friendly', 'proposeFriendly')->middleware('auth')->name('proposeFriendly');
     Route::get('friendly-invitations', 'friendlyInvitations')->middleware('auth')->name('friendlyInvitations');
     Route::get('{id}/proposial-action/{action}', 'proposialAction')->middleware('auth')->name('proposialAction');
