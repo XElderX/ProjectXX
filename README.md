@@ -300,3 +300,4 @@ This is project XX
 -   created seeder for names for seeded countries;
 -   created seeder for surnames for seeded countries;
 -   added my team button in dashboard to check club players;
+-   Sorting for team players... now can sort asc or desc by skills age and other sortables fields;

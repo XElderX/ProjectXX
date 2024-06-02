@@ -7,6 +7,7 @@ use App\Http\Requests\PlayerStoreRequest;
 use App\Models\Country;
 use App\Models\Player;
 use App\Services\PlayerServices\GeneratePlayerService;
+use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
@@ -101,14 +102,23 @@ class PlayerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function teamPlayersList(int $id)
+    public function teamPlayersList(Request $request, int $id, ?string $field = null)
     {
+        $sortDirection = $request->query('sort', 'desc');
+
+        if (isset($field)) {
+            $players = Player::where('club_id', $id)->orderBy($field, $sortDirection)->get();
+        } else {
+            $players = Player::where('club_id', $id)->get();
+        }
         return view(
             'players.teamPlayers',
             [
-                'players'   => Player::where('club_id', $id)->get(),
-                'positions' => Player::PLAYER_POSITIONS,
-                'club_id' => $id,
+                'players'        => $players,
+                'positions'      => Player::PLAYER_POSITIONS,
+                'club_id'        => $id,
+                'field'          => $field,
+                'sort'           => $sortDirection
             ]
         );
     }
