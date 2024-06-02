@@ -37,9 +37,11 @@
                 <button class="button">
                     <a href="{{ route('users.info') }}" class="text-sm text-gray-700 dark:text-gray-500">MyAccount</a>
                 </button>
-                <button class="button">
-                    <a href="{{ route('teamPlayers', [auth()->user()->club_id]) }}" class="text-sm text-gray-700 dark:text-gray-500">My Team</a>
-                </button>
+              @isset(auth()->user()->club_id)
+              <button class="button">
+                  <a href="{{ route('myClub') }}" class="text-sm text-gray-700 dark:text-gray-500">My Team</a>
+              </button>             
+              @endisset
                 <button class="button">
                     <a href="{{ route('friendlyView') }}" class="text-sm text-gray-700 dark:text-gray-500">Propose
                         Friendly</a>

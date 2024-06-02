@@ -100,7 +100,7 @@ class ClubController extends Controller
         // echo $output;
     }
 
-     /**
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Club  $club
@@ -109,6 +109,13 @@ class ClubController extends Controller
     public function show($id)
     {
         $team = Club::where('id', '=', $id)->firstOrFail();
+
+        return view('clubs.show', ['team' => $team]);
+    }
+
+    public function clubView()
+    {
+        $team = Club::where('id', '=', auth()->user()->club_id)->firstOrFail();
 
         return view('clubs.show', ['team' => $team]);
     }

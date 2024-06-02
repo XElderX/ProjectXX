@@ -62,6 +62,7 @@ Route::controller(ClubController::class)->group(function () {
     Route::post('clubs/edit/{id}', 'update')->middleware('auth')->name('club.update');
     Route::post('clubs/dynamic', 'fetch')->middleware('auth')->name('club.fetch');
     Route::get('generated-team/{id}', 'show')->middleware('auth')->name('genTeam');
+    Route::get('my-club', 'clubView')->middleware('auth')->name('myClub');
 });
 
 Route::controller(PlayerController::class)->group(function () {
@@ -71,7 +72,7 @@ Route::controller(PlayerController::class)->group(function () {
     Route::get('players/clear/{value}', 'clear')->middleware('auth')->name('player.clear');
     Route::post('players/edit/{id}', 'update')->middleware('auth')->name('player.update');
     Route::get('generated-player/{id}', 'show')->middleware('auth')->name('genPlayer');
-    Route::get('club/{id}/players', 'teamPlayersList')->middleware('auth')->name('teamPlayers');
+    Route::get('club/{id}/players/{field?}', 'teamPlayersList')->middleware('auth')->name('teamPlayers');
     Route::get('club/players/{id}', 'fire')->middleware('auth')->name('player.fire');
 });
 
