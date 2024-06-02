@@ -15,6 +15,14 @@ This is project XX
 -   npm install
 -   npm run dev
 
+## Setup
+
+-   composer update
+-   npm install
+-   npm run dev
+-   cp .env.example .env
+-   php artisan key:generate
+
 ## ChangeLog
 
 # First batch (pushed 03.11.2022)
@@ -229,6 +237,60 @@ This is project XX
 -   Made freeKick set piece scenario;
 -   added freeKick score and freeKick save report templates;
 
+#### 2023.10.06
+
+-   foul scenario started to create;
+-   resolve issues for fixtures page blade when no team names shown;
+-   foul scenario for quickAttack made, if quick attack opportunity ocured defending team' defender have possibility to foul and end that attack and get booked or 2nd time booked and be dissmised;
+
+//TODO finish foul scenario
+
+#### 2023.10.07
+
+-   attack flow stages started to implement; //TODO finish it stage 2 and stage 3 and scoring opportunity
+
+#### 2023.10.08
+
+-   nerfed quickAttack function propability now quickAttack can occur once per iteration instead of count of phases;
+-   increased min phases count to 3, and increased maximum count proportionaly for att/def marks; ratio;
+-   2nd and 3rd stage of attacking scenario implemented;
+
+#### 2023.10.13
+
+-   changes in third stage mechanical logic now scoring pportunity based by skills and random instead of skills to determinate outcome;
+
+#### 2023.10.14
+
+-   $isHome changed to $activeTeam having value isntead bool true/false now have home/away for better understanding and easier debugging;
+-   added on target and shots on third stage;
+
+#### 2023.10.15
+
+-   restructured matchServices classes;
+-   created accessor in Player model to retrieve player's full name;
+-   updated matchServices classes methods providing datatypes in parameters;
+-   bugfixing;
+
+//TODO finish fixing 2nd yellow card dismmising
+
+#### 2023.11.03
+
+-   fixing match report storage;
+
+//TODO FIX matchReportBlade
+
+#### 2023.11.05
+
+-   matchReport blade update;
+    //TODO finish update matchReport blade
+
+#### 2024.01.07
+
+-   Seeder for creating user as it serves as global admin needed for first login;
+-   updated clubs page, modifying add modal adding JS to dropdown towns list;
+-   now as new user registered new team assigned to him and 18 players generated too;
+-   fixed bug where in user panel selecting active team select same team thows error, so no it fixed;
+
 #### 2024.06.02
 
 -   updated composer.lock as migrated to php 8.3;
@@ -237,3 +299,4 @@ This is project XX
 -   created seeder for tows for seeded countries;
 -   created seeder for names for seeded countries;
 -   created seeder for surnames for seeded countries;
+-   added my team button in dashboard to check club players;

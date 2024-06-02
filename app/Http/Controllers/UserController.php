@@ -127,9 +127,8 @@ class UserController extends Controller
     public function infoUpdate(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        // dd($user->userClub);
-        $user->setClub($request->club_id);
-        $user->save();
+        $user->setClub(intval($request->input('club_id')))
+             ->save();
 
         return redirect()->route('users.info')->with('status_success', 'User assigned' . $user->userClub->club_name . ' as active club.');
     }

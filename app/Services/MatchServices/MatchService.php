@@ -6,20 +6,35 @@ use App\Models\MatchSchedule;
 use App\Services\MatchServices\MatchMechanics\MatchMechanics;
 
 
-class MatchService extends BaseMatchEvents
+class MatchService
 {
     public $match;
+    public $matchMechanics;
+    public $baseMatchEvents;
+
     public $homeTactic;
     public $awayTactic;
     public $homeLineup = [];
     public $awayLineup = [];
-    public $matchMechanics;
+
+    public $homeScorers = [];
+    public $awayScorers = [];
+    public $homeAssisters = [];
+    public $awayAssisters = [];
+
+    public $homeBooked = [];
+    public $awayBooked = [];
+    public $homeDismissed = [];
+    public $awayDismissed = [];
+
+    public $homeKeeperSaves = 0;
+    public $awayKeeperSaves = 0;
 
     public $homeGoalkeeping = 0;
     public $homeDefending = 0;
     public $homeMidfielding = 0;
     public $homeStriking = 0;
-
+    
     public $awayGoalkeeping = 0;
     public $awayDefending = 0;
     public $awayMidfielding = 0;
@@ -32,28 +47,40 @@ class MatchService extends BaseMatchEvents
 
     public $homeTarget = 0;
     public $awayTarget = 0;
+
     public $isDismissed = false; //DEBUG VARIABLE
+    public $isWarned = false; //DEBUG VARIABLE
+
+    public $homeTeamName;
+    public $awayTeamName;
+
+    public $stage = 0;
+    public $i = 1;
+    public $minute = 0;
 
     public function __construct(MatchSchedule $match)
     {
         $this->match = $match;
         $this->matchMechanics = new MatchMechanics();
+        $this->baseMatchEvents = new BaseMatchEvents();
         $this->homeTactic = $match->home_tactic;
         $this->awayTactic = $match->away_tactic;
+        $this->homeTeamName = $match->awayTeam->club_name;
+        $this->awayTeamName = $match->homeTeam->club_name;
 
         $this->homeLineup = json_decode($match->home_lineup);
         $this->awayLineup = json_decode($match->away_lineup);
 
         // Usage:
-        $this->homeTeamFetch($this);
-        $this->awayTeamFetch($this);
+        $this->baseMatchEvents->homeTeamFetch($this);
+        $this->baseMatchEvents->awayTeamFetch($this);
     }
 
     public function simulateMatch()
     {
         $matchDuration = 90; // 90 minutes
 
-        $homeStart = rand(0, 1);
+        $homeStart = mt_rand(0, 1);
 
         $homePossessionCount = 0;
         $awayPossessionCount = 0;
@@ -61,12 +88,12 @@ class MatchService extends BaseMatchEvents
         $momentumFactor = 0.02; // A small value to decrease the probability of consecutive possessions
         $consecutivePossessionTeam = null;
         // Apply home advantage (5-10% better overall)
-        $homeAdvantage = 1.05 + rand(0, 5) / 100; // Home team gets 5-10% advantage
+        $homeAdvantage = 1.05 + mt_rand(0, 5) / 100; // Home team gets 5-10% advantage
         $this->homeMidfielding *= $homeAdvantage;
 
         // Calculate the luck factor (0-5%)
-        $homeLuckFactor = rand(0, 50) / 100;
-        $awayLuckFactor = rand(0, 50) / 100;
+        $homeLuckFactor = mt_rand(0, 50) / 100;
+        $awayLuckFactor = mt_rand(0, 50) / 100;
         $this->match->home_goals = 0;
         $this->match->away_goals = 0;
         $this->match->home_shots = 0;
@@ -74,16 +101,22 @@ class MatchService extends BaseMatchEvents
         $this->match->home_on_target = 0;
         $this->match->away_on_target = 0;
         $this->match->save();
-        $report = [];
+    
 
-        for ($minute = 1; $minute <= $matchDuration; $minute++) {
-            $this->homeTeamFetch($this);
-            $this->awayTeamFetch($this);
+        $report = [];
+        for ($this->minute = 1; $this->minute <= $matchDuration; $this->minute++) {
+
+            $this->match->report = '';
+            $this->match->save();
+            $this->baseMatchEvents->homeTeamFetch($this);
+            $this->baseMatchEvents->awayTeamFetch($this);
             $totalMidfieldSkill = $this->homeMidfielding + $this->awayMidfielding;
             $totalDefSkill = $this->homeDefending + $this->awayDefending;
             $totalFowSkill = $this->homeStriking + $this->awayStriking;
-            $this->matchMechanics->homeDefending = $this->homeDefending;
-            $this->matchMechanics->awayDefending = $this->awayDefending;
+            // $this->matchMechanics->homeDefending = $this->homeDefending;
+            // $this->matchMechanics->awayDefending = $this->awayDefending;
+            // $this->matchMechanics->homeStriking = $this->homeStriking;
+            // $this->matchMechanics->awayStriking = $this->awayStriking;
 
             //JUST FOR DEBUGING
             // echo ">>>>>>>>>>>>>>>>>>$totalMidfieldSkill -$totalDefSkill -$totalFowSkill -<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
@@ -105,17 +138,17 @@ class MatchService extends BaseMatchEvents
             $eventDesc = '';
             // Calculate the probability of each team winning possession based on their midfield skill
 
-            if ($minute === 1) {
-                $homeStart ? $isHome = true : $isHome = false;
-                $event = $this->startMatchHalf('first', $isHome, $this->match);
+            if ($this->minute === 1) {
+                $activeTeam = $homeStart ? BaseMatchEvents::HOME_TEAM : BaseMatchEvents::AWAY_TEAM;
+                $event = $this->baseMatchEvents->startMatchHalf('first', $activeTeam, $this->match);
                 $eventDesc .= $event;
-            } elseif ($minute === 46) {
-                $homeStart ? $isHome = true : $isHome = false;
-                $event = $this->startMatchHalf('second', $isHome, $this->match);
+            } elseif ($this->minute === 46) {
+                $activeTeam = $homeStart ? BaseMatchEvents::HOME_TEAM : BaseMatchEvents::AWAY_TEAM;
+                $event = $this->baseMatchEvents->startMatchHalf('second', $activeTeam, $this->match);
                 $eventDesc .= $event;
             } else {
                 if ($consecutivePossessionTeam) {
-                    if ($consecutivePossessionTeam === 'home') {
+                    if ($consecutivePossessionTeam === BaseMatchEvents::HOME_TEAM) {
                         $homePossessionProbability -= $momentumFactor;
                         $awayPossessionProbability = $defaultAwayPossessionProbability; // Reset away team probability
                     } else {
@@ -126,72 +159,158 @@ class MatchService extends BaseMatchEvents
                     $awayPossessionProbability = max(min($awayPossessionProbability, 1), 0);
                 }
 
-                $randa = rand(0, 100) / 100;
+                
+                $randa = mt_rand(0, 100) / 100;
                 // Determine which team wins possession for this minute
                 if ($homePossessionProbability > $awayPossessionProbability) {
-                    $isHome = $randa <= (($awayPossessionProbability / $homePossessionProbability)) ? true : false;
+                    $activeTeam = $randa <= (($awayPossessionProbability / $homePossessionProbability)) ? BaseMatchEvents::HOME_TEAM : BaseMatchEvents::AWAY_TEAM;
                 } else if ($homePossessionProbability < $awayPossessionProbability) {
-                    $isHome = $randa <= (($homePossessionProbability / $awayPossessionProbability)) ? false : true;;
+                    $activeTeam = $randa <= (($homePossessionProbability / $awayPossessionProbability)) ? BaseMatchEvents::HOME_TEAM : BaseMatchEvents::AWAY_TEAM;
                 } else {
-                    $isHome = rand(0, 1) ? true : false;
+                    $activeTeam = mt_rand(0, 1) ? BaseMatchEvents::HOME_TEAM : BaseMatchEvents::AWAY_TEAM;
                 }
             }
 
             // Update possession count and the consecutivePossessionTeam variable
-            if ($isHome) {
+            if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
                 $homePossessionCount++;
-                $consecutivePossessionTeam = 'home';
-            } else {
+                $consecutivePossessionTeam = BaseMatchEvents::HOME_TEAM;
+            } 
+            if ($activeTeam == BaseMatchEvents::AWAY_TEAM) {
                 $awayPossessionCount++;
-                $consecutivePossessionTeam = 'away';
+                $consecutivePossessionTeam = BaseMatchEvents::AWAY_TEAM;
             }
+ 
             // echo "possesion count home : $homePossessionCount  away: $awayPossessionCount\n";
-            $eventDesc .= $this->eventIteration($minute, $isHome, $eventDesc, $homeLuckFactor, $awayLuckFactor);
-            echo "~~~~~~~~~~~~\n";
+            $eventDesc .= $this->eventIteration($this->minute, $activeTeam, $eventDesc, $homeLuckFactor, $awayLuckFactor);
+            echo "~~~~~~~~~~~~\n"; 
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-            if ($minute !== 90 && $minute % 15 === 0) { //TODO FINISH THIS
-                $eventDesc .= $this->provideMatchStatsEvent($this->match, $homePossessionCount, $minute, $this->homeChance, $this->awayChance, $this->homeTarget, $this->awayTarget);
+            if ($this->minute !== 90 && $this->minute % 15 === 0) { //TODO FINISH THIS
+                $eventDesc .= $this->baseMatchEvents->provideMatchStatsEvent($this->match, $homePossessionCount, $this->minute, $this->homeChance, $this->awayChance, $this->homeTarget, $this->awayTarget);
             }
             if (strlen($eventDesc) < 8) {
                 $eventDesc = "";
             } else {
-                array_push($report, $eventDesc);
+                // $report[$this->minute . ' minute'] => $eventDesc . "\n ";
+                array_push($report, [$this->minute . ' minute' => $eventDesc]);
             }
             sleep(0);
         }
-        $this->updateMatchStats(
+        $this->baseMatchEvents->updateMatchStats(
             $this->match,
             $this->homeGoals,
             $this->awayGoals,
             $this->homeChance,
-            $this->awayChance
+            $this->awayChance,
+            $this->homeTarget,
+            $this->awayTarget
         );
-        $finalEvent = $this->finalEvent($this->match, $homePossessionCount);
-        array_push($report, $finalEvent);
+        $finalEvent = $this->baseMatchEvents->finalEvent($this->match, $homePossessionCount);
+        array_push($report, [$this->minute . ' event' => $finalEvent]);
+        // $report[$this->minute . ' event'] = $finalEvent . "\n ";
         $this->match->report = $report;
-
-        dd($report);
+        $this->assignStats();
+        $this->match->save();
     }
 
-    public function eventIteration(int $minute, bool $isHome, string $eventDesc)
-    {
-        $players = $isHome ?  $players = json_decode($this->match->home_lineup) :  $players = json_decode($this->match->away_lineup);
-        $marks = $this->attackDefenceMarks($isHome, $this->homeStriking, $this->awayStriking, $this->homeDefending, $this->awayDefending);
-        $phases = $this->matchMechanics->eventPhases($marks);
-
-        for ($i = 0; $i < $phases; $i++) {
-            $event = rand(0, 10000) / 100;
-            $quickAttack = $this->calculateGoalProbability($marks[0], $marks[1]);
-            if ($event <= $quickAttack) {
-                $eventDesc .= $this->matchMechanics->quickAttack($this, $minute, $players, $isHome, $eventDesc);
-                break;
+    public function assignStats(){
+        foreach ($this->homeLineup as &$player) {
+            foreach ($this->homeScorers as $scorer) {
+                if ($player->player->id == $scorer['player_id']) {
+                    // Increment the goals count for this player
+                    $player->goals++;
+                }
             }
         }
-        // dd($phases);
+        foreach ($this->awayLineup as &$player) {
+            foreach ($this->awayScorers as $scorer) {
+                if ($player->player->id == $scorer['player_id']) {
+                    // Increment the goals count for this player
+                    $player->goals++;
+                }
+            }
+        }
+        foreach ($this->homeLineup as &$player) {
+            foreach ($this->homeAssisters as $assister) {
+                if ($player->player->id == $assister['player_id']) {
+                    // Increment the goals count for this player
+                    $player->assists++;
+                }
+            }
+        }
+        foreach ($this->awayLineup as &$player) {
+            foreach ($this->awayAssisters as $assister) {
+                if ($player->player->id == $assister['player_id']) {
+                    // Increment the goals count for this player
+                    $player->assists++;
+                }
+            }
+        }
+        foreach ($this->homeLineup as &$player) {
+            foreach ($this->homeBooked as $booked) {
+                if ($player->player->id == $booked['player_id']) {
+                    // Increment the goals count for this player
+                    $player->booked = true;
+                }
+            }
+        }
+        foreach ($this->awayLineup as &$player) {
+            foreach ($this->awayBooked as $booked) {
+                if ($player->player->id == $booked['player_id']) {
+                    // Increment the goals count for this player
+                    $player->booked = true;
+                }
+            }
+        }
+    }
 
-        // dd($quickAttack);
-        //select possesioning teams players
-        // Simulate a goal
+    public function eventIteration(int $minute, string $activeTeam, string $eventDesc)
+    {
+        if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
+            $players = $this->homeLineup;
+            $oppPlayers = $this->awayLineup;
+        } else {
+            $players = $this->awayLineup;
+            $oppPlayers = $this->homeLineup;
+        }
+  
+        $marks = $this->baseMatchEvents->attackDefenceMarks($activeTeam, $this->homeStriking, $this->awayStriking, $this->homeDefending, $this->awayDefending);
+        
+        $quickEvent = mt_rand(0, 10000) / 100;
+        
+        $quickAttack = $this->baseMatchEvents->calculateGoalProbability($marks[0], $marks[1], 0.05);
+        if ($quickEvent <= $quickAttack) {
+            $getDefender = $this->baseMatchEvents->getRandomDefender($oppPlayers);
+
+            $foul =  $this->matchMechanics->foulScenario($activeTeam, $marks[0], $getDefender, $minute, $this);
+            
+            echo 'cp3';
+            if ($foul == false) {
+                $this->i += 999;
+                $eventDesc .= $this->matchMechanics->quickAttack($this, $minute, $players, $activeTeam, $eventDesc);
+            } else {
+                $eventDesc .= $foul;
+            }
+        }
+        $phases = $this->matchMechanics->eventPhases($marks);
+        $this->stage = 0; ///TODO create setter to reset to zero;
+        $this->i = 1;
+        do {
+            $lastPhase = false;
+            if ($this->i === $phases) {
+                $lastPhase = true;
+            }
+            $advanceEvent = mt_rand(0, 100);
+    
+            echo ($activeTeam . ' Have ' . $phases . 'is last phase? ' . $lastPhase . ' currently is i = ' .$this->i . "\n");
+            $chanceAdvance = $this->baseMatchEvents->advanceStage($advanceEvent, $activeTeam, $players, $oppPlayers, $minute, $lastPhase, $this);
+    
+            if ($chanceAdvance) {
+                $eventDesc .= $chanceAdvance;
+            }
+
+        } while ($this->i <= $phases);
 
         return $eventDesc . "\n";
     }

@@ -13,12 +13,26 @@ class EventsTemplates
     public const TYPE_PENALTYSCORE = 'penaltyScoreEvents';
     public const TYPE_FKSAVE = 'fkSaveEvents';
     public const TYPE_FKSCORE = 'fkScoreEvents';
+    public const TYPE_NDYELLOW = 'ndYellow';
+    public const TYPE_YELLOW = 'yellow';
+    public const TYPE_ADVANCE1 = 'advance1';
+    public const TYPE_ADVANCE2 = 'advance2';
+    public const TYPE_ADVANCE3 = 'advance3';
+    public const TYPE_NOADVANCE1 = 'noadvance1';
+    public const TYPE_NOADVANCE2 = 'noadvance2';
+    public const TYPE_NOADVANCE3 = 'noadvance3';
+    public const TYPE_SIMPLEGOAL = 'simplegoal';
+    public const TYPE_HEADGOAL = 'headgoal';
+    public const TYPE_SIMPLEGKSAVE = 'simplegksave';
+    public const TYPE_HEADGKSAVE = 'headgksave';
 
     public const EVENT_TYPES = [
         self::TYPE_OPPORTUNITY, self::TYPE_SCORE, self::TYPE_SAVEGK,
         self::TYPE_PENALTYSAVE, self::TYPE_PENALTYSCORE,
-        self::TYPE_FKSAVE, self::TYPE_FKSCORE,
-
+        self::TYPE_FKSAVE, self::TYPE_FKSCORE, self::TYPE_NDYELLOW, self::TYPE_YELLOW,
+        self::TYPE_ADVANCE1, self::TYPE_ADVANCE2, self::TYPE_ADVANCE3,
+        self::TYPE_NOADVANCE1, self::TYPE_NOADVANCE2, self::TYPE_NOADVANCE3,
+        self::TYPE_SIMPLEGOAL, self::TYPE_HEADGOAL, self::TYPE_SIMPLEGKSAVE, self::TYPE_HEADGKSAVE,
     ];
 
     public $opportunityEvents = [
@@ -83,5 +97,63 @@ class EventsTemplates
         ' $teamName vartininkas $player pirstu galais nukreipia kamuoli i uzrybi!! isgelbydamas savo komanda nuo ivarcio!!  ',
         ' $teamName vartininkui $player pavyksta atremti varzovu pakelta kamuoli ir smugiuota galva i vartus smugi  ',
         ' $teamName vartininkui $player laisvai apsigina nuo pavojingo smugio, kadangi varzovas labai netiksliai smugiuoja ir net nepataiko i vartus  ',
+    ];
+
+    public $ndYellow = [
+        ' $teamName zaidejas $player uzsidirba antraja geltona kortele. Taigi, jam uz tai tenka palikti aikste ',
+    ];
+
+    public $yellow = [
+        ' $teamName zaidejas $player uzsidirba geltona kortele ',
+    ];
+
+    public $advance1 = [
+        ' $teamName zaidejas $player apsivaro varzova $opponent ir tesia puolima ',
+        ' $teamName zaidejas $player pergudrauja  $opponent ir prasiskverbia tolyn link varzovu vartu ',
+    ];
+
+    public $advance2 = [
+        ' $teamName zaidejas $player susizaisdamas su komandos draugu $subPlayer ir apsivarydamas varzova $opponent priarteja link varzovu baudos aiksteles ',
+        ' $teamName zaidejas $player nuostabiais judesiais kuria pavojinga proga! palikdamas varzova $opponent uznugaryje ',
+    ];
+
+    public $advance3 = [
+        ' $teamName zaidejas $player perduoda kamuoli i prieki yra geroje padetyje ',
+        ' $teamName zaidejas $player puikiai suzaidzia baudos aiksteleje ',
+    ];
+
+    public $noadvance1 = [
+        ' $teamName zaidejas $player nesugeba apsivaryti varzova  ir praranda kamuoli ',
+        ' $teamName zaidejas $player nesugebejo pergudrauti $opponent ir netenka kamuolio ',
+    ];
+
+    public $noadvance2 = [
+        ' $teamName zaidejas $player netiksliai bando perduoti kamuoli komandos draugui $subPlayer link varzovu baudos aiksteles. $opponent perskaites si sumanima apsigina ',
+        ' $teamName zaidejas $player paleidzia kamuoli varzovui $opponent , kuris ispiria kamuoli kuo toliau',
+    ];
+
+    public $noadvance3 = [
+        ' $teamName zaidejas $player sumaistyje tarp gyneju praranda kamuoli ir varzovu gynejas $opponent perima kamuoli ',
+        ' $teamName zaidejas $player neranda galimybiu testi puolimo ',
+    ];
+
+    public $simplegoal = [
+        ' $teamName zaidejas $player gauna kamuoli komandos is komandos draugo $subPlayer, ir atsidures patogioje padetyje spiria ir pelno ivarti!!!. Vartininkas $opponent bando pasiekti smugiuota kamuoli, taciau to padaryti nepavyko. ',
+        ' $teamName zaidejas $player gauna ideau perdavima is $subPlayer, ir pasitaises kamuoli uztikrintai siuncia kamuoli i vartus!!!  nuginkluodamas vartininka $opponent',
+    ];
+
+    public $headgoal = [
+        ' $teamName zaidejas $player gauna auksta perdavima is komandos draugo $subPlayer, ir galva nukreipia smugi i vartus ir  pelno ivarti!!!. Vartininkas $opponent liko sustinges stoveti dar kelias akimirkas kai suprato jog praleido ivarti. ',
+        ' $teamName zaidejas $subPlayer kelia kampini i baudos aikstele, ir $player pasokdamas auksciau uz kitus siuncia galva kamuoli i vartus !!!  nuginkluodamas vartininka $opponent',
+    ];
+
+    public $simplegksave = [
+        ' $teamName zaidejas $player gauna kamuoli komandos is komandos draugo $subPlayer, ir atsidures patogioje padetyje spiria i vartus!!!. Taciau vartininkas $opponent pademonstruoja nepriekaistingus sugebejimus ir atremia smugi!!! . ',
+        ' $teamName zaidejas $player gauna idealu perdavima is $subPlayer, taciau nesugeba nuginkluoti vartininko $opponent ',
+    ];
+
+    public $headgksave = [
+        ' $teamName zaidejas $player gauna auksta perdavima is komandos draugo $subPlayer, ir galva nukreipia smugi i vartus ir, bet vartininkas $opponent kazkokiu budu sugebejo atremti si bandyma! ',
+        ' $teamName zaidejas $subPlayer kelia kampini i baudos aikstele, ir $player pasokdamas auksciau uz kitus ir smugiuoja galva i vartus bet vartininkas sugeba numusti kamuoli nuo vartu ',
     ];
 }

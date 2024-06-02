@@ -96,7 +96,7 @@ class PlayerController extends Controller
         }
     }
 
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -113,7 +113,7 @@ class PlayerController extends Controller
         );
     }
 
-     /**
+    /**
      * Dismiss player from the team squad.
      *
      * @param  \App\Models\Player  $player

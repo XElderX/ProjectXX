@@ -29,7 +29,6 @@ class UserFactory extends Factory
             'first_name'        => $this->faker->firstName,
             'last_name'         => $this->faker->lastName,
             'role'              => User::ROLE_USER,
-
         ];
     }
 

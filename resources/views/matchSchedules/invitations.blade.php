@@ -43,7 +43,7 @@
                             </div>
                         </div>
 
-                        @if ($pendingMatches->isNotEmpty())
+                        @if (!is_null($pendingMatches))
                         <div style="text-align:center;"> Pending offers:</div>
                         <div style="display:flex; flex-direction:column; justify-content: space-between; border:2px solid black; padding:5px">
                             @foreach ($pendingMatches as $pendingMatch)

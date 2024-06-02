@@ -38,6 +38,9 @@
                     <a href="{{ route('users.info') }}" class="text-sm text-gray-700 dark:text-gray-500">MyAccount</a>
                 </button>
                 <button class="button">
+                    <a href="{{ route('teamPlayers', [auth()->user()->club_id]) }}" class="text-sm text-gray-700 dark:text-gray-500">My Team</a>
+                </button>
+                <button class="button">
                     <a href="{{ route('friendlyView') }}" class="text-sm text-gray-700 dark:text-gray-500">Propose
                         Friendly</a>
                 </button>

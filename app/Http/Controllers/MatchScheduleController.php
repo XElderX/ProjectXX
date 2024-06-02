@@ -35,6 +35,7 @@ class MatchScheduleController extends Controller
     public function scheduledMatches()
     {
         $schedules = MatchSchedule::where('home_team_id', auth()->user()->club_id)->orWhere('away_team_id', auth()->user()->club_id)->paginate(15);
+
         return view(
             'matchSchedules.schedule',
             [
@@ -47,7 +48,8 @@ class MatchScheduleController extends Controller
     {
         $schedule = MatchSchedule::findOrfail($id);
         $report = $schedule->report;
-        
+   
+        // dd(json_decode($schedule->home_lineup));
 
         // $arr = ['min' => 15, 'event' => 'some event happened5'];
         // $newArr = $schedule->report ?? [];
