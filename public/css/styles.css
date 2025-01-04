@@ -1,0 +1,340 @@
+@import "teamGenerated.css"; /* Using a string */
+@import "match-styles.css"
+
+select, input {
+    width:200px;
+    box-sizing:border-box;
+    border-radius:5px; 
+  }
+
+  input:disabled {
+    background: #dddddd;
+  }
+
+.centerBlock {
+    margin: auto;
+    width: 50%;
+    border: 1px solid rgb(250,240,230);
+    padding: 10px;
+  }
+/* dashboard */
+.boxx {
+    display:flex;
+   
+}
+.adminPanel {
+    display: flex;
+    flex-direction: column;
+    width:20%;
+    background-color: rgb(203, 65, 84);
+    padding: 1rem;
+    margin-left: 1rem;
+    border: 3px solid rgb(145, 163, 176);
+}
+
+.adminPanel h5 {
+    text-align: center;
+}
+.loginBlock{
+    margin-right: 12rem;
+}
+
+/* show */
+
+.card-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-block {
+    background-color: grey;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+.element {
+    margin: 1rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.element .text {
+    font-size: 1.2rem;
+    color: gold;
+}
+
+.BackBtn {
+    background-color: red;
+}
+
+.button {
+    display: inline-block;
+    text-align: center;
+    border-radius: 2px;
+    line-height: 19px;
+    cursor: pointer;
+    margin-left: -1px;
+    padding: 4px 15px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+    border: 1px solid #c6c6c6;
+    color: #000;
+    text-decoration: none;
+    font-family: sans-serif;
+    max-width:200px;
+    margin: 0.2em;
+}
+
+.buttonSm {
+    display: inline-block;
+    text-align: center;
+    border-radius: 3px;
+    line-height: 3px;
+    cursor: pointer;
+    margin-left: -1px;
+    padding: 8px 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+    border: 1px solid #c6c6c6;
+    color: #000;
+    text-decoration: none;
+    font-family: sans-serif;
+    max-width:200px;
+}
+.buttonFire {
+    display: inline-block;
+    text-align: center;
+    border-radius: 3px;
+    line-height: 3px;
+    cursor: pointer;
+    margin-left: -1px;
+    padding: 8px 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+    border: 1px solid #c6c6c6;
+    color: #ffffe0;
+    background-color: rgb(149,69,53) !important;
+    text-decoration: none;
+    font-family: sans-serif;
+    max-width:200px;
+}
+
+.buttonSm:active, .buttonFire:active {
+    background-color: #f6f6f6;
+    background-image: -webkit-linear-gradient(top, #f6f6f6, #f1f1f1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.is-pressed {
+    background: -webkit-linear-gradient(top, #eee, #e0e0e0);
+    border: 1px solid #d7d7d7;
+    box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* table */
+.tableHead {
+    background-color: rgb(53, 56, 57, 0.7);
+    border: 4px solid rgb(112, 66, 65);
+
+}
+
+.tableBody {
+    background-color: rgb(139, 133, 137, 0.5);
+    border: 3px inset rgb(102, 102, 153);
+}
+
+#flags {
+    background-size: contain;
+    background-position: 50%;
+    background-repeat: no-repeat;
+}
+
+/* players */
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 0.5fr 0.5fr 1fr;
+    grid-template-rows: 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "fn ln ln pot"
+        "age height height weight"
+        "club country country Position"
+        "value salary salary bookings"
+        "injury fatigue fatigue form"
+        "gk def def pm"
+        "pace technique technique pass"
+        "Head str str stamina"
+        "exp exp lead lead"
+        "created created upd upd";
+}
+
+.age {
+    grid-area: age;
+}
+
+.height {
+    grid-area: height;
+}
+
+.weight {
+    grid-area: weight;
+}
+
+.club {
+    grid-area: club;
+}
+
+.country {
+    grid-area: country;
+}
+
+.Position {
+    grid-area: Position;
+}
+
+.value {
+    grid-area: value;
+}
+
+.salary {
+    grid-area: salary;
+}
+
+.bookings {
+    grid-area: bookings;
+}
+
+.injury {
+    grid-area: injury;
+}
+
+.fatigue {
+    grid-area: fatigue;
+}
+
+.form {
+    grid-area: form;
+}
+
+.gk {
+    grid-area: gk;
+}
+
+.def {
+    grid-area: def;
+}
+
+.pm {
+    grid-area: pm;
+}
+
+.pace {
+    grid-area: pace;
+}
+
+.technique {
+    grid-area: technique;
+}
+
+.pass {
+    grid-area: pass;
+}
+
+.Head {
+    grid-area: Head;
+}
+
+.str {
+    grid-area: str;
+}
+
+.stamina {
+    grid-area: stamina;
+}
+
+.upd {
+    grid-area: upd;
+}
+
+.exp {
+    grid-area: exp;
+}
+
+.leadership {
+    grid-area: lead;
+}
+
+.created {
+    grid-area: created;
+}
+
+.fn {
+    grid-area: fn;
+}
+
+.ln {
+    grid-area: ln;
+}
+
+.pot {
+    grid-area: pot;
+}
+
+.fieldDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.playerAdd {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+/* generator */
+.main {
+    display:flex;
+    justify-content: center;
+    margin: 2em;
+    padding: 2em;
+}
+.mainItem {
+    width:50%;
+    border:2px solid rgb(203,65,84);
+    border-radius: 10px;
+    padding: 1em;
+    margin:auto;
+}
+
+.lineupList {
+    list-style: decimal;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.generateForm {
+
+}
+.inputItem input {
+    
+}
+.title {
+    text-align: center;
+    margin:0.5em;
+}
+.playershow {
+    background-color: rgb(140,158,94, 0.5);
+    padding:0.5em;
+    border:1px solid rgb(140,158,94, 0.9);
+    border-radius: 10px;
+    margin: 5em, auto;
+}
+.optionBlock {
+    margin:0.5em;
+}
+.formBlock {
+    padding:0.6em;
+}

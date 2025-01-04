@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Club;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use App\Services\TeamServices\GenerateTeamService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
-use Illuminate\Support\Str;
 use Webpatser\Uuid\Uuid;
 
 class RegisteredUserController extends Controller
@@ -33,12 +35,15 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request, GenerateTeamService $generateTeamService)
     {
         $request->validate([
-            'username' => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'username'  => ['required', 'string', 'max:255'],
+            'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password'  => ['required', 'confirmed', Rules\Password::defaults()],
+            'club_name' => ['required', 'string', 'min:3', 'max:30', Rule::unique('clubs')],
+            'country'   => ['required', 'numeric'],
+
         ]);
     
         $user = User::create([
@@ -48,10 +53,32 @@ class RegisteredUserController extends Controller
             'uuid'     => Uuid::generate(4)->string,
         ]);
 
+        // $club = Club::create([
+        //     'club_name'          => $request->club_name,
+        //     'club_rating_points' => 100,
+        //     'supporters'         => 100,
+        //     'supporters_mood'    => Club::MOOD_CALM,
+        //     'budget'             => 250000,
+        //     'country_id'         => $request->country,
+        //     'user_id'            => $user->id,
+        // ]);  
+        
+        $requestData = [
+            'team_type'  => '1',
+            'user_id'    => $user->id,
+            'title'      => $request->club_name,
+            'country_id' => $request->country,
+        ];
+        
+        $requestInstance = new Request($requestData);
+        
+        $club = $generateTeamService->processRequest($requestInstance);
+        $user->setClub($club->id);
+        $user->save();
         event(new Registered($user));
-
+        
         Auth::login($user);
-
+        
         return redirect(RouteServiceProvider::HOME);
     }
 }

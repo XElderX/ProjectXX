@@ -9,7 +9,6 @@ class Club extends Model
 {
     use HasFactory;
 
-
     public const MOOD_FURIOUS = 'furious';
     public const MOOD_HOPELESS = 'hopeless';
     public const MOOD_DISAPPOINTED = 'disappointed';
@@ -18,13 +17,14 @@ class Club extends Model
     public const MOOD_VERY_HAPPY = 'very_happy';
     public const MOOD_DREAMIOUS = 'dream';
     
-
     public const SUPPORTERS_MOOD = [
         self::MOOD_FURIOUS, self::MOOD_HOPELESS,
         self::MOOD_DISAPPOINTED, self::MOOD_CALM, 
         self::MOOD_HAPPY, self::MOOD_VERY_HAPPY, 
         self::MOOD_DREAMIOUS
     ];
+
+    public const TABLE_NAME = 'clubs';
 
     protected $fillable = [
         'club_name',
@@ -35,15 +35,28 @@ class Club extends Model
         'supporters_mood',
         'budget',
         
-        'town',
-        'country',
-        'user',
+        'town_id',
+        'country_id',
+        'user_id',
     ];
 
     public function town(){
         return $this->belongsTo(Town::class);
     }
+    
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function player(){
+        return $this->hasMany(Player::class);
+    }
+
+    public function selectPlayerById($id){
+
     }
 }

@@ -3,19 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Webpatser\Uuid\Uuid;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        // $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return User::all();
+        $paginate = (int) $request->input('limit', 5);
+        return response()->json(User::autoWhere()->autoWith()->latest()->paginate($paginate));
     }
 
     /**
@@ -34,9 +41,32 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function register(RegisterRequest $request)
     {
-        //
+        $user = $request->validated();
+
+        $user = User::create([
+            'username' => $user['username'],
+            'email'    => $user['email'],
+            'password' => $user['password'],
+            'uuid'     => Uuid::generate(4)->string,
+        ]);
+
+        return response()->json(array('success' => 'success'));
+    }
+
+    public function login(RegisterRequest $request)
+    {
+        $user = $request->validated();
+
+        $user = User::create([
+            'username' => $user['username'],
+            'email'    => $user['email'],
+            'password' => $user['password'],
+            'uuid'     => Uuid::generate(4)->string,
+        ]);
+
+        return response()->json(array('success' => 'success'));
     }
 
     /**

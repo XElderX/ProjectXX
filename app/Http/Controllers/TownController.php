@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TownStoreRequest;
+use App\Models\Country;
 use App\Models\Town;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
+
 
 class TownController extends Controller
 {
@@ -15,7 +16,14 @@ class TownController extends Controller
      */
     public function index()
     {
-        //
+        return view(
+            'towns.index',
+            [
+                'towns'      => Town::with('country')->paginate(10),
+                'countries'  => Country::all(),
+                'allweather' => Town::WEATHER,
+            ]
+        );
     }
 
     /**
@@ -34,22 +42,18 @@ class TownController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TownStoreRequest $request)
     {
-        $request->validate([
-            'town_name'  => ['required', 'string', 'max:255', 'unique:towns'],
-            'population' => ['nullable', 'integer', 'min:1', 'max:255'],
-            'country'    => ['required'],
-        ]);
-    
         $town = Town::create([
-            'country'    => $request->town_name,
-            'population' => $request->population,
-            'country'    => $request->country,
+            'town_name'  => $request->town_name,
+            'country_id' => $request->country_id,
+            'population' => (integer) $request->population,
+            'weather'    => $request->weather,
         ]);
-
-        return redirect(RouteServiceProvider::HOME);
+        
+        return redirect()->route('towns')->with('status_success', 'Town ' . $town->town_name. ' was added.');
     }
+
 
     /**
      * Display the specified resource.
@@ -80,9 +84,13 @@ class TownController extends Controller
      * @param  \App\Models\Town  $town
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Town $town)
-    {
-        //
+    public function update(TownStoreRequest $request, $id)
+    {   
+        $town = Town::findOrFail($id);
+        $town->fill($request->all());
+        $town->save();
+
+        return redirect()->route('towns')->with('status_success', 'Town ' . $town->town_name . ' was updated successfully.');
     }
 
     /**
@@ -91,8 +99,11 @@ class TownController extends Controller
      * @param  \App\Models\Town  $town
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Town $town)
+    public function destroy($id)
     {
-        //
+        $town = Town::findOrFail($id);
+        
+        $town->delete();
+        return redirect()->route('towns')->with('status_success', 'Town ' . $town->town_name . ' was deleted.');
     }
 }
