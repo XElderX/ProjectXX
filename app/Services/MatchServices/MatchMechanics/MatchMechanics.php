@@ -14,7 +14,7 @@ class MatchMechanics extends BaseMatchMechanics
 
     public function eventPhases(array $marks) //determines possible event turns count 
     {
-        $ratio = $marks[0] / $marks[1];
+        $ratio = ($marks[1][0] + $marks[0][0]) / $marks[1][1];
 
         return match (true) {
             $ratio > 2 => mt_rand(2, 3),
@@ -27,9 +27,11 @@ class MatchMechanics extends BaseMatchMechanics
     public function quickAttack(MatchService $base, int $minute, array $players, string $activeTeam, string $eventDesc)
     {
         $situationId = Str::random(4);
-        $baseMatchEvents = new BaseMatchEvents;
-        $scorer = $baseMatchEvents->playerToScore($players);
-        $selectedPlayerModel = $this->getPlayerModel($base->match, $activeTeam, $scorer);
+        // $baseMatchEvents = new BaseMatchEvents;
+        $baseMatchEvents = $base->baseMatchEvents;
+        $oportunist = $baseMatchEvents->playerToScore($players);
+
+        $selectedPlayerModel = $this->getPlayerModel($base->match, $activeTeam, $oportunist);
         echo('xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
         $strike = $baseMatchEvents->calculateStrike($selectedPlayerModel, $activeTeam == BaseMatchEvents::HOME_TEAM ? $base->homeStriking : $base->awayStriking);
         $scoreChance = $baseMatchEvents->chanceToScore();
@@ -170,7 +172,9 @@ class MatchMechanics extends BaseMatchMechanics
     public function shootingStage(object $shooter, object $oppGoalkeeper, object $assister, string $scoreType, string $outcome, string $activeTeam, int $minute, MatchService $base)
     {
         $situationId = Str::random(4);
-        $baseMatchEvents = new BaseMatchEvents;
+        // $baseMatchEvents = new BaseMatchEvents;
+    
+        $baseMatchEvents = $base->baseMatchEvents;
         $luck1 = mt_rand(0, 50) / 10;
         $luck2 = mt_rand(0, 30) / 10;
         $luck3 = mt_rand(0, 50) / 10;

@@ -29,6 +29,11 @@ class Player extends Model
         'striker' => ['pace' => 0.25, 'pass' => 0.05, 'tech' => 0.15, 'head' => 0.2, 'stri' => 0.35],
     ];
 
+    public const SKILL_SECONDARY_PROPORTIONS = [
+        'counterDef' => ['def' => 0.3,'tech' => 0.2,'pace' => 0.5],
+        'ballMoving' => ['pace' => 0.2, 'pass' => 0.3, 'tech' => 0.2, 'pm' => 0.3],
+    ];
+
     public const PLAYER_POSITIONS = [
         self::POSITION_GK, self::POSITION_DEF,
         self::POSITION_DEF_WING, self::POSITION_MID_WING,
