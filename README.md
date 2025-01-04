@@ -9,19 +9,13 @@ This is project XX
 
 ## Set up
 
+-   composer install
 -   cp .env.example .env
 -   php artisan key:generate
+-   php artisan migrate
 -   php artisan db:seed
 -   npm install
 -   npm run dev
-
-## Setup
-
--   composer update
--   npm install
--   npm run dev
--   cp .env.example .env
--   php artisan key:generate
 
 ## ChangeLog
 
