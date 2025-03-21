@@ -2,8 +2,8 @@
 @section('content')
     <div class="card-body">
         <div class='container-block'>
-            <h2>Players List </h2>
-            <div> Players count: <span style="color: #008000">{{count($players)}}</span></div>
+            <h2>Player data  </h2>
+      
             <div>
                 @if ($errors->any())
             <div class="alert alert-danger">
@@ -18,7 +18,7 @@
                     {{ session()->get('status_success') }}
                 </div>
         @endif      
-                @foreach ($players as $player)
+              
                 <div class = "playerBlock">
                     <div class="container playershow">
                         <div class="fn">First name: <b> {{$player->first_name}} </b></div>
@@ -52,18 +52,12 @@
                         <div class="leadership" style="color: rgb(46,139,87);"><a href="{{ route('teamPlayers', [$club_id, 'field' => 'lead', 'sort' => ($field === 'lead' && $sort === 'asc') ? 'desc' : 'asc']) }}">Leadership:</a><b>{{ floor($player->lead * 100) / 100 }}</b></div>
                         <div class="created" style="border-top: 3px solid rgb(95,158,160, 0.8); padding-top:1em;">Created_at:<b>{{ $player->created_at }}</b></div>
                         <div class="upd" style="border-top: 3px solid rgb(95,158,160, 0.8); padding-top: 1em;"> Updated_at:<b>{{ $player->updated_at }}</b></div>
-                        <button class="button">
-                            <a href="{{ route('player.view', ['id' => $player->id]) }}" class="text-sm text-gray-700 dark:text-gray-500">View Player</a>
-                        </button>
                         <button type="button" class="buttonFire" data-bs-toggle="modal" data-bs-target="#fire{{ $player->id }}">Fire</button>
                         @include('players.firePlayer')
                     </div>
                     </div>
-                    @endforeach
                     <div style = 'display:flex; flex-direction:column; align-items: center; margin:0.5em;'>
-                    <button class="button">
-                        <a href="{{ route('genTeam', [$club_id] ) }}" class="text-sm text-gray-700 dark:text-gray-500">Back to team details</a>
-                    </button>
+
             
                     <button class="button">
                         <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500">Back to dashboard</a>

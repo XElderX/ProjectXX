@@ -67,6 +67,8 @@ Route::controller(ClubController::class)->group(function () {
 
 Route::controller(PlayerController::class)->group(function () {
     Route::get('players', 'index')->middleware('auth')->name('players');
+    Route::get('players-view/{id}', 'show')->middleware('auth')->name('player.view');
+    Route::get('retrieve-player/{id}', 'retrievePlayer')->middleware('auth')->name('player.retrieve');
     Route::post('players', 'store')->middleware('auth')->name('players.store');
     Route::get('players/{id}', 'destroy')->middleware('auth')->name('player.delete');
     Route::get('players/clear/{value}', 'clear')->middleware('auth')->name('player.clear');

@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\MatchSchedule;
-use App\Services\MatchServices\MatchService;
+use App\Services\MatchServices\MatchEngine;
+use App\Services\MatchServices\Team as MatchServicesTeam;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Team;
 
 class ProcessMatchCommand extends Command
 {
@@ -48,15 +50,19 @@ class ProcessMatchCommand extends Command
             ->whereDate('match_date', '<', $now->toDateString())
             // ->whereTime('time', '<=', $now->toTimeString())
             ->get();
-            
-            // Process each match
+
+        // Process each match
         foreach ($matches as $match) {
-            $matchService = new MatchService($match);
-            // dd($matchService);
+           dd($match);
 
-            $matchService->simulateMatch();
+            $teamA = new MatchServicesTeam("Red Warriors", 75, 60, 100);
+            $teamB = new MatchServicesTeam("Blue Strikers", 70, 65, 100);
+
+            $match = new MatchEngine($teamA, $teamB);
+            $match->simulateMatch();
+
+            // $matchService->simulateMatch();
             dd('stop');
-
         }
 
         return Command::SUCCESS;

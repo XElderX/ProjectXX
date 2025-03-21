@@ -25,10 +25,8 @@ class LineupRequest extends FormRequest
     public function rules()
     {
         return [
-
-
             'players'   => ['required', 'array','min:3'],
-            'players.*' =>  ['nullable', 'numeric', Rule::exists('players', 'id')],     // each string must have min 3 chars,
+            'players.*' =>  ['nullable', 'distinct', 'numeric', Rule::exists('players', 'id')],     // each string must have min 3 chars,
             'positions'   => ['required', 'array','min:3'],
             'positions.*' => ['nullable','string' ]
         ];
