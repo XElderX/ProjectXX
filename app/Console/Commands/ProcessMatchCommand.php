@@ -55,8 +55,8 @@ class ProcessMatchCommand extends Command
         foreach ($matches as $match) {
            dd($match);
 
-            $teamA = new MatchServicesTeam("Red Warriors", 75, 60, 100);
-            $teamB = new MatchServicesTeam("Blue Strikers", 70, 65, 100);
+            $teamA = new MatchServicesTeam($match->home_team_id, 75, 60, 100);
+            $teamB = new MatchServicesTeam($match->away_team_id, 70, 65, 100);
 
             $match = new MatchEngine($teamA, $teamB);
             $match->simulateMatch();

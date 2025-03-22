@@ -186,15 +186,17 @@
 </div>
 
 <script>
+let selectedPlayers = {}; 
+
 document.querySelectorAll('.player-select').forEach(select => {
-    select.addEventListener('click', function () {
+    select.addEventListener('click', function() {
         const dropdown = this.nextElementSibling;
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     });
 });
 
 document.querySelectorAll('.dropdown-option').forEach(option => {
-    option.addEventListener('click', function () {
+    option.addEventListener('click', function() {
         const selectedPlayerId = this.getAttribute('data-player-id');
         const selectedPlayerName = this.innerText;
         const skills = JSON.parse(this.getAttribute('data-skills') || '{}');
@@ -204,47 +206,43 @@ document.querySelectorAll('.dropdown-option').forEach(option => {
         const row = dropdown.closest('tr');
         const rowIndex = row.getAttribute('data-row');
 
+        if (selectedPlayers[selectedPlayerId] && selectedPlayers[selectedPlayerId] !== rowIndex) {
+            const prevRow = document.querySelector(`tr[data-row="${selectedPlayers[selectedPlayerId]}"]`);
+            if (prevRow) {
+                prevRow.querySelector('.dropdown-placeholder').innerText = '-- Select Player --';
+                prevRow.querySelector('.selected-player').value = '';
+            }
+        }
+
+        selectedPlayers[selectedPlayerId] = rowIndex;
+
         hiddenInput.value = selectedPlayerId;
         dropdown.querySelector('.dropdown-placeholder').innerText = selectedPlayerName;
 
-        // Update selected player stats
         document.getElementById('selected-player-name').innerText = selectedPlayerName;
         document.getElementById('selected-player-position').innerText = skills.position || '--';
-        document.getElementById('selected-player-gk').innerText = skills.gk || '0';
-        document.getElementById('selected-player-def').innerText = skills.def || '0';
-        document.getElementById('selected-player-pm').innerText = skills.pm || '0';
-        document.getElementById('selected-player-pace').innerText = skills.pace || '0';
-        document.getElementById('selected-player-technique').innerText = skills.tech || '0';
-        document.getElementById('selected-player-passing').innerText = skills.pass || '0';
-        document.getElementById('selected-player-heading').innerText = skills.heading || '0';
-        document.getElementById('selected-player-striker').innerText = skills.str || '0';
+                // Update skills section for selected player
 
+        document.getElementById('selected-player-gk').innerText = Math.floor(skills.gk) || '0';
+        document.getElementById('selected-player-def').innerText = Math.floor(skills.def) || '0';
+        document.getElementById('selected-player-pm').innerText = Math.floor(skills.pm) || '0';
+        document.getElementById('selected-player-pace').innerText = Math.floor(skills.pace) || '0';
+        document.getElementById('selected-player-technique').innerText = Math.floor(skills.tech) || '0';
+        document.getElementById('selected-player-passing').innerText = Math.floor(skills.pass) || '0';
+        document.getElementById('selected-player-heading').innerText = Math.floor(skills.heading) || '0';
+        document.getElementById('selected-player-striker').innerText = Math.floor(skills.str) || '0';
         dropdown.querySelector('.dropdown-options').style.display = 'none';
     });
-
-    option.addEventListener('mouseover', function () {
-        const skills = JSON.parse(this.getAttribute('data-skills') || '{}');
-        document.getElementById('comparison-player-name').innerText = this.innerText;
-        document.getElementById('comparison-player-position').innerText = skills.position || '--';
-        document.getElementById('comparison-player-gk').innerText = skills.gk || '0';
-        document.getElementById('comparison-player-def').innerText = skills.def || '0';
-        document.getElementById('comparison-player-pm').innerText = skills.pm || '0';
-        document.getElementById('comparison-player-pace').innerText = skills.pace || '0';
-        document.getElementById('comparison-player-technique').innerText = skills.tech || '0';
-        document.getElementById('comparison-player-passing').innerText = skills.pass || '0';
-        document.getElementById('comparison-player-heading').innerText = skills.heading || '0';
-        document.getElementById('comparison-player-striker').innerText = skills.str || '0';
-    });
+    
 });
 
-document.addEventListener('click', function (e) {
+document.addEventListener('click', function(e) {
     if (!e.target.closest('.custom-dropdown')) {
         document.querySelectorAll('.dropdown-options').forEach(dropdown => {
             dropdown.style.display = 'none';
         });
     }
 });
-
 </script>
 
 @endsection
