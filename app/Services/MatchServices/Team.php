@@ -17,6 +17,7 @@ class Team
     public $defense = 0;
     public $stamina = 0;
     public $score = 0;
+    public $attempts = 0;
 
     private const SKILL_PROPORTIONS = [
         'gk' => ['gk' => 0.7, 'pace' => 0.2, 'pass' => 0.1],
@@ -150,5 +151,30 @@ class Team
             return 0; // Default to 0 if the goalkeeper is not found or lacks the skill
         }
     }
-    
+
+    public function getRandomAttacker()
+    {
+        $attackers = array_filter($this->teamLineup, function ($player) {
+            return strtoupper($player['position']) === 'FOW'; // Assuming 'FOW' is the forward position
+        });
+
+        // If there are no attackers, return null
+        if (count($attackers) === 0) {
+            return null;
+        }
+
+        // Randomly select an attacker from the filtered attackers
+        return $attackers[array_rand($attackers)];
+    }
+
+    public function getTeamGoals()
+    {
+        return $this->score;
+    }
+
+
+    public function getTeamAtempts()
+    {
+        return $this->attempts;
+    }  
 }
