@@ -84,7 +84,7 @@ class BaseMatchEvents extends EventsTemplates
         $match->save();
     }
 
-    public function attackDefenceMarks(string $activeTeam, float $homeStr, float $awayStr, float $homeDef, float $awayDef): array
+    public function resolveMarks(string $activeTeam, float $homeStr, float $awayStr, float $homeDef, float $awayDef): array
     {
         if ($activeTeam == BaseMatchEvents::HOME_TEAM) {
             return [$homeStr, $awayDef];
@@ -227,6 +227,9 @@ class BaseMatchEvents extends EventsTemplates
             $leadSkill = (float) $player->lead;
             $formSkill = (float) $player->form;
 
+            $conterDefProportions = Player::SKILL_SECONDARY_PROPORTIONS['counterDef'];
+            $moveBallProportions = Player::SKILL_SECONDARY_PROPORTIONS['ballMoving'];
+
             // Calculate skills based on player's position
             if ($position === 'GK') {
                 $skillProportions = Player::SKILL_PROPORTIONS['goalkeeper'];
@@ -235,15 +238,21 @@ class BaseMatchEvents extends EventsTemplates
                 $form = (($goalkeeping / 3) + $exp) * ($formSkill * 0.1);
                 $goalkeeping += $exp + $form + $leadSkill * 0.15;
 
-                return $goalkeeping;
+                return [$goalkeeping, 0, 0];
             } elseif ($position === 'DEF') {
                 $skillProportions = Player::SKILL_PROPORTIONS['defender'];
+        
                 $defending = $defSkill * $skillProportions['def'] + $pmSkill * $skillProportions['pm'] + $techSkill * $skillProportions['tech'] + $headingSkill * $skillProportions['head'] + $passSkill * $skillProportions['pass'] + $paceSkill * $skillProportions['pace'];
                 $exp = ($defending / 6) * ($expSkill * 0.13);
                 $form = (($defending / 6) + $exp) * ($formSkill * 0.13);
                 $defending += $exp + $form + $leadSkill * 0.17;
 
-                return $defending;
+                $defendingAgainstCounter = $defSkill * $conterDefProportions['def'] + $techSkill * $conterDefProportions['tech'] + $paceSkill * $conterDefProportions['pace'];
+                $ballMove = $techSkill * $moveBallProportions['tech'] + $paceSkill * $moveBallProportions['pace'] + $passSkill * $moveBallProportions['pass'] + $pmSkill * $moveBallProportions['pm'];
+                $defendingAgainstCounter += $exp + $form;
+                $ballMove += $exp + $form;
+
+                return [$defending, $defendingAgainstCounter, $ballMove];
             } elseif ($position === 'MID') {
                 $skillProportions = Player::SKILL_PROPORTIONS['midfielder'];
                 $midfielding = $defSkill * $skillProportions['def'] + $paceSkill * $skillProportions['pace'] + $passSkill * $skillProportions['pass'] + $techSkill * $skillProportions['tech'] + $headingSkill * $skillProportions['head'] + $pmSkill * $skillProportions['pm'];
@@ -251,7 +260,13 @@ class BaseMatchEvents extends EventsTemplates
                 $form = (($midfielding / 6) + $exp) * ($formSkill * 0.13);
                 $midfielding += $exp + $form + $leadSkill * 0.17;
 
-                return $midfielding;
+                $defendingAgainstCounter = $defSkill * $conterDefProportions['def'] + $techSkill * $conterDefProportions['tech'] + $paceSkill * $conterDefProportions['pace'];
+                $ballMove = + $techSkill * $moveBallProportions['tech'] + $paceSkill * $moveBallProportions['pace'] + $passSkill * $moveBallProportions['pass'] + $pmSkill * $moveBallProportions['pm'];
+
+                $defendingAgainstCounter += $exp + $form;
+                $ballMove += $exp + $form;
+
+                return [$midfielding, $defendingAgainstCounter, $ballMove ];
             } elseif ($position === 'FOW') {
                 $skillProportions = Player::SKILL_PROPORTIONS['striker'];
                 $striking = $paceSkill * $skillProportions['pace'] + $passSkill * $skillProportions['pass'] + $techSkill * $skillProportions['tech'] + $headingSkill * $skillProportions['head'] + $strSkill * $skillProportions['stri'];
@@ -259,13 +274,12 @@ class BaseMatchEvents extends EventsTemplates
                 $form = (($striking / 5) + $exp) * ($formSkill * 0.15);
                 $striking += $exp + $form + $leadSkill * 0.19;
 
-                return $striking;
+                return [$striking, 0, 0];
             }
         }
 
         return 0; // Return 0 if player not found or invalid position
     }
-
 
     public function homeTeamFetch(object $base): void
     {
@@ -273,21 +287,32 @@ class BaseMatchEvents extends EventsTemplates
         $homeDefending = 0;
         $homeMidfielding = 0;
         $homeStriking = 0;
+
+        $homeDefendingAgainstCounter = 0;
+        $homeMovingBall = 0;
+
         if (is_array($base->homeLineup)) {
             foreach ($base->homeLineup as $playerData) {
                 $skill = $this->calculatePlayerSkills($playerData);
-                if ($skill > 0) {
+                // $defSecondary = $this->calculatePlayerSkills($playerData);
+                // $midSecondary = $this->calculatePlayerSkills($playerData);
+                if ($skill[0] > 0) {
                     $homeLineupPlayers[] = Player::find($playerData->player_id);
                     if ($playerData->position === 'GK') {
-                        $homeGoalkeeping += $skill;
+                        $homeGoalkeeping += $skill[0];
                     }
                     // Assign other skills based on position
                     elseif ($playerData->position === 'DEF') {
-                        $homeDefending += $skill;
+                        $homeDefending += $skill[0];
+                        $homeDefendingAgainstCounter += $skill[1];
+                        $homeMovingBall += $skill[2];
                     } elseif ($playerData->position === 'MID') {
-                        $homeMidfielding += $skill;
+                        $homeMidfielding += $skill[0];
+                        $homeDefendingAgainstCounter += $skill[1];
+                        $homeMovingBall += $skill[2];
                     } elseif ($playerData->position === 'FOW') {
-                        $homeStriking += $skill;
+                        $homeStriking += $skill[0];
+                  
                     }
                 }
             }
@@ -296,6 +321,9 @@ class BaseMatchEvents extends EventsTemplates
             $base->homeDefending = $homeDefending;
             $base->homeMidfielding = $homeMidfielding;
             $base->homeStriking = $homeStriking;
+
+            $base->homeDefendingAgainstCounter = $homeDefendingAgainstCounter;
+            $base->homeMovingBall = $homeMovingBall;
         }
     }
 
@@ -306,21 +334,28 @@ class BaseMatchEvents extends EventsTemplates
         $awayMidfielding = 0;
         $awayStriking = 0;
 
+        $awayDefendingAgainstCounter = 0;
+        $awayMovingBall = 0;
+
         if (is_array($base->awayLineup)) {
             foreach ($base->awayLineup as $playerData) {
                 $skill = $this->calculatePlayerSkills($playerData);
                 if ($skill > 0) {
                     $awayLineupPlayers[] = Player::find($playerData->player_id);
                     if ($playerData->position === 'GK') {
-                        $awayGoalkeeping += $skill;
+                        $awayGoalkeeping += $skill[0];
                     }
                     // Assign other skills based on position
                     if ($playerData->position === 'DEF') {
-                        $awayDefending += $skill;
+                        $awayDefending += $skill[0];
+                        $awayDefendingAgainstCounter += $skill[1];
+                        $awayMovingBall += $skill[2];
                     } elseif ($playerData->position === 'MID') {
-                        $awayMidfielding += $skill;
+                        $awayMidfielding += $skill[0];
+                        $awayDefendingAgainstCounter += $skill[1];
+                        $awayMovingBall += $skill[2];
                     } elseif ($playerData->position === 'FOW') {
-                        $awayStriking += $skill;
+                        $awayStriking += $skill[0];
                     }
                 }
             }
@@ -328,24 +363,27 @@ class BaseMatchEvents extends EventsTemplates
             $base->awayDefending = $awayDefending;
             $base->awayMidfielding = $awayMidfielding;
             $base->awayStriking = $awayStriking;
+
+            $base->awayDefendingAgainstCounter = $awayDefendingAgainstCounter;
+            $base->awayMovingBall = $awayMovingBall;
         } else {
             dd('error in fetch');
         }
     }
 
-    public function advanceStage(int $advanceEvent, string $activeTeam, array $players, array $oppPlayers, int $minute, bool $lastPhase, MatchService $classA)
+    public function advanceStage(int $advanceEvent, string $activeTeam, array $marks, array $players, array $oppPlayers, int $minute, bool $lastPhase, MatchService $classA)
     {
 
         switch ($classA->stage) {
             case 0:
                 // dd($this->firstStage($players, $oppPlayers, $advanceEvent, $minute, $isHome, $lastPhase));
-                return $this->firstStage($players, $oppPlayers, $advanceEvent, $minute, $activeTeam, $lastPhase, $classA);
+                return $this->firstStage($players, $marks, $oppPlayers, $advanceEvent, $minute, $activeTeam, $lastPhase, $classA);
                 break;
             case 1:
-                return $this->secondStage($players, $oppPlayers, $advanceEvent, $minute, $activeTeam, $lastPhase, $classA);
+                return $this->secondStage($players, $marks, $oppPlayers, $advanceEvent, $minute, $activeTeam, $lastPhase, $classA);
                 break;
             case 2:
-                return $this->thirdStage($players, $oppPlayers, $advanceEvent, $minute, $activeTeam, $lastPhase, $classA);
+                return $this->thirdStage($players, $marks, $oppPlayers, $advanceEvent, $minute, $activeTeam, $lastPhase, $classA);
                 break;
 
             default:
@@ -354,7 +392,7 @@ class BaseMatchEvents extends EventsTemplates
         }
     }
 
-    private function firstStage(array $players, array $oppPlayers, int $advanceEvent, int $minute, string $activeTeam, bool $lastPhase, MatchService $classA)
+    private function firstStage(array $players, array $marks, array $oppPlayers, int $advanceEvent, int $minute, string $activeTeam, bool $lastPhase, MatchService $classA)
     {
         $stage = 1;
         list($midfielders, $oppMidfielders) = $this->categorizePlayersByPosition($players, $oppPlayers, 'MID');
@@ -373,7 +411,8 @@ class BaseMatchEvents extends EventsTemplates
         $luck1 = mt_rand(0, 50) / 10;
         $luck2 = mt_rand(0, 50) / 10;
 
-        $totalStrength = $luck1 + (($player->pm * 0.3) + ($player->tech * 0.2)  + ($player->pace * 0.1) + ($player->pass * 0.3) + ($player->exp * 0.1)) * (1.5 + 0.5 * ($player->form - 5));
+        $totalStrength = $luck1 + ($marks[1][0] / rand(3, 5)) + (($player->pm * 0.3) + ($player->tech * 0.2)  + ($player->pace * 0.1) + ($player->pass * 0.3) + ($player->exp * 0.1)) * (1.5 + 0.5 * ($player->form - 5));
+
         $totalOppStrength = $luck2 + (($oppPlayer->def * 0.4) + ($oppPlayer->tech * 0.1)  + ($oppPlayer->pace * 0.3) + ($oppPlayer->heading * 0.1) + ($oppPlayer->exp * 0.1)) * (1.5 + 0.5 * ($oppPlayer->form - 5));
         //   dd($advanceEvent);
       
@@ -408,7 +447,7 @@ class BaseMatchEvents extends EventsTemplates
         }
     }
 
-    private function secondStage(array $players, array $oppPlayers, int $advanceEvent, int $minute, string $activeTeam, bool $lastPhase, $classA)
+    private function secondStage(array $players, array $marks, array $oppPlayers, int $advanceEvent, int $minute, string $activeTeam, bool $lastPhase, $classA)
     {
         $stage = 2;
         list($midfielders, $oppMidfielders) = $this->categorizePlayersByPosition($players, $oppPlayers, 'MID');
@@ -437,15 +476,14 @@ class BaseMatchEvents extends EventsTemplates
         $luck1 = mt_rand(0, 50) / 10;
         $luck2 = mt_rand(0, 50) / 10;
 
-        $midfielderStrength = $luck1 + (($midfield->pm * 0.1) + ($midfield->tech * 0.25)  + ($midfield->pace * 0.2) + ($midfield->pass * 0.25) + ($midfield->exp * 0.1)) + ($forward->str * 0.1) * (1.5 + 0.5 * ($midfield->form - 5));
-        $oppMidfielderStrength = $luck2 + (($oppMidfield->def * 0.4) + ($oppMidfield->tech * 0.1)  + ($oppMidfield->pace * 0.2) + ($oppMidfield->heading * 0.2) + ($oppMidfield->exp * 0.1)) * (1.5 + 0.5 * ($oppMidfield->form - 5));
+        $midfielderStrength = $luck1 + ($marks[1][0] / rand(3, 5)) + (($midfield->pm * 0.1) + ($midfield->tech * 0.25)  + ($midfield->pace * 0.2) + ($midfield->pass * 0.25) + ($midfield->exp * 0.1)) + ($forward->str * 0.1) * (1.5 + 0.5 * ($midfield->form - 5));
+        $oppMidfielderStrength = $luck2 + ($marks[1][1] / rand(3, 5)) + (($oppMidfield->def * 0.4) + ($oppMidfield->tech * 0.1)  + ($oppMidfield->pace * 0.2) + ($oppMidfield->heading * 0.2) + ($oppMidfield->exp * 0.1)) * (1.5 + 0.5 * ($oppMidfield->form - 5));
 
         $luck3 = mt_rand(0, 50) / 10;
         $luck4 = mt_rand(0, 50) / 10;
 
-        $forwardStrength = $luck3 + (($forward->str * 0.2) + ($forward->tech * 0.2)  + ($forward->pace * 0.2) + ($forward->pass * 0.2) + ($forward->heading * 0.1)) + ($forward->exp * 0.1) * (1.5 + 0.5 * ($forward->form - 5));
+        $forwardStrength = $luck3 + (($forward->str * 0.1) + ($forward->tech * 0.2)  + ($forward->pace * 0.3) + ($forward->pass * 0.2) + ($forward->heading * 0.1)) + ($forward->exp * 0.1) * (1.5 + 0.5 * ($forward->form - 5));
         $oppDefenderStrength = $luck4 + (($oppDefender->def * 0.4) + ($oppDefender->tech * 0.1)  + ($oppDefender->pace * 0.3) + ($oppDefender->heading * 0.1) + ($oppDefender->exp * 0.1)) * (1.5 + 0.5 * ($oppDefender->form - 5));
-
 
         $totalStrength = ($midfielderStrength * 0.7) + ($forwardStrength * 0.3);
         $totalOppStrength = ($oppMidfielderStrength * 0.3) + ($oppDefenderStrength * 0.7);
@@ -481,7 +519,7 @@ class BaseMatchEvents extends EventsTemplates
         }
     }
 
-    private function thirdStage(array $players, array $oppPlayers, int $advanceEvent, int $minute, string $activeTeam, bool $lastPhase, MatchService $classA)
+    private function thirdStage(array $players, array $marks, array $oppPlayers, int $advanceEvent, int $minute, string $activeTeam, bool $lastPhase, MatchService $classA)
     {
         $stage = 3;
 
@@ -526,9 +564,9 @@ class BaseMatchEvents extends EventsTemplates
         $luck4 = mt_rand(0, 50) / 10;
 
         $forwardStrength = $luck3 + (($forward->str * 0.35) + ($forward->tech * 0.25)  + ($forward->pace * 0.2) + ($forward->pass * 0.1) + ($forward->heading * 0.1)) + ($forward->exp * 0.1) * (1.5 + 0.5 * ($forward->form - 5));
-        $oppDefenderStrength = $luck4 + (($oppDefender->def * 0.4) + ($oppDefender->tech * 0.05)  + ($oppDefender->pace * 0.25) + ($oppDefender->heading * 0.2) + ($oppDefender->exp * 0.1)) * (1.5 + 0.5 * ($oppDefender->form - 5));
+        $oppDefenderStrength = $luck4 + ($marks[2][1] / rand(6, 8))+(($oppDefender->def * 0.4) + ($oppDefender->tech * 0.05)  + ($oppDefender->pace * 0.25) + ($oppDefender->heading * 0.2) + ($oppDefender->exp * 0.1)) * (1.5 + 0.5 * ($oppDefender->form - 5));
 
-        $totalStrength = ($midfielderStrength * 0.3) + ($forwardStrength * 0.7);
+        $totalStrength = ($midfielderStrength * 0.4) + ($forwardStrength * 0.6);
         $totalOppStrength = ($luck2 + ($oppDefenceBonusStrength / count($oppDefenders)) * 0.3) + ($oppDefenderStrength * 0.7);
 
         // dd($totalStrength . ' vs ' . $totalOppStrength);

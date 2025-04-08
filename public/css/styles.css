@@ -296,7 +296,9 @@ select, input {
 }
 /* generator */
 .main {
-    display:flex;
+    display: flex;
+    flex-direction: row;
+    gap: 20px; /* Space between the two sections */
     justify-content: center;
     margin: 2em;
     padding: 2em;

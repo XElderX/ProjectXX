@@ -79,12 +79,16 @@ class MatchScheduleController extends Controller
 
     public function matchForm(string $id)
     {
-        $schedule = MatchSchedule::findOrfail($id);
+        $schedule = MatchSchedule::findOrFail($id);
         $team = Club::findOrFail(auth()->user()->club_id);
         $players = Player::where('club_id', $team->id)->get();
-        $positions = ['DEF', 'MID', 'FOW'];
-
-        // $lineup = $schedule->home_team_id === $team->id ? json_decode($schedule->home_lineup) : json_decode($schedule->away_lineup);
+        $positions = ['GK', 'DEF', 'MID', 'FOW'];
+    
+        // Determine if the team is the home or away team
+        $isHomeTeam = $schedule->home_team_id === $team->id;
+    
+        // Select the correct lineup
+        $lineup = $isHomeTeam ? json_decode($schedule->home_lineup, true) : json_decode($schedule->away_lineup, true);
 
         return view(
             'matchSchedules.matchForm',
@@ -93,10 +97,11 @@ class MatchScheduleController extends Controller
                 'team'       => $team,
                 'options'    => $players,
                 'positions'  => $positions,
-                // 'lineupData' => $lineup
+                'lineupData' => $lineup ?? [] // Ensure it's always an array
             ]
         );
     }
+    
 
     public function lineup(string $id, LineupRequest $request, PreMatchService $preMatchService)
     {

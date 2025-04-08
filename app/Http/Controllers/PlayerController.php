@@ -27,6 +27,30 @@ class PlayerController extends Controller
         );
     }
 
+    public function view()
+    {
+        return view(
+            'player.view',
+            [
+                'player'    => Player::find('id'),
+                'positions' => Player::PLAYER_POSITIONS,
+            ]
+        );
+    }
+
+        /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Player  $player
+     * @return \Illuminate\Http\Response
+     */
+    public function retrievePlayer($id)
+    {
+        $player = Player::where('id', '=', $id)->firstOrFail();
+
+        return $player ;
+    }
+
     /**
      * Store a newly created resource in storage.
      *

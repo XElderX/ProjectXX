@@ -295,3 +295,9 @@ This is project XX
 -   created seeder for surnames for seeded countries;
 -   added my team button in dashboard to check club players;
 -   Sorting for team players... now can sort asc or desc by skills age and other sortables fields;
+
+
+#### 2025.04.08
+-   lineup form improved updated
+-   simplified match engine;
+-   added player statistics table;
