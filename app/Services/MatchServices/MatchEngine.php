@@ -27,7 +27,22 @@ class MatchEngine
     // {
     //     return $this->team1->score;
     // }
+    public function getGoalScorers()
+    {
+        return $this->goalScorers;
+    }
 
+    // Getter for yellowCards
+    public function getYellowCards()
+    {
+        return $this->yellowCards;
+    }
+
+    // Getter for redCards
+    public function getRedCards()
+    {
+        return $this->redCards;
+    }
 
     public function simulateMatch()
     {

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\MatchSchedule;
+use App\Models\Player;
 use App\Services\MatchServices\MatchEngine;
 use App\Services\MatchServices\Team as MatchServicesTeam;
 use Illuminate\Console\Command;
@@ -59,20 +60,65 @@ class ProcessMatchCommand extends Command
 
             // Create a new match engine with the teams
             $match = new MatchEngine($teamA, $teamB);
-
+         
             // Simulate the match
             $match->simulateMatch();
 
-           dd($match);
+            // Get the match report
             $matchReport = $match->matchReport;
 
-            // Output for debugging (you can remove these or log them later)
-            // dd($matchSchedule);
-            // dd($match);
+            $goalScorers = $match->getGoalScorers();  // Use getter method for goal scorers
+            $yellowCards = $match->getYellowCards();  // Use getter method for yellow cards
+            $redCards = $match->getRedCards();
+
+            // Process goal scorers and assists
+            foreach ($goalScorers as $goal) {
+                $scorer = Player::find($goal['scorer']); // Find the player who scored
+                if ($scorer) {
+                    // Update the player's statistics
+                    $scorerStats = $scorer->playerStatistics()->firstOrCreate();
+
+                    // Increment goals and assists
+                    $scorerStats->increment('friendly_goals');
+                    if (isset($goal['assister']) && $goal['assister']) {
+                        $assister = Player::find($goal['assister']);
+                        if ($assister) {
+                            $assisterStats = $assister->playerStatistics()->firstOrCreate();
+                            $assisterStats->increment('friendly_assists');
+                        }
+                    }
+
+                    // Save the updated statistics
+                    $scorerStats->save();
+                }
+            }
+
+            if ($matchSchedule->type === 'league') {
+                // Process yellow cards
+                foreach ($yellowCards as $playerId => $yellowCardCount) {
+                    $player = Player::find($playerId);
+                    if ($player) {
+                        $playerStats = $player->playerStatistics()->firstOrCreate();
+                        // You can track the yellow cards, for now, we just increment them
+                        $playerStats->increment('yellow_cards', $yellowCardCount);
+                        $playerStats->save();
+                    }
+                }
+
+                // Process red cards
+                foreach ($redCards as $playerId) {
+                    $player = Player::find($playerId);
+                    if ($player) {
+                        $playerStats = $player->playerStatistics()->firstOrCreate();
+                        // You can track the red cards as well
+                        $playerStats->increment('red_cards');
+                        $playerStats->save();
+                    }
+                }
+            }
 
             // Save the match result to the database
             $matchSchedule->status = 'finished';  // Update the status to 'finished'
-            // dd($teamA->getTeamAtempts());
             $matchSchedule->home_goals = $teamA->getTeamGoals();  // Store the home team's goals
             $matchSchedule->away_goals = $teamB->getTeamGoals();  // Store the away team's goals
             $matchSchedule->home_shots = $teamA->getTeamAtempts();  // Store the home team's shots
@@ -80,7 +126,6 @@ class ProcessMatchCommand extends Command
             // $matchSchedule->home_on_target = $match->getHomeOnTarget();  // Store the home team's shots on target
             // $matchSchedule->away_on_target = $match->getAwayOnTarget();  // Store the away team's shots on target
             $matchSchedule->report = json_encode($matchReport);  // Optionally save the match report (or any other match data)
-            dd($matchSchedule);
 
             // Save the updated match schedule to the database
             $matchSchedule->save();
