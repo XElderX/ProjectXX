@@ -298,6 +298,6 @@ This is project XX
 
 
 #### 2025.04.08
-
+-   lineup form improved updated
 -   simplified match engine;
 -   added player statistics table;
